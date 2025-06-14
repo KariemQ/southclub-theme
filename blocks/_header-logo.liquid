@@ -51,17 +51,17 @@
   <span
     class="header-logo__image-container header-logo__image-container--original"
     data-testid="header-logo"
+    style="{{ logo_style }}"
   >
-    {%- comment -%} The original text logo, with a new class added {%- endcomment -%}
+    {%- comment -%} The original text logo, with a new class and without the style tag {%- endcomment -%}
     {% render 'image',
       image: settings.logo,
       class: 'header-logo__image header-logo__image--text',
       height: block.settings.custom_height,
-      text_fallback: shop.name,
-      style: logo_style
+      text_fallback: shop.name
     %}
   
-    {%- comment -%} The new penguin icon that fades in on scroll {%- endcomment -%}
+    {%- comment -%} The new penguin icon {%- endcomment -%}
     <img src="{{ 'penguin.svg' | asset_url }}" class="header-logo__image header-logo__image--icon" alt="{{ shop.name }} icon">
   </span>
 
