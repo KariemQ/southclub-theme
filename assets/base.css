@@ -4157,44 +4157,43 @@ text-component {
 /*
 // --- Logo Scroll Animation ---
 */
+
+/* The container now has height/width from the inline style.
+   We just need to make it a positioning context. */
 .header-logo__image-container {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* Use theme's height variable, with a fallback */
-  height: var(--header-logo-image-height, 36px); 
+  display: block;
 }
 
 .header-logo__image {
   transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-height: 100%;
-  width: auto;
+  top: 0;
+  left: 0;
+  /* Make images fill the container, which now has the correct dimensions */
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
 }
 
 /* By default, show the text logo and hide the icon logo */
 .header-logo__image--text {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: scale(1);
 }
 
 .header-logo__image--icon {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.8);
+  transform: scale(0.8);
 }
 
-/* On scroll down, fade out the text logo and fade in the icon logo.
-   The [data-scroll-direction="down"] is set by the theme's header.js file. */
+/* On scroll down, fade out the text logo and fade in the icon logo */
 header-component[data-scroll-direction="down"] .header-logo__image--text {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.8);
+  transform: scale(0.8);
 }
 
 header-component[data-scroll-direction="down"] .header-logo__image--icon {
   opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
+  transform: scale(1);
 }
