@@ -4148,6 +4148,33 @@ text-component {
 }
 
 /*
+// ===================================================================
+// FINAL FIX for Sticky Header and Logo Animation
+// ===================================================================
+*/
+
+/* --- Part 1: Fix the Sticky Header --- */
+
+/* Force the header group to be a layout block, overriding "display: contents" */
+#header-group {
+  display: block !important;
+}
+
+/* Make the entire group sticky, which is simpler and more reliable */
+#header-group {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Disable the theme's original sticky rule on the inner header section to prevent conflicts */
+.header-section:has(> #header-component[sticky='always']) {
+  position: static;
+}
+
+
+/*
 // --- Logo Scroll Animation (Final Fix) ---
 */
 
