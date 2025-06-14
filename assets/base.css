@@ -4176,12 +4176,6 @@ text-component {
   width: auto;
 }
 
-/* By default, show the text logo and hide the icon logo */
-.header-logo__image--text {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-}
-
 .header-logo__image--icon {
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.8);
