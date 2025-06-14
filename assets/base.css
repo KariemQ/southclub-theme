@@ -4146,3 +4146,10 @@ text-component {
   transform: none;
   box-shadow: none;
 }
+
+/* Makes the entire header group sticky from the top */
+#shopify-section-header-group {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
