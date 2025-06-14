@@ -4147,6 +4147,20 @@ text-component {
   box-shadow: none;
 }
 
+/*
+// ===================================================================
+// FINAL FIX for Sticky Header and Logo Animation
+// ===================================================================
+*/
+
+/* --- Part 1: Fix the Sticky Header --- */
+
+/* Force the header group to be a layout block, overriding "display: contents" */
+#header-group {
+  display: block !important;
+}
+
+/* Make the entire group sticky, which is simpler and more reliable */
 #header-group {
   position: -webkit-sticky;
   position: sticky;
@@ -4154,30 +4168,31 @@ text-component {
   z-index: 100;
 }
 
-/*
-// --- Logo Scroll Animation (Corrected) ---
-*/
+/* Disable the theme's original sticky rule on the inner header section to prevent conflicts */
+.header-section:has(> #header-component[sticky='always']) {
+  position: static;
+}
+
+
+/* --- Part 2: Fix the Logo Animation & Cropping --- */
 
 /* The container is a positioning context for the icon */
 .header-logo__image-container {
   position: relative;
 }
 
-/* The text logo stays in the layout to give the container its size.
-   We just prepare it for the opacity transition. */
+/* The text logo remains in the layout to give the container its size */
 .header-logo__image--text {
   transition: opacity 0.4s ease-in-out;
 }
 
-/* The icon logo is positioned absolutely on top of the text logo. */
+/* The icon logo is positioned on top and sized correctly by the theme */
 .header-logo__image--icon {
   transition: opacity 0.4s ease-in-out;
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   opacity: 0; /* Hidden by default */
 }
 
