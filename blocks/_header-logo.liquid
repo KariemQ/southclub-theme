@@ -52,13 +52,17 @@
     class="header-logo__image-container header-logo__image-container--original"
     data-testid="header-logo"
   >
+    {%- comment -%} The original text logo, with a new class added {%- endcomment -%}
     {% render 'image',
       image: settings.logo,
-      class: 'header-logo__image',
+      class: 'header-logo__image header-logo__image--text',
       height: block.settings.custom_height,
       text_fallback: shop.name,
       style: logo_style
     %}
+  
+    {%- comment -%} The new penguin icon that fades in on scroll {%- endcomment -%}
+    <img src="{{ 'penguin.svg' | asset_url }}" class="header-logo__image header-logo__image--icon" alt="{{ shop.name }} icon">
   </span>
 
   {% if use_inverse_logo %}
