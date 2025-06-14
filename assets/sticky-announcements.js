@@ -138,18 +138,16 @@ class StickyAnnouncement {
   adjustHeader(announcementHeight) {
     const headerComponent = document.querySelector('header-component');
     if (headerComponent) {
-      // This directly sets the 'top' CSS property for the sticky header,
-      // which should override any conflicting theme styles.
-      headerComponent.style.top = `${announcementHeight}px`;
+      // This applies the 'top' style with high priority to prevent it from being overridden.
+      headerComponent.style.setProperty('top', `${announcementHeight}px`, 'important');
     }
   }
 
   resetHeader() {
     const headerComponent = document.querySelector('header-component');
     if (headerComponent) {
-      // This resets the 'top' property, allowing it to revert to the
-      // default stylesheet value when you scroll to the top.
-      headerComponent.style.top = '';
+      // This removes the inline style, allowing the original theme styles to take back control.
+      headerComponent.style.removeProperty('top');
     }
   }
 }
