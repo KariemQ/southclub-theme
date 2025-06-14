@@ -136,15 +136,21 @@ class StickyAnnouncement {
   }
   
   adjustHeader(announcementHeight) {
-    // This function will now set a global CSS variable that the theme's
-    // existing sticky header can use to offset itself.
-    document.documentElement.style.setProperty('--sticky-header-offset', `${announcementHeight}px`);
+    const headerComponent = document.querySelector('header-component');
+    if (headerComponent) {
+      // This directly sets the 'top' CSS property for the sticky header,
+      // which should override any conflicting theme styles.
+      headerComponent.style.top = `${announcementHeight}px`;
+    }
   }
-  
+
   resetHeader() {
-    // This will remove the variable, allowing the header to return to its
-    // original position when the announcement bar is no longer sticky.
-    document.documentElement.style.removeProperty('--sticky-header-offset');
+    const headerComponent = document.querySelector('header-component');
+    if (headerComponent) {
+      // This resets the 'top' property, allowing it to revert to the
+      // default stylesheet value when you scroll to the top.
+      headerComponent.style.top = '';
+    }
   }
 }
 
