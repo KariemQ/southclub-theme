@@ -136,48 +136,15 @@ class StickyAnnouncement {
   }
   
   adjustHeader(announcementHeight) {
-    // Find the header component
-    const headerComponent = document.querySelector('header-component');
-    const headerSection = document.querySelector('.header-section');
-    
-    if (headerComponent) {
-      // Check if header has sticky behavior
-      const stickyAttr = headerComponent.getAttribute('sticky');
-      
-      if (stickyAttr === 'always') {
-        // Adjust the header's top position when it becomes sticky
-        headerComponent.style.setProperty('--announcement-height', `${announcementHeight}px`);
-        
-        // Apply top offset to sticky header
-        const headerRow = headerComponent.querySelector('.header__row');
-        if (headerRow) {
-          headerRow.style.top = `${announcementHeight}px`;
-        }
-      }
-    }
-    
-    // Also adjust the header section if it exists
-    if (headerSection) {
-      headerSection.style.marginTop = `${announcementHeight}px`;
-    }
+    // This function will now set a global CSS variable that the theme's
+    // existing sticky header can use to offset itself.
+    document.documentElement.style.setProperty('--sticky-header-offset', `${announcementHeight}px`);
   }
   
   resetHeader() {
-    const headerComponent = document.querySelector('header-component');
-    const headerSection = document.querySelector('.header-section');
-    
-    if (headerComponent) {
-      headerComponent.style.removeProperty('--announcement-height');
-      
-      const headerRow = headerComponent.querySelector('.header__row');
-      if (headerRow) {
-        headerRow.style.top = '';
-      }
-    }
-    
-    if (headerSection) {
-      headerSection.style.marginTop = '';
-    }
+    // This will remove the variable, allowing the header to return to its
+    // original position when the announcement bar is no longer sticky.
+    document.documentElement.style.removeProperty('--sticky-header-offset');
   }
 }
 
