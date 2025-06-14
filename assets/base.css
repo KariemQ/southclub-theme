@@ -4147,7 +4147,6 @@ text-component {
   box-shadow: none;
 }
 
-/* Makes the entire header group sticky from the top */
 #header-group {
   position: -webkit-sticky;
   position: sticky;
