@@ -37,30 +37,32 @@
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
 
-  {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
+    {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
 
-  {%- comment -%}
-    FINAL CORRECT STRUCTURE:
-    The header, video, and main content are siblings.
-    We will use CSS to create the visual layering effect.
-  {%- endcomment -%}
-  {% sections 'header-group' %}
-  {% section 'hero-video' %}
+    {% comment %}
+      This new container uses CSS Grid to solve layout conflicts.
+      The hero, main content, footer, and header are reordered to prevent rendering bugs.
+    {% endcomment %}
+    <div class="page-container">
 
-  <main id="MainContent" class="content-for-layout" role="main">
-    {{ content_for_layout }}
-  </main>
+      {% section 'hero-video' %}
 
-  {% sections 'footer-group' %}
+      <main id="MainContent" class="content-for-layout" role="main">
+        {{ content_for_layout }}
+      </main>
 
-  {% render 'search-modal' %}
-  <script src="{{ 'critical.js' | asset_url }}"></script>
-  {% if settings.quick_add or settings.mobile_quick_add %}
-    {% render 'quick-add-modal' %}
-  {% endif %}
+      {% sections 'footer-group' %}
+      {% sections 'header-group' %}
 
-  <script src="{{ 'logo-scroll-animation.js' | asset_url }}" defer></script>
-  <script src="{{ 'custom-scroll.js' | asset_url }}" defer></script>
+    </div>
 
-</body>
+    {% render 'search-modal' %}
+    <script src="{{ 'critical.js' | asset_url }}"></script>
+    {% if settings.quick_add or settings.mobile_quick_add %}
+      {% render 'quick-add-modal' %}
+    {% endif %}
+
+    <script src="{{ 'logo-scroll-animation.js' | asset_url }}" defer></script>
+    {% comment %} You should NOT need a custom scroll script with this new structure {% endcomment %}
+  </body>
 </html>
