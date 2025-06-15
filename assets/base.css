@@ -4423,141 +4423,54 @@ header-actions {
   gap: 20px;
 }
 
-/* -- V7 - Stable Hero Layout -- */
+/* -- Final Integrated Hero Solution -- */
 
-/* 1. The hero section is a 100vh container with hidden overflow. */
+/* The hero section is a 100vh spacer */
 #shopify-section-hero-video {
-  position: relative;
   height: 100vh;
-  height: 100svh;
-  overflow: hidden; /* This contains the video within this section */
 }
 
-/* 2. The video wrapper is positioned absolutely within its parent section. */
-/* It is NOT fixed to the page. */
+/* The video itself is fixed to the background */
 #shopify-section-hero-video .hero-video__wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-.hero-video__media {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  min-width: 100%;
-  min-height: 100%;
-  object-fit: cover;
-}
-
-/* 3. The header and announcement bar are now sticky. */
-/* Set the initial position of the header */
-#shopify-section-header-group {
   position: fixed;
-  bottom: 0;
+  top: 0;
   left: 0;
   width: 100%;
-  z-index: 10;
-}
-
-/* This class will be added by JavaScript to make it sticky at the top after scrolling */
-#shopify-section-header-group.header-is-sticky {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  bottom: auto;
-  background-color: var(--color-background);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-/* 4. The main content and footer follow the normal page flow. */
-main#MainContent,
-#shopify-section-footer-group {
-    position: relative;
-    z-index: 3;
-    background-color: var(--color-background);
-}
-
-/* 5. The arrow is positioned inside the hero section. */
-.hero-video__scroll-down {
-  position: fixed; /* Changed from absolute */
-  bottom: 140px;   /* Adjust this value based on your header's height */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 11; /* Make sure it's above the header */
-  cursor: pointer;
-}
-.hero-video__scroll-down svg {
-  color: white;
-  width: 28px;
-  height: 28px;
-  filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
-}
-
-/* -- V14 - Final Animation and Position Fix -- */
-
-/* 1. The hero section is a standard, 100vh tall section. */
-#shopify-section-hero-video {
-  position: relative;
   height: 100vh;
-  z-index: 1; /* Sits behind the header */
+  z-index: -1; /* Place it behind all page content */
 }
 
-/* 2. The video wrapper is absolutely positioned to fill the hero section. */
-#shopify-section-hero-video .hero-video__wrapper,
 #shopify-section-hero-video .hero-video__media {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* 3. The header is FIXED to the bottom of the viewport INITIALLY. */
+/* The header is absolutely positioned relative to the body */
 #shopify-section-header-group {
-  position: fixed;
-  bottom: 0;
+  position: absolute;
+  top: 100vh;
   left: 0;
   width: 100%;
-  z-index: 10;
+  transform: translateY(-100%);
 }
 
-/* 4. This class will be added by JS to make the header sticky AT THE TOP after scrolling. */
-#shopify-section-header-group.header-is-sticky {
-  position: -webkit-sticky;
-  position: sticky;
+/* This class, which we will add via JS, makes the header sticky */
+#shopify-section-header-group.header--is-sticky {
+  position: fixed;
   top: 0;
-  bottom: auto;
+  transform: translateY(0);
   background-color: var(--color-background);
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  animation: fadeInDown 0.3s ease-out;
 }
 
-/* 5. The main content and footer follow the normal page flow. */
-main#MainContent,
-#shopify-section-footer-group {
-    position: relative;
-    z-index: 3;
-    background-color: var(--color-background);
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* 6. The scroll-down arrow is also fixed to the viewport. */
-.hero-video__scroll-down {
-  position: fixed;
-  bottom: 140px; /* Adjust this value to sit comfortably above your header */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 11;
-  cursor: pointer;
-}
-
-.hero-video__scroll-down svg {
-  color: white;
-  width: 28px;
-  height: 28px;
-  filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+/* Ensure main content has a background to be opaque */
+main#MainContent {
+  background-color: var(--color-background);
 }
