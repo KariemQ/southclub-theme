@@ -4325,7 +4325,7 @@ header-component.scrolled-down .header-logo__image-container--icon {
 /* This adds a margin to the left of each menu item, except for the very first one,
    creating a clean gap only between the items. */
 .header-menu .menu-list__list-item:not(:first-child) {
-  margin-left: 35px;
+  margin-left: 40px;
 }
 
 /*
