@@ -73,7 +73,7 @@
             "collection_title_case": "default",
             "color_scheme": "scheme-1",
             "menu_font_style": "inverse",
-            "type_font_primary_link": "subheading",
+            "type_font_primary_link": "body",
             "type_font_primary_size": "0.875rem",
             "type_case_primary_link": "none",
             "type_font_secondary_link": "body",
