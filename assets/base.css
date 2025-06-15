@@ -4493,37 +4493,28 @@ header-actions {
 }
 .hero-video__scroll-down:hover svg{ transform:translateY(4px); }
 
-/* ─────────── HERO VIDEO + OVERLAYING HEADER LAYOUT ─────────── */
+/* ─────── MAIN PAGE GRID ─────── */
 .site-grid-container{
-  /* one column, three stacked areas                             */
+  /* simple vertical stack */
   display:grid;
-  grid-template-areas:
-    "hero"
-    "main"
-    "footer";
+  grid-template-rows:auto 1fr auto;   /* hero ▸ main ▸ footer */
 }
 
-/* hero video (row 1, behind the header)                         */
-#shopify-section-hero-video,
-.hero-video{
-  grid-area:hero;
-  width:100%;
-  z-index:1;              /* video stays underneath              */
-}
+/* hero section (row 1) */
+#shopify-section-hero-video{ grid-row:1; z-index:1; }
 
-/* header + announcement bar wrapper (shares the same area)      */
+/* footer group (row 3 — Shopify already assigns a class) */
+.shopify-section-group-footer-group{ grid-row:3; }
+
+/* main site content (row 2) */
+#MainContent{ grid-row:2; }
+
+/* ─────── OVERLAY HEADER/ANNOUNCEMENT BAR ─────── */
 #header-group{
-  grid-area:hero;         /* same cell as the hero video         */
-  align-self:end;         /* hug the *bottom* of the hero frame  */
-  width:100%;
-  z-index:2;              /* on top of the video                 */
-  position:sticky;        /* becomes sticky when it meets top    */
+  position:sticky;         /* sticks at top of viewport      */
   top:0;
+  z-index:20;              /* above the video & everything   */
+  width:100%;
+  grid-row:1;              /* physically still in row 1      */
+  margin-top:calc(-1 * var(--header-height)); /* pull it *over* video */
 }
-
-/* main page content                                             */
-#MainContent{ grid-area:main; }
-
-/* footer (Shopify’s auto-generated group)                       */
-.shopify-section-group-footer-group{ grid-area:footer; }
-
