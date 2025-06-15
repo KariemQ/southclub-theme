@@ -4162,20 +4162,28 @@ text-component {
 }
 
 /*
-// --- Unfolding Layers Logo Animation ---
+// --- Enhanced 3D Flip Logo Animation ---
 */
 
-/* The main link tag sets the 3D perspective space */
+/* The main link tag sets the 3D perspective */
 .header-logo {
-  perspective: 1200px;
+  perspective: 1000px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
 }
 
-/* The flipper div is our main animation stage and container */
+/* The flipper div is our animation stage.
+   It gets its size from the inline style in your liquid file. */
 .header-logo__flipper {
-  position: relative;
   height: var(--header-logo-image-height-mobile);
   width: var(--header-logo-image-width-mobile);
+  position: relative;
   transform-style: preserve-3d;
+  /* Animate all property changes smoothly */
+  transition: transform 0.8s cubic-bezier(0.7, 0, 0.2, 1), filter 0.8s cubic-bezier(0.7, 0, 0.2, 1);
+  /* Add a subtle initial shadow */
+  filter: drop-shadow(0px 2px 5px rgba(0,0,0,0.1));
 }
 @media screen and (width >= 750px) {
   .header-logo__flipper {
@@ -4184,58 +4192,31 @@ text-component {
   }
 }
 
-/* The icon is the base layer, it scales and fades in with a delay */
+/* When scrolled down, rotate and scale the flipper up for impact */
+header-component.scrolled-down .header-logo__flipper {
+  transform: rotateY(180deg) scale(1.1);
+  /* Enhance the shadow when it's "lifted" */
+  filter: drop-shadow(0px 8px 20px rgba(0,0,0,0.15));
+}
+
+/* Both logo containers are stacked and have their back-faces hidden */
+.header-logo__image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; /* Safari compatibility */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The icon container starts pre-rotated on the "back" of the card */
 .header-logo__image-container--icon {
-  opacity: 0;
-  transform: scale(0.95);
-  transition: opacity 0.4s 0.3s ease-in, transform 0.4s 0.3s ease-in;
+  transform: rotateY(180deg);
 }
-
-/* This container holds the four unfolding panels */
-.logo-unfold-container {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  transform-style: preserve-3d;
-  z-index: 1; /* Ensure it's on top of the icon initially */
-}
-
-/* Base styles for each of the four panels */
-.logo-unfold-panel {
-  position: absolute;
-  width: 50%;
-  height: 50%;
-  background-size: 200% 200%; /* Image is sized to be 2x container */
-  transition: transform 0.8s cubic-bezier(0.8, 0, 0.2, 1);
-}
-
-/* Position each panel and its respective background quadrant */
-.logo-unfold-panel--top-left     { top: 0;    left: 0;    transform-origin: top left;     background-position: top left; }
-.logo-unfold-panel--top-right    { top: 0;    right: 0;   transform-origin: top right;    background-position: top right; }
-.logo-unfold-panel--bottom-left  { bottom: 0; left: 0;    transform-origin: bottom left;  background-position: bottom left; }
-.logo-unfold-panel--bottom-right { bottom: 0; right: 0;   transform-origin: bottom right; background-position: bottom right; }
-
-
-/* --- The Scroll Animation Trigger --- */
-
-/* Animate the icon to appear */
-header-component.scrolled-down .header-logo__image-container--icon {
-  opacity: 1;
-  transform: scale(1);
-}
-
-/* Animate each panel to "unfold" away in 3D space */
-header-component.scrolled-down .logo-unfold-panel {
-  transform: translateZ(150px) rotateY(var(--y-rot, 0)) rotateX(var(--x-rot, 0));
-  opacity: 0;
-  transition: transform 0.8s cubic-bezier(0.8, 0, 0.2, 1), opacity 0.5s 0.3s;
-}
-
-/* Set the rotation direction for each panel */
-header-component.scrolled-down .logo-unfold-panel--top-left     { --y-rot: -110deg; --x-rot: -110deg; }
-header-component.scrolled-down .logo-unfold-panel--top-right    { --y-rot: 110deg;  --x-rot: -110deg; }
-header-component.scrolled-down .logo-unfold-panel--bottom-left  { --y-rot: -110deg; --x-rot: 110deg;  }
-header-component.scrolled-down .logo-unfold-panel--bottom-right { --y-rot: 110deg;  --x-rot: 110deg;  }
 
 /*
 // --- Penguin Icon Size Override ---
