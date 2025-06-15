@@ -4281,11 +4281,11 @@ header-component.scrolled-down .header-logo__image-container--icon {
 }
 
 /*
-// --- Increase Header Menu Item Spacing ---
+// --- Increase Header Menu Item Spacing (Corrected) ---
 */
 
-/* This targets the links in your main header menu and adds space around them. */
-.header-menu .menu-list__list-item .menu-list__link {
-  padding-left: 20px;
-  padding-right: 20px;
+/* This adds a margin to the left of each menu item, except for the very first one,
+   creating a clean gap only between the items. */
+.header-menu .menu-list__list-item:not(:first-child) {
+  margin-left: 20px;
 }
