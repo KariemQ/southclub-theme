@@ -4147,34 +4147,18 @@ text-component {
   box-shadow: none;
 }
 
-/*
-// ===================================================================
-// FINAL Method for Sticky Header and Logo Animation
-// ===================================================================
-*/
+/* =====================================================
+   South Club – Deluxe 3‑D Flip (v12)
+   -----------------------------------------------------
+   Goal: keep the improved reveal from v11 but make the
+   scroll‑up (reverse) just as smooth—no snap.
 
-/* Part 1: Make the entire header group sticky */
-#header-group {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
+   Strategy: replace keyframe‑based iconAppear with
+   pure transitions + delay.  This way, both directions
+   animate symmetrically.
+   =====================================================*/
 
-/*
- * =====================================================
- * South Club – Deluxe 3-D Flip (v13 - Refined)
- * -----------------------------------------------------
- * Goal: A perfectly symmetrical and smooth 3D flip
- * animation for both scroll-down and scroll-up.
- *
- * Strategy: Refine the transition properties, especially
- * the delays, to ensure the opacity fades are
- * synchronized with the flip in both directions.
- * =====================================================
-*/
-
-/* ---------- Layout & Perspective ---------- */
+/* ---------- Layout ---------- */
 .header-logo {
   perspective: 1200px;
   display: inline-flex;
@@ -4184,20 +4168,19 @@ text-component {
 .header-logo__flipper {
   position: relative;
   height: var(--header-logo-image-height-mobile);
-  width: var(--header-logo-image-width-mobile);
+  width:  var(--header-logo-image-width-mobile);
   transform-style: preserve-3d;
-  /* The transition handles the reverse (scroll-up) animation */
-  transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: transform 0.8s cubic-bezier(0.645,0.045,0.355,1);
 }
 
 @media screen and (width >= 750px) {
   .header-logo__flipper {
     height: var(--header-logo-image-height);
-    width: var(--header-logo-image-width);
+    width:  var(--header-logo-image-width);
   }
 }
 
-/* ---------- Logo Faces ---------- */
+/* ---------- Faces ---------- */
 .header-logo__image-container {
   position: absolute;
   inset: 0;
@@ -4208,20 +4191,25 @@ text-component {
   -webkit-backface-visibility: hidden;
 }
 
-/* Word-mark (front face) */
-.header-logo__image-container--original {
-  transform: scale(1);
-  opacity: 1;
-  /* Animate transform and opacity. Delay opacity on the way back. */
-  transition: transform 0.35s ease, opacity 0.35s ease 0.4s;
+.header-logo__image-container--original,
+.header-logo__image-container--icon {
+  transition-property: opacity, transform;
+  transition-duration: 0.35s;
+  transition-timing-function: ease;
 }
 
-/* Penguin icon (back face) */
+/* Word‑mark (front face) */
+.header-logo__image-container--original {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Penguin icon (back face) – hidden initial */
 .header-logo__image-container--icon {
   transform: rotateY(180deg) scale(0.92);
   opacity: 0;
-  /* Animate transform and opacity. Delay opacity on the way out (reverse). */
-  transition: transform 0.35s ease, opacity 0.35s ease 0.25s;
+  /* delay will be overridden when active */
+  transition-delay: 0s;
 }
 
 .header-logo__image {
@@ -4230,41 +4218,41 @@ text-component {
   object-fit: contain;
 }
 
-/* ---------- Scroll-Down Animation (Active State) ---------- */
-
-/* When scrolled, use the keyframe animation for the forward flip */
+/* ---------- Scroll‑down (active) ---------- */
 header-component.scrolled-down .header-logo__flipper {
-  animation: scFlip 0.8s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
+  transform: rotateY(180deg);
+  animation: scFlip 0.8s cubic-bezier(0.645,0.045,0.355,1);
 }
 
-/* Fade out the original logo around the flip's midpoint */
 header-component.scrolled-down .header-logo__image-container--original {
-  transform: scale(1.08);
   opacity: 0;
-  transition-delay: 0s, 0.25s; /* transform, opacity */
+  transform: scale(1.08);
+  transition-delay: 0.25s; /* fades out near midpoint */
 }
 
-/* Fade in the new icon after the flip's midpoint */
 header-component.scrolled-down .header-logo__image-container--icon {
-  transform: rotateY(180deg) scale(1);
   opacity: 1;
-  transition-delay: 0s, 0.4s; /* transform, opacity */
+  transform: rotateY(180deg) scale(1);
+  transition-delay: 0.4s; /* appear after midpoint */
 }
 
-/* ---------- Keyframes (for the forward "depth dip") ---------- */
+/* ---------- Keyframes (depth dip) ---------- */
 @keyframes scFlip {
-  0%   { transform: rotateY(0deg)   scale(1); }
+  0%   { transform: rotateY(0deg)   scale(1);   }
   45%  { transform: rotateY(90deg)  scale(0.86); }
-  100% { transform: rotateY(180deg) scale(1); }
+  100% { transform: rotateY(180deg) scale(1);   }
 }
 
 /* ---------------- Accessibility ---------------- */
 @media (prefers-reduced-motion: reduce) {
   .header-logo__flipper,
-  header-component.scrolled-down .header-logo__flipper,
+  header-component.scrolled-down .header-logo__flipper {
+    animation: none;
+    transition: none;
+    transform: rotateY(180deg);
+  }
   .header-logo__image-container--original,
   .header-logo__image-container--icon {
-    animation: none;
     transition: none;
   }
 }
