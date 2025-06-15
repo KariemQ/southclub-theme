@@ -51,34 +51,42 @@
     assign inverse_logo_style = '--header-logo-image-width: ' | append: inverse_logo_width | append: 'px;' | append: '--header-logo-image-width-mobile: ' | append: inverse_logo_width_mobile | append: 'px; --header-logo-image-height: ' | append: block.settings.custom_height | append: 'px; --header-logo-image-height-mobile: ' | append: block.settings.custom_height_mobile | append: 'px;'
   %}
 
-  {%- comment -%} This is the container for the original text logo. It is correct. {%- endcomment -%}
-  <span
-    class="header-logo__image-container header-logo__image-container--original"
-    data-testid="header-logo"
-  >
-    {% render 'image',
-      image: settings.logo,
-      class: 'header-logo__image',
-      height: block.settings.custom_height,
-      text_fallback: shop.name,
-      style: logo_style
-    %}
-  </span>
+  {%- comment -%} This new wrapper div is essential for the 3D flip animation {%- endcomment -%}
+  <div class="header-logo__flipper">
 
-  {%- comment -%} This is the NEW container for the penguin icon. This is also correct. {%- endcomment -%}
-  {%- if block.settings.logo_icon != blank -%}
+    {%- comment -%} This is the container for the original text logo (the "front" of the card). {%- endcomment -%}
     <span
-      class="header-logo__image-container header-logo__image-container--icon"
+      class="header-logo__image-container header-logo__image-container--original"
+      data-testid="header-logo"
     >
-      <img
-        src="{{ block.settings.logo_icon | image_url: height: block.settings.logo_icon_height }}"
-        class="header-logo__image"
-        alt="{{ shop.name }} icon"
-        style="height: {{ block.settings.logo_icon_height }}px;"
-      >
+      {% render 'image',
+        image: settings.logo,
+        class: 'header-logo__image',
+        height: block.settings.custom_height,
+        text_fallback: shop.name,
+        style: logo_style
+      %}
     </span>
-  {%- endif -%}
 
+    {%- comment -%} This is the container for the penguin icon (the "back" of the card). {%- endcomment -%}
+    {%- if block.settings.logo_icon != blank -%}
+      <span
+        class="header-logo__image-container header-logo__image-container--icon"
+      >
+        <img
+          src="{{ block.settings.logo_icon | image_url: height: block.settings.logo_icon_height }}"
+          class="header-logo__image"
+          alt="{{ shop.name }} icon"
+          style="height: {{ block.settings.logo_icon_height }}px;"
+        >
+      </span>
+    {%- endif -%}
+
+  </div>
+  {%- comment -%} End of the flipper div {%- endcomment -%}
+
+
+  {%- comment -%} This is the inverse logo for transparent headers. It stays outside the animation. {%- endcomment -%}
   {% if use_inverse_logo %}
     <span
       class="header-logo__image-container header-logo__image-container--inverse"
