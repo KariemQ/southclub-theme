@@ -4161,17 +4161,17 @@ text-component {
   z-index: 100;
 }
 
-/* =========================================
-   South Club – Logo Scroll Animation v4
-   -----------------------------------------
-   ✦ Clean cross‑fade + gentle zoom
-   ✦ No 3‑D tricks, no shimmer — just a classy
-     morph from word‑mark ➞ penguin icon.
-   ✦ Pure CSS, GPU‑accelerated, easy to tweak.
-   ========================================*/
+/* =====================================================
+   South Club – Deluxe 3‑D Flip (v5)
+   -----------------------------------------------------
+   Classic 180° flip refined with a micro‑scale dip,
+   silk‑smooth easing, and a soft drop‑shadow reveal on
+   the penguin icon.  Stays minimal yet feels premium.
+   =====================================================*/
 
-/* ---------- Base layout ---------- */
+/* ---------- Layout ---------- */
 .header-logo {
+  perspective: 1200px;
   display: inline-flex;
   align-items: center;
 }
@@ -4180,6 +4180,8 @@ text-component {
   position: relative;
   height: var(--header-logo-image-height-mobile);
   width:  var(--header-logo-image-width-mobile);
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 @media screen and (width >= 750px) {
@@ -4189,51 +4191,49 @@ text-component {
   }
 }
 
-/* ---------- Faces (word‑mark + penguin) ---------- */
+/* ---------- Faces ---------- */
 .header-logo__image-container {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.45s ease, transform 0.45s ease;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
-/* Penguin starts hidden & a bit smaller */
 .header-logo__image-container--icon {
-  opacity: 0;
-  transform: scale(0.7) rotate(-6deg);
+  transform: rotateY(180deg);
 }
 
-/* Fit images neatly */
 .header-logo__image {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-/* =============================================================
-   Scroll-triggered state — replace the selector below if your
-   theme toggles a different class when the header becomes sticky.
-   ==============================================================*/
-header-component.scrolled-down .header-logo__image-container--icon {
-  opacity: 1;
-  transform: scale(1) rotate(0deg);
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.24));
+/* ---------- Animation ---------- */
+header-component.scrolled-down .header-logo__flipper {
+  animation: scFlip 0.8s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
 }
 
-header-component.scrolled-down .header-logo__image-container--original {
-  opacity: 0;
-  transform: scale(1.15) rotate(4deg);
+@keyframes scFlip {
+  0%   { transform: rotateY(0deg)   scale(1);   }
+  45%  { transform: rotateY(90deg)  scale(0.86); }
+  100% { transform: rotateY(180deg) scale(1);   }
+}
+
+/* Add a gentle drop‑shadow only once the penguin is front‑facing */
+header-component.scrolled-down .header-logo__image-container--icon .header-logo__image {
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
 }
 
 /* ---------------- Accessibility ---------------- */
 @media (prefers-reduced-motion: reduce) {
-  .header-logo__image-container,
-  header-component.scrolled-down .header-logo__image-container {
-    transition: none;
+  .header-logo__flipper,
+  header-component.scrolled-down .header-logo__flipper {
+    animation: none;
+    transform: rotateY(180deg);
   }
 }
 
