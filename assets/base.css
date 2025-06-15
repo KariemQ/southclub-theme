@@ -1,3 +1,41 @@
+/* -- Custom Font: Suisse Intl -- */
+
+/* Light Weight */
+@font-face {
+  font-family: "Suisse Intl";
+  src: url('{{ "Suisse_Intl-Light.woff2" | asset_url }}') format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Regular Weight */
+@font-face {
+  font-family: "Suisse Intl";
+  src: url('{{ "Suisse_Intl-Regular.woff2" | asset_url }}') format("woff2");
+  font-weight: 400; /* or 'normal' */
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Medium Weight */
+@font-face {
+  font-family: "Suisse Intl";
+  src: url('{{ "Suisse_Intl-Medium.woff2" | asset_url }}') format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Bold Weight */
+@font-face {
+  font-family: "Suisse Intl";
+  src: url('{{ "Suisse_Intl-Bold.woff2" | asset_url }}') format("woff2");
+  font-weight: 700; /* or 'bold' */
+  font-style: normal;
+  font-display: swap;
+}
+
 * {
   box-sizing: border-box;
 }
