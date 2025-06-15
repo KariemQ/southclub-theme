@@ -4423,54 +4423,41 @@ header-actions {
   gap: 20px;
 }
 
-/* -- Final Integrated Hero Solution -- */
+/* -- V15 - Final Stable Solution -- */
 
-/* The hero section is a 100vh spacer */
+/* 1. The hero video section is a standard block that takes up the full viewport height. */
 #shopify-section-hero-video {
+  position: relative;
   height: 100vh;
+  width: 100%;
+  overflow: hidden;
 }
 
-/* The video itself is fixed to the background */
+/* 2. The video is positioned to fill this section. */
 #shopify-section-hero-video .hero-video__wrapper {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
-  z-index: -1; /* Place it behind all page content */
+  height: 100%;
 }
-
 #shopify-section-hero-video .hero-video__media {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* The header is absolutely positioned relative to the body */
+/* 3. The header group is sticky to the top of the page from the start. */
 #shopify-section-header-group {
-  position: absolute;
-  top: 100vh;
-  left: 0;
-  width: 100%;
-  transform: translateY(-100%);
-}
-
-/* This class, which we will add via JS, makes the header sticky */
-#shopify-section-header-group.header--is-sticky {
-  position: fixed;
+  position: -webkit-sticky;
+  position: sticky;
   top: 0;
-  transform: translateY(0);
-  background-color: var(--color-background);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  animation: fadeInDown 0.3s ease-out;
+  z-index: 10;
+  background-color: var(--color-background); /* Ensures it's not transparent */
 }
 
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Ensure main content has a background to be opaque */
+/* 4. The main content simply follows the hero section */
 main#MainContent {
+  position: relative; /* This is needed for child element positioning */
   background-color: var(--color-background);
 }
