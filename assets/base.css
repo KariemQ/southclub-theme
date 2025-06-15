@@ -4423,23 +4423,18 @@ header-actions {
   gap: 20px;
 }
 
-/*
-// --- Hero Video Layout (Corrected) ---
-*/
+/* -- Advanced Hero Video Layout -- */
 
-/* 1. Make the hero video a normal section */
-#shopify-section-hero-video {
-  position: relative;
-  height: 100vh; /* You can adjust this value if needed */
-  z-index: 1;
-}
-
+/* 1. The video wrapper is a fixed background layer that stays behind everything. */
 #shopify-section-hero-video .hero-video__wrapper {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh; /* vh is a unit representing percentage of the viewport height */
+  height: 100svh; /* A newer unit that accounts for mobile browser bars */
+  z-index: 1;
+  background-color: black; /* Fallback color in case the video doesn't load */
 }
 
 .hero-video__media {
@@ -4449,37 +4444,70 @@ header-actions {
   transform: translate(-50%, -50%);
   min-width: 100%;
   min-height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* Ensures the video covers the screen without distortion */
 }
 
+/* 2. The hero section itself becomes an invisible "spacer". Its height determines when the header becomes sticky. */
+#shopify-section-hero-video {
+  position: relative;
+  /*
+    IMPORTANT: You must adjust the '120px' value below to match the
+    combined height of your announcement bar and header for the effect to be seamless.
+  */
+  height: calc(100vh - 120px);
+  height: calc(100svh - 120px);
+  z-index: 2; /* Sits above the video, but below the main content */
+}
 
-/* 2. Make the header group sticky at the top */
-#header-group {
-  position: -webkit-sticky;
-  position: sticky;
+/* 3. The header group is positioned absolutely relative to the page content. */
+/* It will appear at the bottom of the screen initially, then scroll up with the page. */
+#shopify-section-header-group {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  will-change: position;
+}
+
+/* 4. This class will be added via JavaScript to make the header "stick" to the top after scrolling. */
+#shopify-section-header-group.header-is-sticky {
+  position: fixed;
   top: 0;
-  z-index: 100;
+  bottom: auto;
+  animation: slideDown 0.5s ease-in-out; /* Optional: adds a nice animation */
 }
 
-
-/* 3. Ensure the main content is visible */
+/* 5. The main content needs a background color so the video doesn't show through it. */
 main#MainContent {
   position: relative;
-  z-index: 2;
+  z-index: 3; /* Must be higher than the hero spacer */
   background-color: var(--color-background);
 }
 
-/* 4. The scroll-down arrow */
+/* 6. The clickable scroll-down arrow. */
 .hero-video__scroll-down {
-    position: absolute;
-    bottom: 120px;
+    position: absolute; /* Positioned relative to the hero spacer section */
+    bottom: 20px;       /* Sits 20px from the bottom of the video area */
     left: 50%;
     transform: translateX(-50%);
     z-index: 11;
     cursor: pointer;
 }
+
 .hero-video__scroll-down svg {
     color: white;
     width: 28px;
     height: 28px;
+    filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); /* Makes the arrow more visible */
+}
+
+/* Optional animation for the header becoming sticky */
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
