@@ -4279,3 +4279,13 @@ header-component.scrolled-down .header-logo__image-container--icon {
 .header-logo__image-container--icon .header-logo__image {
   max-height: none !important;
 }
+
+/*
+// --- Increase Header Menu Item Spacing ---
+*/
+
+/* This targets the links in your main header menu and adds space around them. */
+.header-menu .menu-list__list-item .menu-list__link {
+  padding-left: 20px;
+  padding-right: 20px;
+}
