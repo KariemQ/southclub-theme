@@ -4437,15 +4437,35 @@ header-actions {
 
 /* ───────── overlay   header + announcement bar ───────── */
 #header-group{
+  /*   shares the hero’s grid track   */
+  grid-row:1;
   position:sticky;
-  top:0;                                /*      <- sticks here  */
-  grid-row:1;                           /* lives in hero track  */
+  top:0;
   width:100%;
-  z-index:20;                           /* above the video      */
+  z-index:20;
 
-  /* put it at   **bottom of the hero video**   when page loads */
-  margin-top:calc( -1 * var(--header-height) );
+  /* start flush with the BOTTOM edge of the hero on page-load      *
+   * 100svh  = viewport height,   var(--header-height) = bar height */
+  margin-top:calc(100svh - var(--header-height));
 }
-/* when it’s sticky add a helper class for JS / CSS */
+/* once JS adds the helper class (see header.js) the bar snaps to 0 */
 #header-group.header--is-sticky{ margin-top:0; }
+
+/* --------------------------------------------------------------
+   Make sure the <video> itself always fills the hero section
+   -------------------------------------------------------------- */
+#shopify-section-hero-video{
+  grid-row:1;                 /* already declared above, but harmless */
+  min-height:100svh;
+  position:relative;
+  z-index:0;                  /* sits under the bar */
+}
+#shopify-section-hero-video video{
+  position:absolute;          /* <<< NEW */
+  inset:0;                    /* fill the hero */
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
 
