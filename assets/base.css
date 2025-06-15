@@ -4498,30 +4498,18 @@ main#MainContent,
   filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
 }
 
-/* -- V9 - Final Stable Layout -- */
+/* -- V11 - Final Stable and Animated Layout -- */
 
-/* 1. The page container uses Grid to layer elements. */
-.page-container {
-  display: grid;
-  grid-template-columns: 100%;
-}
-
-/* 2. All elements are placed in the same grid cell to create layers. */
-#shopify-section-hero-video,
-#MainContent,
-#shopify-section-footer-group,
-#shopify-section-header-group {
-  grid-area: 1 / 1;
-}
-
-/* 3. The hero video is a relative layer at the bottom of the stack. */
+/* 1. The hero section is a 100vh container. */
 #shopify-section-hero-video {
   position: relative;
   height: 100vh;
-  z-index: 1;
+  z-index: 1; /* It sits behind the header. */
 }
 
-#shopify-section-hero-video .hero-video__wrapper {
+/* 2. The video wrapper is absolutely positioned inside the hero section. THIS IS STABLE. */
+#shopify-section-hero-video .hero-video__wrapper,
+#shopify-section-hero-video .hero-video__media {
   position: absolute;
   top: 0;
   left: 0;
@@ -4529,27 +4517,47 @@ main#MainContent,
   height: 100%;
   object-fit: cover;
 }
-#shopify-section-hero-video .hero-video__media {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+
+/* 3. The header is FIXED to the bottom of the viewport INITIALLY. */
+#shopify-section-header-group {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
 }
 
-/* 4. The header sits on a higher layer and is sticky to the top. */
-#shopify-section-header-group {
+/* 4. This class will be added by JS to make the header sticky AT THE TOP after scrolling. */
+#shopify-section-header-group.header-is-sticky {
   position: -webkit-sticky;
   position: sticky;
   top: 0;
-  z-index: 10;
-  /* The header will now have a background from the start to be visible */
+  bottom: auto;
   background-color: var(--color-background);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* 5. The content and footer scroll over the hero video. */
-#MainContent,
+/* 5. Main content follows the normal page flow. */
+main#MainContent,
 #shopify-section-footer-group {
-  position: relative;
-  z-index: 3;
-  background-color: var(--color-background);
-  margin-top: 100vh; /* Create the initial scroll space */
+    position: relative;
+    z-index: 3;
+    background-color: var(--color-background);
+}
+
+/* 6. The arrow is fixed to the viewport so it's visible initially. */
+.hero-video__scroll-down {
+  position: fixed;
+  bottom: 140px; /* Adjust this value to sit above your header */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 11;
+  cursor: pointer;
+}
+
+.hero-video__scroll-down svg {
+  color: white;
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
 }
