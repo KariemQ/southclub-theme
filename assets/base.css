@@ -4162,12 +4162,13 @@ text-component {
 }
 
 /* =====================================================
-   South Club – Deluxe 3-D Flip (v7)
+   South Club – Deluxe 3-D Flip (v8)
    -----------------------------------------------------
-   • Classic 180° flip with mid-flip scale dip
-   • Word-mark fades/zooms away
-   • Penguin icon eases in with a gentle pop
-   • Fully reversible on scroll-up (no snap)
+   • Keeps the clean v6 flip / reverse
+   • Adds a subtle "settle" pop so the penguin icon
+     feels alive without drawing too much attention.
+   • Word-mark softly fades at midpoint to smooth the
+     transition.
    =====================================================*/
 
 /* ---------- Layout ---------- */
@@ -4182,13 +4183,13 @@ text-component {
   height: var(--header-logo-image-height-mobile);
   width:  var(--header-logo-image-width-mobile);
   transform-style: preserve-3d;
-  transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transition: transform 0.8s cubic-bezier(0.645,0.045,0.355,1);
 }
 
 @media screen and (width >= 750px) {
   .header-logo__flipper {
     height: var(--header-logo-image-height);
-    width:  var(--header-logo-image-width);
+    width: var(--header-logo-image-width);
   }
 }
 
@@ -4204,21 +4205,17 @@ text-component {
   will-change: opacity, transform;
 }
 
-/* Original word-mark (front face) */
+/* Word-mark (front face) */
 .header-logo__image-container--original {
-  opacity: 1;
-  transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+  transition: opacity 0.25s ease-out;
 }
 
 /* Penguin icon (back face) */
 .header-logo__image-container--icon {
-  transform: rotateY(180deg) scale(0.85);
-  opacity: 0;
-  transition: opacity 0.35s ease-out 0.45s, /* delay until flip passes midpoint */
-              transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.45s; /* elastic pop */
+  transform: rotateY(180deg);
+  opacity: 0.96; /* keeps PNG edges crisp but avoids halo */
 }
 
-/* Images fit container */
 .header-logo__image {
   width: 100%;
   height: 100%;
@@ -4227,25 +4224,31 @@ text-component {
 
 /* ---------- Scroll states ---------- */
 header-component.scrolled-down .header-logo__flipper {
-  transform: rotateY(180deg) scale(1);
-  animation: scFlip 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+  transform: rotateY(180deg);
+  animation: scFlip 0.8s cubic-bezier(0.645,0.045,0.355,1);
 }
 
+/* Fade word-mark out half-way through the flip */
 header-component.scrolled-down .header-logo__image-container--original {
   opacity: 0;
-  transform: scale(1.1);
+  transition-delay: 0.35s;
 }
 
-header-component.scrolled-down .header-logo__image-container--icon {
-  opacity: 1;
-  transform: rotateY(180deg) scale(1);
+/* Penguin subtle pop after flip completes */
+header-component.scrolled-down .header-logo__image-container--icon .header-logo__image {
+  animation: penguinSettle 0.35s ease-out 0.48s forwards;
 }
 
-/* ---------- Keyframes (depth dip) ---------- */
+/* ---------- Keyframes ---------- */
 @keyframes scFlip {
   0%   { transform: rotateY(0deg)   scale(1);   }
   45%  { transform: rotateY(90deg)  scale(0.86); }
   100% { transform: rotateY(180deg) scale(1);   }
+}
+
+@keyframes penguinSettle {
+  0%   { transform: scale(1.08); }
+  100% { transform: scale(1);    }
 }
 
 /* ---------------- Accessibility ---------------- */
@@ -4256,9 +4259,11 @@ header-component.scrolled-down .header-logo__image-container--icon {
     transition: none;
     transform: rotateY(180deg);
   }
-  .header-logo__image-container--original,
-  .header-logo__image-container--icon {
+  .header-logo__image-container--original {
     transition: none;
+  }
+  .header-logo__image-container--icon .header-logo__image {
+    animation: none;
   }
 }
 
