@@ -4424,6 +4424,12 @@ header-actions {
   grid-template-rows:auto 1fr auto;
 }
 
+/* hero video & header bar both fill the single column */
+#shopify-section-hero-video,
+#header-group{
+  grid-column:1 / -1;                   /* span the whole width */
+}
+
 /* hero section (row-1) gets explicit full-viewport height */
 #shopify-section-hero-video{
   grid-row:1;
