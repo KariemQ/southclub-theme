@@ -4147,6 +4147,20 @@ text-component {
   box-shadow: none;
 }
 
+/*
+// ===================================================================
+// FINAL Method for Sticky Header and Logo Animation
+// ===================================================================
+*/
+
+/* Part 1: Make the entire header group sticky */
+#header-group {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
 /* =====================================================
    South Club – Deluxe 3‑D Flip (v12)
    -----------------------------------------------------
@@ -4256,6 +4270,7 @@ header-component.scrolled-down .header-logo__image-container--icon {
     transition: none;
   }
 }
+
 
 /*
 // --- Penguin Icon Size Override ---
