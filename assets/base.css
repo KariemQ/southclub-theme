@@ -4340,18 +4340,19 @@ header-component.scrolled-down .header-logo__image-container--icon {
 }
 
 /*
-// --- Set Custom Font Weights for Suisse Intl ---
+// --- Force Custom Font Application ---
+// This uses !important to override the default theme settings.
 */
-:root {
-  /* First, ensure "Suisse Intl" is set as the font for all roles */
-  --font-paragraph--family: "Suisse Intl";
-  --font-subheading--family: "Suisse Intl";
-  --font-heading--family: "Suisse Intl";
-  --font-accent--family: "Suisse Intl";
+body {
+  /* Apply "Suisse Intl" as the font for all roles */
+  --font-paragraph--family: "Suisse Intl" !important;
+  --font-subheading--family: "Suisse Intl" !important;
+  --font-heading--family: "Suisse Intl" !important;
+  --font-accent--family: "Suisse Intl" !important;
 
-  /* Next, assign the specific weights */
-  --font-paragraph--weight: 300; /* Body -> Light */
-  --font-subheading--weight: 500; /* Subheading -> Medium */
-  --font-heading--weight: 700;   /* Heading -> Bold */
-  --font-accent--weight: 400;    /* Accent -> Regular */
+  /* Assign the specific weights */
+  --font-paragraph--weight: 300 !important; /* Body -> Light */
+  --font-subheading--weight: 500 !important; /* Subheading -> Medium */
+  --font-heading--weight: 700 !important;   /* Heading -> Bold */
+  --font-accent--weight: 400 !important;    /* Accent -> Regular */
 }
