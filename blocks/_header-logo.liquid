@@ -24,6 +24,9 @@
   Output all logo variants, use CSS to hide/show the appropriate one
   based on the .header[transparent] selector
 {% endcomment %}
+{% comment %}
+  This is the link that wraps both the original logo and the new icon logo.
+{% endcomment %}
 <a
   {% if template.name == 'index' and block.settings.hide_logo_on_home_page %}
     data-hidden-on-home-page
@@ -48,22 +51,33 @@
     assign inverse_logo_style = '--header-logo-image-width: ' | append: inverse_logo_width | append: 'px;' | append: '--header-logo-image-width-mobile: ' | append: inverse_logo_width_mobile | append: 'px; --header-logo-image-height: ' | append: block.settings.custom_height | append: 'px; --header-logo-image-height-mobile: ' | append: block.settings.custom_height_mobile | append: 'px;'
   %}
 
+  {%- comment -%} This is the container for the original text logo. It is correct. {%- endcomment -%}
   <span
     class="header-logo__image-container header-logo__image-container--original"
     data-testid="header-logo"
   >
-    {%- comment -%} The original text logo, with a new class added {%- endcomment -%}
     {% render 'image',
       image: settings.logo,
-      class: 'header-logo__image header-logo__image--text',
+      class: 'header-logo__image',
       height: block.settings.custom_height,
       text_fallback: shop.name,
       style: logo_style
     %}
-  
-    {%- comment -%} The new penguin icon that fades in on scroll {%- endcomment -%}
-    <img src="{{ 'penguin.svg' | asset_url }}" class="header-logo__image header-logo__image--icon" alt="{{ shop.name }} icon">
   </span>
+
+  {%- comment -%} This is the NEW container for the penguin icon. This is also correct. {%- endcomment -%}
+  {%- if block.settings.logo_icon != blank -%}
+    <span
+      class="header-logo__image-container header-logo__image-container--icon"
+    >
+      <img
+        src="{{ block.settings.logo_icon | image_url: height: block.settings.logo_icon_height }}"
+        class="header-logo__image"
+        alt="{{ shop.name }} icon"
+        style="height: {{ block.settings.logo_icon_height }}px;"
+      >
+    </span>
+  {%- endif -%}
 
   {% if use_inverse_logo %}
     <span
@@ -148,6 +162,25 @@
   "tag": null,
   "class": "header-logo",
   "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo_icon",
+      "label": "Logo Icon on Scroll"
+    },
+    {
+      "type": "range",
+      "id": "logo_icon_height",
+      "label": "Logo Icon Height",
+      "min": 12,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "header",
+      "content": "Default Logo"
+    },
     {
       "type": "paragraph",
       "content": "t:content.edit_logo_in_theme_settings"
