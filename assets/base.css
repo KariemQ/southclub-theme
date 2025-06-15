@@ -4162,23 +4162,25 @@ text-component {
 }
 
 /*
-// --- 3D Flip Logo (Final Sizing & Animation) ---
+// --- Enhanced 3D Flip Logo Animation ---
 */
+
+/* The main link tag sets the 3D perspective */
 .header-logo {
-  perspective: 1000px;
-  display: inline-flex; /* Changed to inline-flex for better alignment */
+  perspective: 1200px;
+  display: inline-flex;
   align-items: center;
   vertical-align: middle;
 }
 
+/* The flipper div is our animation stage.
+   The transition is slightly longer and uses a professional easing curve. */
 .header-logo__flipper {
-  /* This element gets its size from the inline style attribute we moved in the liquid file.
-     The CSS below uses those variables to set the height and width. */
   height: var(--header-logo-image-height-mobile);
   width: var(--header-logo-image-width-mobile);
   position: relative;
   transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.6, 0.05, 0.4, 1);
+  transition: transform 0.8s cubic-bezier(0.7, 0, 0.2, 1);
 }
 @media screen and (width >= 750px) {
   .header-logo__flipper {
@@ -4187,10 +4189,12 @@ text-component {
   }
 }
 
+/* When scrolled, trigger the rotation */
 header-component.scrolled-down .header-logo__flipper {
   transform: rotateY(180deg);
 }
 
+/* Both logo containers are stacked and will now animate opacity and scale */
 .header-logo__image-container {
   position: absolute;
   top: 0;
@@ -4202,19 +4206,37 @@ header-component.scrolled-down .header-logo__flipper {
   display: flex;
   align-items: center;
   justify-content: center;
+  /* Add transitions for the new effects */
+  transition: transform 0.8s cubic-bezier(0.7, 0, 0.2, 1), opacity 0.4s ease-out;
 }
 
+/* The original logo starts at full size and opacity */
+.header-logo__image-container--original {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* The icon container starts pre-rotated, slightly smaller, and transparent */
 .header-logo__image-container--icon {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) scale(0.95);
+  opacity: 0;
 }
 
-/* Ensure the images themselves fit perfectly inside their containers */
-.header-logo__image {
-  max-width: 100%;
-  max-height: 100%;
-  height: auto;
-  width: auto;
-  object-fit: contain;
+/* When the flipper is rotating... */
+/* ...the original logo shrinks and fades out */
+header-component.scrolled-down .header-logo__image-container--original {
+  transform: scale(0.95);
+  opacity: 0;
+  /* Delay the fade slightly so it happens mid-flip */
+  transition-delay: 0s, 0.2s; /* transition-delay for transform, then opacity */
+}
+
+/* ...the icon logo returns to full size and fades in */
+header-component.scrolled-down .header-logo__image-container--icon {
+  transform: rotateY(180deg) scale(1);
+  opacity: 1;
+  /* Delay the fade slightly so it happens mid-flip */
+  transition-delay: 0s, 0.2s; /* transition-delay for transform, then opacity */
 }
 
 /*
