@@ -4430,7 +4430,6 @@ header-actions {
   height: 100vh;
   height: 100svh; /* More accurate viewport height for mobile */
   position: relative;
-  overflow: hidden;
   background-color: #000; /* Black background fallback */
 }
 
