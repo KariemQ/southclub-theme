@@ -4162,15 +4162,14 @@ text-component {
 }
 
 /* =====================================================
-   South Club – Deluxe 3-D Flip (v10)
+   South Club – Deluxe 3-D Flip (v11)
    -----------------------------------------------------
-   Based on v6 you liked, with just a smoother hand-off:
-   ✦ Word-mark gently fades + scales out at midpoint
-   ✦ Penguin icon cross-fades in and does a micro-settle
-     (0.96→1.02→1) for a polished snap.
-   ✦ All timings tied to the same 0.8 s flip, so it still
-     feels as quick and lightweight as v6.
-   ----------------------------------------------------*/
+   • Foundation: v6 that you liked.
+   • Improvement: Penguin icon stays invisible until
+     ~65% of the flip, then glides in with a quick
+     opacity + scale reveal (no early flip glimpse).
+   • Reverse scroll stays smooth.
+   =====================================================*/
 
 /* ---------- Layout ---------- */
 .header-logo {
@@ -4203,19 +4202,16 @@ text-component {
   justify-content: center;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  will-change: opacity, transform;
 }
 
-/* Word-mark */
 .header-logo__image-container--original {
   transition: opacity 0.28s ease, transform 0.28s ease;
 }
 
-/* Penguin */
+/* Penguin icon hidden by default */
 .header-logo__image-container--icon {
   transform: rotateY(180deg);
   opacity: 0;
-  transition: opacity 0.32s ease 0.32s; /* start just after midpoint */
 }
 
 .header-logo__image {
@@ -4230,21 +4226,16 @@ header-component.scrolled-down .header-logo__flipper {
   animation: scFlip 0.8s cubic-bezier(0.645,0.045,0.355,1);
 }
 
-/* Word-mark fades & slightly zooms */
+/* Word-mark fades half-way */
 header-component.scrolled-down .header-logo__image-container--original {
   opacity: 0;
   transform: scale(1.08);
-  transition-delay: 0.24s;
+  transition-delay: 0.3s;
 }
 
-/* Penguin fades in */
+/* Penguin appear animation */
 header-component.scrolled-down .header-logo__image-container--icon {
-  opacity: 1;
-}
-
-/* Penguin subtle settle */
-header-component.scrolled-down .header-logo__image-container--icon .header-logo__image {
-  animation: pengSettle 0.35s ease-out 0.35s forwards;
+  animation: iconAppear 0.8s forwards;
 }
 
 /* ---------- Keyframes ---------- */
@@ -4254,10 +4245,10 @@ header-component.scrolled-down .header-logo__image-container--icon .header-logo_
   100% { transform: rotateY(180deg) scale(1);   }
 }
 
-@keyframes pengSettle {
-  0%   { transform: scale(0.96); }
-  60%  { transform: scale(1.02); }
-  100% { transform: scale(1);    }
+@keyframes iconAppear {
+  0%   { opacity: 0; transform: rotateY(180deg) scale(0.92); }
+  65%  { opacity: 0; transform: rotateY(180deg) scale(0.92); }
+  100% { opacity: 1; transform: rotateY(180deg) scale(1);    }
 }
 
 /* ---------------- Accessibility ---------------- */
@@ -4268,12 +4259,10 @@ header-component.scrolled-down .header-logo__image-container--icon .header-logo_
     transition: none;
     transform: rotateY(180deg);
   }
-  .header-logo__image-container--original,
-  .header-logo__image-container--icon {
-    transition: none;
-  }
-  .header-logo__image-container--icon .header-logo__image {
+  .header-logo__image-container--icon,
+  .header-logo__image-container--original {
     animation: none;
+    transition: none;
   }
 }
 
