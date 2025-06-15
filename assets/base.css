@@ -4486,3 +4486,18 @@ header-actions {
   color: white;
   opacity: 0.7;
 }
+
+/*
+// --- Diagnostic CSS: Force Header to be Visible ---
+*/
+
+/* This rule uses a highly specific selector and !important
+   to override any and all conflicting theme styles. */
+body #header-group {
+    display: block !important;
+    position: relative !important;
+    height: 100px !important;
+    width: 100% !important;
+    background: red !important; /* Make it impossible to miss */
+    z-index: 9999 !important;
+}
