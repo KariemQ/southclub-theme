@@ -4455,13 +4455,23 @@ header-actions {
 }
 
 /* 3. The header and announcement bar are now sticky. */
-/* They will appear at the top of the page from the start. */
+/* Set the initial position of the header */
 #shopify-section-header-group {
-    position: -webkit-sticky; /* For Safari */
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background-color: var(--color-background);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+/* This class will be added by JavaScript to make it sticky at the top after scrolling */
+#shopify-section-header-group.header-is-sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  bottom: auto;
+  background-color: var(--color-background);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 /* 4. The main content and footer follow the normal page flow. */
