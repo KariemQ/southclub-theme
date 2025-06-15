@@ -58,6 +58,12 @@ class HeaderComponent extends Component {
   #animationDelay = 150;
 
   /**
+   * A flag to indicate if this header is part of the hero video effect.
+   * @type {boolean}
+   */
+  #isHeroHeader = false;
+
+  /**
    * Keeps the global `--header-height` custom property up to date,
    * which other theme components can then consume
    */
