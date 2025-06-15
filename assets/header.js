@@ -138,7 +138,8 @@ class HeaderComponent extends Component {
     
       const heroHeight   = heroVideoSection.offsetHeight;                 // 100 vh
       const barHeight    = headerGroup.offsetHeight;                      // actual bar
-      const triggerPoint = heroHeight - barHeight;                        // bar’s top meets viewport top
+      const headerHeight   = headerGroup ? headerGroup.offsetHeight : 0;
+      const triggerPoint   = heroVideoSection ? heroVideoSection.offsetHeight - headerHeight : 0;
     
       if (window.scrollY >= triggerPoint) {
         headerGroup.classList.add('header--is-sticky');
