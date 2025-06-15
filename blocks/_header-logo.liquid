@@ -52,23 +52,10 @@
   %}
 
   {%- comment -%} This flipper div gets the inline style to give it a size {%- endcomment -%}
-  <div class="header-logo__flipper" style="{{ logo_style }}">
-
-    {%- comment -%} The original text logo container {%- endcomment -%}
-    <span
-      class="header-logo__image-container header-logo__image-container--original"
-      data-testid="header-logo"
-    >
-      {%- comment -%} Note: the style attribute is removed from here {%- endcomment -%}
-      {% render 'image',
-        image: settings.logo,
-        class: 'header-logo__image',
-        height: block.settings.custom_height,
-        text_fallback: shop.name
-      %}
-    </span>
-
-    {%- comment -%} The penguin icon container {%- endcomment -%}
+  {%- comment -%} This is the new flipper div for the Unfolding Layers animation {%- endcomment -%}
+  <div class="header-logo__flipper">
+  
+    {%- comment -%} The penguin icon is the base layer that will be revealed {%- endcomment -%}
     {%- if block.settings.logo_icon != blank -%}
       <span
         class="header-logo__image-container header-logo__image-container--icon"
@@ -81,7 +68,16 @@
         >
       </span>
     {%- endif -%}
-
+  
+    {%- comment -%} This container holds the four unfolding panels of the text logo {%- endcomment -%}
+    <div class="logo-unfold-container">
+      {%- assign logo_url = settings.logo | image_url: width: 328 -%} {%- comment -%} Width is 2x the container width for positioning {%- endcomment -%}
+      <div class="logo-unfold-panel logo-unfold-panel--top-left"    style="background-image: url('{{ logo_url }}')"></div>
+      <div class="logo-unfold-panel logo-unfold-panel--top-right"   style="background-image: url('{{ logo_url }}')"></div>
+      <div class="logo-unfold-panel logo-unfold-panel--bottom-left" style="background-image: url('{{ logo_url }}')"></div>
+      <div class="logo-unfold-panel logo-unfold-panel--bottom-right"style="background-image: url('{{ logo_url }}')"></div>
+    </div>
+  
   </div>
   {%- comment -%} End of the flipper div {%- endcomment -%}
 
