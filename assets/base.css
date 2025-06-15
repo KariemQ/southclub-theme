@@ -4386,3 +4386,17 @@ body {
   font-family: "Suisse Intl" !important;
   font-weight: 300 !important; /* Light weight, to match the Body text */
 }
+
+/*
+// --- Custom Font Sizes for Header Menu & Announcement Bar ---
+*/
+
+/* Set the font size for the header menu items */
+.header-menu .menu-list__link {
+  font-size: 13px !important;
+}
+
+/* Set the font size for the announcement bar text */
+.announcement-bar .announcement-bar__text {
+  font-size: 11px !important;
+}
