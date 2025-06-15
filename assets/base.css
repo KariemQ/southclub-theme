@@ -4294,11 +4294,6 @@ header-component.scrolled-down .header-logo__image-container--icon {
 // --- Bold Header Menu on Hover ---
 */
 
-/* First, prepare the menu links for a smooth font weight change */
-.header-menu .menu-list__link {
-  transition: font-weight 0.2s ease-in-out;
-}
-
 /* When you hover over a menu link, change its font-weight to bold */
 .header-menu .menu-list__link:hover {
   font-weight: bold;
