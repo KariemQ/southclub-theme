@@ -4149,18 +4149,11 @@ text-component {
 
 /*
 // ===================================================================
-// FINAL FIX for Sticky Header and Logo Animation
+// FINAL Method for Sticky Header and Logo Animation
 // ===================================================================
 */
 
-/* --- Part 1: Fix the Sticky Header --- */
-
-/* Force the header group to be a layout block, overriding "display: contents" */
-#header-group {
-  display: block !important;
-}
-
-/* Make the entire group sticky, which is simpler and more reliable */
+/* Part 1: Make the entire header group sticky */
 #header-group {
   position: -webkit-sticky;
   position: sticky;
@@ -4168,54 +4161,46 @@ text-component {
   z-index: 100;
 }
 
-/* Disable the theme's original sticky rule on the inner header section to prevent conflicts */
-.header-section:has(> #header-component[sticky='always']) {
-  position: static;
-}
+/* Part 2: The Logo Animation */
 
-
-/*
-// --- Luxurious Logo Scroll Animation ---
-*/
-
-/* The container is a positioning context for the icon. */
-.header-logo__image-container {
+/* The main <a> tag becomes the positioning context */
+.header-logo {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* Add the 'filter' property to the transition for a smooth blur effect */
-.header-logo__image--text,
-.header-logo__image--icon {
-  transition: opacity 0.5s ease-in-out, filter 0.5s ease-in-out;
+/* Position both logo containers to stack on top of each other */
+.header-logo__image-container {
+  transition: opacity 0.4s ease-in-out, visibility 0s 0.4s;
 }
 
-/* The text logo gives the container its size. It's sharp by default. */
-.header-logo__image--text {
-  filter: blur(0px);
-  opacity: 1;
-}
-
-/* The icon is positioned on top, but starts out blurred and invisible. */
-.header-logo__image--icon {
+.header-logo__image-container--icon {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  filter: blur(5px);
-  opacity: 0;
 }
 
-/* When scrolling down, the text logo blurs and fades out... */
-header-component[data-scroll-direction="down"] .header-logo__image--text {
-  filter: blur(5px);
-  opacity: 0;
-}
-
-/* ...while the icon logo comes into focus and fades in. */
-header-component[data-scroll-direction="down"] .header-logo__image--icon {
-  filter: blur(0px);
+/* By default, show the original logo and hide the icon */
+.header-logo__image-container--original {
   opacity: 1;
+  visibility: visible;
+}
+
+.header-logo__image-container--icon {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease-in-out, visibility 0s 0.4s;
+}
+
+/* When the 'scrolled-down' class is added, hide the original and show the icon */
+header-component.scrolled-down .header-logo__image-container--original {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease-in-out, visibility 0s 0.4s;
+}
+
+header-component.scrolled-down .header-logo__image-container--icon {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s; /* Make the icon appear instantly on scroll down */
 }
