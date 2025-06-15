@@ -4162,11 +4162,12 @@ text-component {
 }
 
 /* =====================================================
-   South Club – Deluxe 3‑D Flip (v5)
+   South Club – Deluxe 3‑D Flip (v6)
    -----------------------------------------------------
-   Classic 180° flip refined with a micro‑scale dip,
-   silk‑smooth easing, and a soft drop‑shadow reveal on
-   the penguin icon.  Stays minimal yet feels premium.
+   ✦ Keeps the premium mid‑flip scale dip
+   ✦ Adds smooth reverse spin when scrolling up
+   ✦ Removes heavy drop‑shadow to eliminate the
+     "outline" effect around the penguin
    =====================================================*/
 
 /* ---------- Layout ---------- */
@@ -4181,7 +4182,9 @@ text-component {
   height: var(--header-logo-image-height-mobile);
   width:  var(--header-logo-image-width-mobile);
   transform-style: preserve-3d;
-  will-change: transform;
+
+  /* Smooth reverse spin */
+  transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 @media screen and (width >= 750px) {
@@ -4212,9 +4215,10 @@ text-component {
   object-fit: contain;
 }
 
-/* ---------- Animation ---------- */
+/* ---------- Scroll state & animation ---------- */
 header-component.scrolled-down .header-logo__flipper {
-  animation: scFlip 0.8s cubic-bezier(0.645, 0.045, 0.355, 1) forwards;
+  transform: rotateY(180deg) scale(1); /* Persists so reverse can animate */
+  animation: scFlip 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
 @keyframes scFlip {
@@ -4223,16 +4227,18 @@ header-component.scrolled-down .header-logo__flipper {
   100% { transform: rotateY(180deg) scale(1);   }
 }
 
-/* Add a gentle drop‑shadow only once the penguin is front‑facing */
-header-component.scrolled-down .header-logo__image-container--icon .header-logo__image {
-  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.25));
-}
+/* Clean—no heavy outline */
+/* (Drop-shadow removed; tweak below if you want a softer halo) */
+/* header-component.scrolled-down .header-logo__image-container--icon .header-logo__image {
+     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
+   } */
 
 /* ---------------- Accessibility ---------------- */
 @media (prefers-reduced-motion: reduce) {
   .header-logo__flipper,
   header-component.scrolled-down .header-logo__flipper {
     animation: none;
+    transition: none;
     transform: rotateY(180deg);
   }
 }
