@@ -4423,18 +4423,18 @@ header-actions {
   gap: 20px;
 }
 
-/* -- Advanced Hero Video Layout -- */
+/* -- Advanced Hero Video Layout (V3 - Robust) -- */
 
-/* 1. The video wrapper is a fixed background layer that stays behind everything. */
+/* 1. The video wrapper is a fixed background layer. This remains the same. */
 #shopify-section-hero-video .hero-video__wrapper {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100vh; /* vh is a unit representing percentage of the viewport height */
-  height: 100svh; /* A newer unit that accounts for mobile browser bars */
+  width: 100vw;
+  height: 100vh;
+  height: 100svh;
   z-index: 1;
-  background-color: black; /* Fallback color in case the video doesn't load */
+  background-color: black;
 }
 
 .hero-video__media {
@@ -4444,51 +4444,49 @@ header-actions {
   transform: translate(-50%, -50%);
   min-width: 100%;
   min-height: 100%;
-  object-fit: cover; /* Ensures the video covers the screen without distortion */
+  object-fit: cover;
 }
 
-/* 2. The hero section itself becomes an invisible "spacer". Its height determines when the header becomes sticky. */
+/* 2. The hero section is now ONLY a 100vh spacer. Its only job is to create scrollable space. */
 #shopify-section-hero-video {
+  height: 100vh;
+  height: 100svh;
   position: relative;
-  /*
-    IMPORTANT: You must adjust the '120px' value below to match the
-    combined height of your announcement bar and header for the effect to be seamless.
-  */
-  height: calc(100vh - 120px);
-  height: calc(100svh - 120px);
-  z-index: 2; /* Sits above the video, but below the main content */
 }
 
-/* 3. The header group is positioned absolutely relative to the page content. */
-/* It will appear at the bottom of the screen initially, then scroll up with the page. */
+/* 3. The header group is FIXED to the bottom of the VIEWPORT initially. This guarantees it is visible. */
 #shopify-section-header-group {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
   z-index: 10;
-  will-change: position;
+  background-color: transparent; /* Has no background at first to show the video */
+  transition: background-color 0.4s ease-in-out;
 }
 
-/* 4. This class will be added via JavaScript to make the header "stick" to the top after scrolling. */
+/* 4. This class, added by JS, makes the header "sticky" at the top AFTER scrolling. */
 #shopify-section-header-group.header-is-sticky {
   position: fixed;
   top: 0;
   bottom: auto;
-  animation: slideDown 0.5s ease-in-out; /* Optional: adds a nice animation */
+  background-color: var(--color-background); /* Add a solid background when it's sticky */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* 5. The main content needs a background color so the video doesn't show through it. */
-main#MainContent {
+/* 5. The content and footer scroll on a higher layer than the video. */
+main#MainContent,
+#shopify-section-footer-group {
   position: relative;
-  z-index: 3; /* Must be higher than the hero spacer */
-  background-color: var(--color-background);
+  z-index: 3; /* This ensures it sits on top of the video's z-index: 1 */
+  background-color: var(--color-background); /* This hides the video as the content scrolls over it */
 }
 
-/* 6. The clickable scroll-down arrow. */
+/* 6. The arrow also needs to be fixed to the viewport so it's always visible with the video. */
 .hero-video__scroll-down {
-    position: absolute; /* Positioned relative to the hero spacer section */
-    bottom: 20px;       /* Sits 20px from the bottom of the video area */
+    position: fixed;
+    /* IMPORTANT: Adjust '140px' below to position the arrow just above your header. */
+    bottom: 140px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 11;
@@ -4499,15 +4497,5 @@ main#MainContent {
     color: white;
     width: 28px;
     height: 28px;
-    filter: drop-shadow(0 0 5px rgba(0,0,0,0.5)); /* Makes the arrow more visible */
-}
-
-/* Optional animation for the header becoming sticky */
-@keyframes slideDown {
-  from {
-    transform: translateY(-100%);
-  }
-  to {
-    transform: translateY(0);
-  }
+    filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
 }
