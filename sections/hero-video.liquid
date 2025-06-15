@@ -1,44 +1,38 @@
-<div
-  class="hero-video__wrapper"
-  data-video-section
-  data-scroll-target="#shopify-section-header-group"
->
-  {%- if section.settings.video != blank -%}
-    {{ section.settings.video | video_tag:
-      class: 'hero-video__media',
-      image_size: '2048x',
-      autoplay: true,
-      loop: true,
-      muted: true,
-      playsinline: true,
-      controls: false,
-      preload: 'metadata'
-    }}
-  {%- elsif section.settings.video_url != blank -%}
-    {%- assign video_id = section.settings.video_url.id -%}
-    {{ section.settings.video_url | video_tag:
-      class: 'hero-video__media',
-      image_size: '2048x',
-      autoplay: true,
-      loop: true,
-      muted: true,
-      playsinline: true,
-      controls: false,
-      preload: 'metadata'
-    }}
-  {%- else -%}
-    {{ 'collection-2' | placeholder_svg_tag: 'hero-video__placeholder' }}
-  {%- endif -%}
+{% comment %}
+  This section requires a video to be set in the Theme Customizer.
+  It works with the custom CSS and JS provided for the advanced hero layout.
+{% endcomment %}
 
+{% if section.settings.video != blank or section.settings.video_url != blank %}
+  <div class="hero-video__wrapper" data-section-id="{{ section.id }}">
+    {%- comment -%}
+      Using a video from the Files admin is preferred for performance.
+    {%- endcomment -%}
+    {% if section.settings.video != blank %}
+      {{ section.settings.video | video_tag: class: 'hero-video__media', autoplay: true, loop: true, muted: true, playsinline: true }}
+    {% else %}
+      <video
+        class="hero-video__media"
+        src="{{ section.settings.video_url }}"
+        autoplay
+        loop
+        muted
+        playsinline
+        aria-label="Background video"
+      ></video>
+    {% endif %}
+  </div>
 
+  {% comment %}
+    This is the small white arrow. It uses a built-in theme icon.
+    The data-scroll-trigger attribute is what our JavaScript looks for.
+  {% endcomment %}
   <div class="hero-video__scroll-down" data-scroll-trigger>
-    <span class="visually-hidden">Scroll down</span>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="7 13 12 18 17 13"></polyline>
-      <polyline points="7 6 12 11 17 6"></polyline>
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" role="presentation" class="icon icon-arrow-down" fill="none" viewBox="0 0 18 20">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M10.03 15.63a.75.75 0 01-1.06 0l-4-4a.75.75 0 111.06-1.06l3.47 3.469 3.47-3.469a.75.75 0 111.06 1.06l-4 4z" fill="currentColor">
     </svg>
   </div>
-</div>
+{% endif %}
 
 {% schema %}
 {
@@ -47,14 +41,14 @@
     {
       "type": "video",
       "id": "video",
-      "label": "Background Video"
+      "label": "Background Video",
+      "info": "Recommended. Upload your video in 'Content > Files' in your Shopify admin."
     },
     {
-      "type": "video_url",
+      "type": "url",
       "id": "video_url",
-      "label": "Video URL",
-      "accept": ["youtube", "vimeo"],
-      "info": "For YouTube or Vimeo videos."
+      "label": "Or Video URL (MP4)",
+      "info": "Use as a fallback if you cannot upload the video to Shopify."
     }
   ],
   "presets": [
