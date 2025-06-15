@@ -4450,10 +4450,10 @@ header-actions {
 /* Position the header container absolutely at the bottom of the video */
 .hero-video__content {
   position: absolute;
-  bottom: 0;
+  top: 0; /* Changed for testing */
   left: 0;
   width: 100%;
-  z-index: 3; /* Ensure it's on top of the video */
+  z-index: 3;
 }
 
 /* Force a visible background on the header when it's over the video */
