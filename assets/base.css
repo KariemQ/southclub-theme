@@ -4423,7 +4423,7 @@ header-actions {
   gap: 20px;
 }
 
-/* -- Advanced Hero Video Layout (V5 - Final) -- */
+/* -- V6 - The Integrated Hero Video Layout -- */
 
 /* 1. The video wrapper is a fixed background layer. */
 #shopify-section-hero-video .hero-video__wrapper {
@@ -4432,7 +4432,6 @@ header-actions {
   left: 0;
   width: 100%;
   height: 100vh;
-  height: 100svh;
   z-index: 1;
   background-color: black;
 }
@@ -4446,12 +4445,10 @@ header-actions {
   object-fit: cover;
 }
 
-/* 2. The hero-video SECTION ITSELF is now the 100vh spacer. */
-/* This pushes the <main> content down without needing any margins. */
+/* 2. The hero-video section itself is the 100vh spacer. */
 #shopify-section-hero-video {
   height: 100vh;
-  height: 100svh;
-  position: relative; /* This is for positioning the scroll-down arrow inside it */
+  position: relative;
   z-index: 2;
 }
 
@@ -4464,17 +4461,17 @@ header-actions {
   z-index: 10;
 }
 
-/* 4. This class makes the header "sticky" at the top after scrolling. */
-#shopify-section-header-group.header-is-sticky {
+/* 4. CRITICAL CHANGE: We now target the THEME'S NATIVE data-attribute! */
+/* When header.js sets the state to active, this CSS will apply. */
+#shopify-section-header-group[data-sticky-state="active"] {
   position: fixed;
-  top: 0;
-  bottom: auto;
+  top: 0 !important; /* Use !important to guarantee it overrides any other styles. */
+  bottom: auto !important;
   background-color: var(--color-background);
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* 5. Main content and footer simply need a background color and z-index to scroll over the video. */
-/* No more margin-top! They will naturally follow the 100vh spacer. */
+/* 5. Main content and footer follow the spacer. */
 main#MainContent,
 #shopify-section-footer-group {
   position: relative;
@@ -4482,10 +4479,10 @@ main#MainContent,
   background-color: var(--color-background);
 }
 
-/* 6. The arrow is now positioned absolutely within the 100vh spacer section. */
+/* 6. The scroll arrow is positioned inside the spacer. */
 .hero-video__scroll-down {
     position: absolute;
-    /* Adjust '140px' to position the arrow just above your header. */
+    /* Adjust '140px' as needed to position the arrow just above your header */
     bottom: 140px;
     left: 50%;
     transform: translateX(-50%);
