@@ -4423,18 +4423,27 @@ header-actions {
   gap: 20px;
 }
 
-/* -- V6 - The Integrated Hero Video Layout -- */
+/* -- V7 - Stable Hero Layout -- */
 
-/* 1. The video wrapper is a fixed background layer. */
+/* 1. The hero section is a 100vh container with hidden overflow. */
+#shopify-section-hero-video {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden; /* This contains the video within this section */
+}
+
+/* 2. The video wrapper is positioned absolutely within its parent section. */
+/* It is NOT fixed to the page. */
 #shopify-section-hero-video .hero-video__wrapper {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   z-index: 1;
-  background-color: black;
 }
+
 .hero-video__media {
   position: absolute;
   top: 50%;
@@ -4445,53 +4454,36 @@ header-actions {
   object-fit: cover;
 }
 
-/* 2. The hero-video section itself is the 100vh spacer. */
-#shopify-section-hero-video {
-  height: 100vh;
-  position: relative;
-  z-index: 2;
-}
-
-/* 3. The header is fixed to the bottom of the viewport initially. */
+/* 3. The header and announcement bar are now sticky. */
+/* They will appear at the top of the page from the start. */
 #shopify-section-header-group {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10;
+    position: -webkit-sticky; /* For Safari */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--color-background);
 }
 
-/* 4. CRITICAL CHANGE: We now target the THEME'S NATIVE data-attribute! */
-/* When header.js sets the state to active, this CSS will apply. */
-#shopify-section-header-group[data-sticky-state="active"] {
-  position: fixed;
-  top: 0 !important; /* Use !important to guarantee it overrides any other styles. */
-  bottom: auto !important;
-  background-color: var(--color-background);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-/* 5. Main content and footer follow the spacer. */
+/* 4. The main content and footer follow the normal page flow. */
 main#MainContent,
 #shopify-section-footer-group {
-  position: relative;
-  z-index: 3;
-  background-color: var(--color-background);
+    position: relative;
+    z-index: 3;
+    background-color: var(--color-background);
 }
 
-/* 6. The scroll arrow is positioned inside the spacer. */
+/* 5. The arrow is positioned inside the hero section. */
 .hero-video__scroll-down {
-    position: absolute;
-    /* Adjust '140px' as needed to position the arrow just above your header */
-    bottom: 140px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 5;
-    cursor: pointer;
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  cursor: pointer;
 }
 .hero-video__scroll-down svg {
-    color: white;
-    width: 28px;
-    height: 28px;
-    filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
+  color: white;
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(0 0 5px rgba(0,0,0,0.5));
 }
