@@ -4424,18 +4424,18 @@ header-actions {
 }
 
 /*
-// --- Hero Video Section ---
+// --- Hero Video Section (Corrected Layout) ---
 */
 .hero-video__wrapper {
   height: 100vh;
-  height: 100svh; /* More accurate viewport height */
+  height: 100svh; /* More accurate viewport height for mobile */
   position: relative;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
-  background-color: #000;
+  background-color: #000; /* Black background fallback */
 }
-.hero-video__media {
+
+.hero-video__media,
+.hero-video__placeholder {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -4447,27 +4447,32 @@ header-actions {
   z-index: 1;
   object-fit: cover;
 }
-.hero-video__placeholder {
+
+/* Position the header container absolutely at the bottom of the video */
+.hero-video__content {
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  z-index: 1;
+  z-index: 3; /* Ensure it's on top of the video */
 }
-.hero-video__content {
-  position: relative;
-  z-index: 2;
-  margin-top: auto; /* Pushes the header to the bottom */
+
+/* Force a visible background on the header when it's over the video */
+.hero-video__wrapper #header-group {
+  /* You can adjust the color and opacity (the last value) as needed */
+  background-color: rgba(0, 0, 0, 0.2);
 }
+
+/* Position the scroll-down arrow */
 .hero-video__scroll-down {
   position: absolute;
-  bottom: 20px;
+  bottom: 120px; /* Adjust this to position the arrow above your header */
   left: 50%;
   transform: translateX(-50%);
-  z-index: 3;
+  z-index: 4;
   cursor: pointer;
 }
+
 .hero-video__scroll-down svg {
   width: 28px;
   height: 28px;
@@ -4475,6 +4480,7 @@ header-actions {
   opacity: 0.7;
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
+
 .hero-video__scroll-down:hover svg {
   opacity: 1;
   transform: translateY(5px);
