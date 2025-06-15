@@ -4162,19 +4162,13 @@ text-component {
 }
 
 /* =========================================
-   South Club – Signature Logo Animation v2
+   South Club – Signature Logo Animation v3
    -----------------------------------------
-   Replaces the original 3‑D flip with a "cube
-   spin + shimmer" reveal that feels premium
-   and playful, echoing the brand’s urban &
-   futuristic vibe.
-   
-   HOW IT WORKS
-   • Word‑mark (front face) → Icon (back face)
-   • 3‑axis rotation with subtle scale dip
-   • Iridescent light sweep timed to the flip
-   • Zero‑JS, pure CSS, GPU‑accelerated
-   ----------------------------------------*/
+   Fixes “icon not showing” + smooths the
+   motion.  Pure‑CSS cube‑flip stripped back
+   to a single Y‑axis rotation so the penguin
+   always lands perfectly upright.
+   ========================================*/
 
 /* ---------- Base Layout ---------- */
 .header-logo {
@@ -4191,6 +4185,7 @@ text-component {
   transform-style: preserve-3d;
   will-change: transform;
   transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
+  transform-origin: center center;
 }
 
 @media screen and (width >= 750px) {
@@ -4200,36 +4195,20 @@ text-component {
   }
 }
 
-/* ---------- Shimmer overlay (initially parked off canvas) ---------- */
-.header-logo__flipper::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -85%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.65) 50%, transparent 100%);
-  transform: skewX(-25deg);
-  pointer-events: none;
-  opacity: 0;
-}
-
 /* ---------- Faces ---------- */
 .header-logo__image-container {
   position: absolute;
-  inset: 0; /* shorthand for top/right/bottom/left:0 */
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transition: opacity 0.3s ease-in-out;
 }
 
 /* Back face holds the penguin icon */
 .header-logo__image-container--icon {
   transform: rotateY(180deg);
-  opacity: 0; /* hidden until flip completes */
 }
 
 /* Fit images neatly */
@@ -4239,36 +4218,52 @@ text-component {
   object-fit: contain;
 }
 
+/* ---------- Shimmer overlay ---------- */
+.header-logo__flipper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
+  transform: skewX(-25deg);
+  pointer-events: none;
+  opacity: 0;
+}
+
 /* =============================================================
-   SCROLL‑TRIGGERED STATE
-   Add / remove .scrolled-down on <header-component> via JS or
-   Shopify’s built‑in sticky‑header class toggling.
+   Scroll‑triggered state – make sure you’re toggling the SAME
+   class that your theme adds when the header sticks.  If your
+   theme uses .sticky-header or .is-scrolled, swap below.
    ==============================================================*/
 header-component.scrolled-down .header-logo__flipper {
-  animation: clubCube 0.85s cubic-bezier(0.65, 0, 0.35, 1) forwards,
+  animation: clubFlip 0.85s cubic-bezier(0.65, 0, 0.35, 1) forwards,
              clubShimmer 0.95s 0.15s ease-out forwards;
 }
 
-header-component.scrolled-down .header-logo__image-container--icon {
-  opacity: 1; /* fade in penguin as cube completes */
-}
-header-component.scrolled-down .header-logo__image-container:not(.header-logo__image-container--icon) {
-  opacity: 0; /* fade out word‑mark */
-}
-
 /* ---------- Keyframes ---------- */
-@keyframes clubCube {
-  0%   { transform: rotateX(0deg)  rotateY(0deg)   scale(1);    }
-  35%  { transform: rotateX(25deg) rotateY(90deg)  scale(0.85); }
-  65%  { transform: rotateX(-20deg)rotateY(180deg) scale(0.85); }
-  100% { transform: rotateX(0deg)  rotateY(180deg) scale(1);    }
+@keyframes clubFlip {
+  0%   { transform: rotateY(0deg);   }
+  40%  { transform: scale(0.92) rotateY(90deg); }
+  100% { transform: rotateY(180deg); }
 }
 
 @keyframes clubShimmer {
-  0%   { left: -85%; opacity: 0; }
-  10%  { opacity: 1; }
-  60%  { left: 110%; opacity: 1; }
+  0%   { left: -80%; opacity: 0; }
+  15%  { opacity: 1; }
+  65%  { left: 110%; opacity: 1; }
   100% { left: 110%; opacity: 0; }
+}
+
+/* ---------------- Accessibility ---------------- */
+@media (prefers-reduced-motion: reduce) {
+  .header-logo__flipper,
+  header-component.scrolled-down .header-logo__flipper {
+    transition: none;
+    animation: none;
+    transform: rotateY(180deg); /* Fall back to static flipped state */
+  }
 }
 
 
