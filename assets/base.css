@@ -4402,11 +4402,11 @@ body {
 }
 
 /*
-// --- Increase Header Icon Spacing ---
+// --- Increase Header Icon Spacing (Corrected) ---
 */
 
-/* This targets the container for the icons on the right
-   and increases the gap between them. */
+/* This forcefully overrides the theme's default gap variable
+   for the container holding the icons on the right. */
 .header__column--right {
-  gap: 30px;
+  gap: 30px !important;
 }
