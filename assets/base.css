@@ -4379,10 +4379,9 @@ body {
 }
 
 /*
-  Your theme's header menu links are specifically set to use the
-  "subheading" font style. This rule ensures they use the correct
-  Medium (500) weight we defined above.
+  This rule ensures the header menu links use the font weight
+  assigned to the Body/Paragraph text (Light, 300).
 */
 .header-menu .menu-list__link {
-  font-weight: var(--font-subheading--weight);
+  font-weight: var(--font-paragraph--weight);
 }
