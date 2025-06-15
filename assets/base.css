@@ -4148,44 +4148,35 @@ text-component {
 }
 
 /*
-// ===================================================================
-// FINAL Method for Sticky Header and Logo Animation
-// ===================================================================
+// --- 3D Flip Logo (Final Sizing & Animation) ---
 */
-
-/* Part 1: Make the entire header group sticky */
-#header-group {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-/*
-// --- 3D Flip Logo Scroll Animation ---
-*/
-
-/* The main link tag provides the 3D perspective space */
 .header-logo {
   perspective: 1000px;
+  display: inline-flex; /* Changed to inline-flex for better alignment */
+  align-items: center;
+  vertical-align: middle;
 }
 
-/* This new div is the flipper that will rotate */
 .header-logo__flipper {
+  /* This element gets its size from the inline style attribute we moved in the liquid file.
+     The CSS below uses those variables to set the height and width. */
+  height: var(--header-logo-image-height-mobile);
+  width: var(--header-logo-image-width-mobile);
   position: relative;
-  width: 100%;
-  height: 100%;
   transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.6, 0.05, 0.4, 1); /* A smooth, luxurious easing */
+  transition: transform 0.7s cubic-bezier(0.6, 0.05, 0.4, 1);
+}
+@media screen and (width >= 750px) {
+  .header-logo__flipper {
+    height: var(--header-logo-image-height);
+    width: var(--header-logo-image-width);
+  }
 }
 
-/* When scrolled down, rotate the flipper */
-header-component[data-scroll-direction="down"] .header-logo__flipper {
+header-component.scrolled-down .header-logo__flipper {
   transform: rotateY(180deg);
 }
 
-/* Both logo containers are positioned absolutely within the flipper.
-   backface-visibility hides them when they are facing away from the screen. */
 .header-logo__image-container {
   position: absolute;
   top: 0;
@@ -4193,10 +4184,21 @@ header-component[data-scroll-direction="down"] .header-logo__flipper {
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  -webkit-backface-visibility: hidden; /* Safari compatibility */
+  -webkit-backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* The icon container starts pre-rotated on the "back" of the card */
 .header-logo__image-container--icon {
   transform: rotateY(180deg);
+}
+
+/* Ensure the images themselves fit perfectly inside their containers */
+.header-logo__image {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  width: auto;
+  object-fit: contain;
 }
