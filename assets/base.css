@@ -4402,11 +4402,13 @@ body {
 }
 
 /*
-// --- Increase Header Icon Spacing (Corrected) ---
+// --- Increase Spacing Between Header Action Icons (Account/Cart) ---
 */
 
-/* This forcefully overrides the theme's default gap variable
-   for the container holding the icons on the right. */
-.header__column--right {
-  gap: 35px !important;
+/* This targets the container for the icons on the far right
+   and adds a gap between the items inside it. */
+header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
