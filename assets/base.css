@@ -4175,43 +4175,44 @@ text-component {
 
 
 /*
-// --- Logo Scroll Animation (Final Sizing Fix) ---
+// --- Logo Scroll Animation (Final Method) ---
 */
 
-/* The container is a positioning context for the icon. */
-.header-logo__image-container {
+/* The main <a> tag becomes the positioning context */
+.header-logo {
   position: relative;
-  /* Match the parent flex properties to ensure alignment */
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-/* The text logo gives the container its size and is prepared for transition. */
-.header-logo__image--text {
-  transition: opacity 0.4s ease-in-out;
+/* Position both logo containers to stack on top of each other */
+.header-logo__image-container {
+  transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
 }
 
-/*
-  The icon is positioned on top. It gets its dimensions automatically
-  from the theme's ".header-logo__image" stylesheet rule, just like the text logo.
-  This ensures both images have the exact same size.
-*/
-.header-logo__image--icon {
-  transition: opacity 0.4s ease-in-out;
+.header-logo__image-container--icon {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  opacity: 0; /* Hidden by default */
 }
 
-/* When scrolling down, fade out the text logo... */
-header-component[data-scroll-direction="down"] .header-logo__image--text {
-  opacity: 0;
-}
-
-/* ...and fade in the icon logo. */
-header-component[data-scroll-direction="down"] .header-logo__image--icon {
+/* By default, show the original logo and hide the icon */
+.header-logo__image-container--original {
   opacity: 1;
+  visibility: visible;
+}
+
+.header-logo__image-container--icon {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* On scroll down, hide the original and show the icon */
+header-component[data-scroll-direction="down"] .header-logo__image-container--original {
+  opacity: 0;
+  visibility: hidden;
+}
+
+header-component[data-scroll-direction="down"] .header-logo__image-container--icon {
+  opacity: 1;
+  visibility: visible;
 }
