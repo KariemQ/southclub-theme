@@ -4175,55 +4175,49 @@ text-component {
 
 
 /*
-// --- Logo Scroll Animation (Final Layout Fix) ---
+// --- Logo Scroll Animation (Final Sizing Fix) ---
 */
 
+/* The container is a positioning context for the icon. Its size is
+   determined by the original text logo which remains in the layout. */
 .header-logo__image-container {
   position: relative;
-  /* Set explicit height/width for mobile based on your theme settings.
-     This creates a fixed-size "stage" for the animation. */
-  height: 12px;
-  width: 55px;
-  margin: auto; /* Ensures the logo stays centered in its column */
+  display: inline-flex;
+  align-items: center;
 }
 
-/* Set explicit height/width for desktop */
-@media screen and (width >= 750px) {
-  .header-logo__image-container {
-    height: 36px;
-    width: 164px;
-  }
-}
-
-/* Position BOTH images absolutely within the container */
-.header-logo__image {
-  transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* This scales your SVGs to fit inside the box without cropping */
-}
-
-/* By default, show the text logo and hide the icon logo */
+/* The text logo gives the container its size. We only animate its opacity. */
 .header-logo__image--text {
+  transition: opacity 0.4s ease-in-out;
   opacity: 1;
-  transform: scale(1);
 }
 
+/* The icon is positioned absolutely on top of the text logo. */
 .header-logo__image--icon {
-  opacity: 0;
-  transform: scale(0.8);
+  transition: opacity 0.4s ease-in-out;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /*
+    KEY FIX: Set the height to 100% of the container (which is the height
+    of the text logo) and let the width adjust automatically. This will
+    ensure the penguin is never taller than the original logo.
+  */
+  height: 100%;
+  width: auto;
+  max-width: 100%; /* Prevent it from being wider than the container */
+
+  opacity: 0; /* Hidden by default */
 }
 
-/* On scroll down, fade out the text logo and fade in the icon logo */
+/* When scrolling down, fade out the text logo... */
 header-component[data-scroll-direction="down"] .header-logo__image--text {
   opacity: 0;
-  transform: scale(0.8);
 }
 
+/* ...and fade in the icon logo. */
 header-component[data-scroll-direction="down"] .header-logo__image--icon {
   opacity: 1;
-  transform: scale(1);
 }
