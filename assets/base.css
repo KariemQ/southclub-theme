@@ -4505,3 +4505,24 @@ header-actions {
   from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.hero-video__scroll-down{
+  position:absolute;
+  left:50%;
+  bottom:2.5rem;           /* keeps it inside the “gap” */
+  translate:-50% 0;
+  background:none;
+  border:0;
+  padding:0;
+  color:#fff;
+  cursor:pointer;
+}
+.hero-video__scroll-down svg{
+  display:block;
+  width:32px;
+  height:32px;
+  transition:transform .25s ease;
+}
+.hero-video__scroll-down:hover svg{
+  transform:translateY(4px);
+}
