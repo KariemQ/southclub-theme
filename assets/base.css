@@ -4424,71 +4424,74 @@ header-actions {
 }
 
 /*
-// --- Hero Video Layout (Final Stacking Method) ---
+// ===================================================================
+// FINAL FIX for Hero Video, Header, and Footer Visibility
+// ===================================================================
 */
 
-/* 1. The video itself acts as a fixed background layer */
-#shopify-section-hero-video .hero-video__wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
+/* --- Part 1: The Main Layout Fix --- */
+
+/* This makes the hero section a flex container, which allows us to easily
+   position the header at the bottom using margin-top: auto. */
+.hero-video__wrapper {
   height: 100vh;
   height: 100svh;
-  z-index: 1; /* Sits at the very back */
+  position: relative;
   background-color: #000;
+  display: flex;
 }
-.hero-video__media {
+
+/* This container holds the header and is pushed to the bottom of the hero */
+.hero-video__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  margin-top: auto;
+}
+
+/* THIS IS THE MOST IMPORTANT FIX:
+  Your theme's default CSS applies 'display: contents' to the header group,
+  which makes it invisible when nested. This rule forcefully overrides that,
+  making your header and announcement bar visible again.
+*/
+.hero-video__wrapper #header-group {
+  display: block !important;
+}
+
+/* The main content and footer need a background to appear over the video as you scroll */
+main#MainContent,
+#shopify-section-footer-group {
+  position: relative;
+  background-color: var(--color-background);
+}
+
+/* --- Part 2: Video Background Styles --- */
+
+.hero-video__media,
+.hero-video__placeholder {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   min-width: 100%; min-height: 100%;
+  width: auto; height: auto;
+  z-index: 1;
   object-fit: cover;
 }
 
-/* 2. The hero video section is now just a 100vh tall spacer */
-#shopify-section-hero-video {
-  height: 100vh;
-  height: 100svh;
-  position: relative;
-  z-index: 2; /* Sits above the video, but below the header */
-}
+/* --- Part 3: Scroll Down Arrow & Your Logo Animation --- */
 
-/* 3. The header group is positioned relative to the viewport */
-#shopify-section-header-group {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  z-index: 10; /* Sits on top of everything initially */
-  transition: transform 0.5s ease-in-out;
-}
-
-/* 4. This class will be added by JavaScript to make the header sticky */
-#shopify-section-header-group.header-is-sticky {
-  position: fixed;
-  top: 0;
-  bottom: auto;
-}
-
-/* 5. The main content needs a background so it's not transparent */
-main#MainContent {
-  position: relative;
-  z-index: 2; /* Sits above the video */
-  background-color: var(--color-background);
-}
-
-/* 6. The scroll-down arrow (re-positioned for this layout) */
 .hero-video__scroll-down {
-    position: fixed;
-    bottom: 120px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 11;
-    cursor: pointer;
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  cursor: pointer;
 }
 .hero-video__scroll-down svg {
-    color: white;
-    width: 28px;
-    height: 28px;
+  width: 28px;
+  height: 28px;
+  color: white;
 }
+
+/* Paste your preferred, working logo animation CSS below this line */
