@@ -49,7 +49,7 @@
           "static": true,
           "settings": {
             "logo_icon": "shopify://shop_images/penguin.svg",
-            "logo_icon_height": 50,
+            "logo_icon_height": 46,
             "hide_logo_on_home_page": false,
             "custom_height": 36,
             "custom_height_mobile": 12,
