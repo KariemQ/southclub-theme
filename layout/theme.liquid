@@ -44,16 +44,21 @@
       preventing the rendering bugs we encountered before.
     {% endcomment %}
     <div class="site-grid-container">
-      {%- comment -%} HERO first, HEADER second {%- endcomment -%}
+      {% comment %} Row 1 — hero and header stack {% endcomment %}
       {% section 'hero-video' %}
-      {% sections 'header-group' %}
     
+      <div id="header-group" class="header-group-wrapper">
+        {% sections 'header-group' %}
+      </div>
+    
+      {% comment %} Row 2 — everything else {% endcomment %}
       <main id="MainContent" class="content-for-layout" role="main">
         {{ content_for_layout }}
       </main>
     
       {% sections 'footer-group' %}
     </div>
+
 
 
     {% render 'search-modal' %}
