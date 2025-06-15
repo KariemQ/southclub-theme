@@ -4492,3 +4492,33 @@ header-actions {
   transition:transform .25s ease;
 }
 .hero-video__scroll-down:hover svg{ transform:translateY(4px); }
+
+/* ───────────────── HERO + HEADER OVERLAY ───────────────── */
+.site-grid-container{
+  display:grid;
+  /* row-1 = hero video + header overlay  ·  row-2 = rest of site */
+  grid-template-rows:auto 1fr;
+}
+
+/* hero video itself (row 1, beneath header) */
+.hero-video{
+  grid-row:1;
+  z-index:1;
+}
+
+/* announcement-bar + header wrapper */
+#header-group{
+  grid-row:1;          /* share the first row so they overlap the video   */
+  align-self:end;      /* sit flush against the bottom of the hero frame  */
+  z-index:2;           /* above the video                                 */
+  position:sticky;     /* stick as soon as it touches the top             */
+  top:0;
+  width:100%;
+}
+
+/* once the JS adds `header--is-sticky`, we just keep it at the top        */
+#header-group.header--is-sticky{
+  position:sticky;
+  top:0;
+}
+
