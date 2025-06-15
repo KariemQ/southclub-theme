@@ -4484,11 +4484,11 @@ main#MainContent,
 
 /* 5. The arrow is positioned inside the hero section. */
 .hero-video__scroll-down {
-  position: absolute;
-  bottom: 2rem;
+  position: fixed; /* Changed from absolute */
+  bottom: 140px;   /* Adjust this value based on your header's height */
   left: 50%;
   transform: translateX(-50%);
-  z-index: 5;
+  z-index: 11; /* Make sure it's above the header */
   cursor: pointer;
 }
 .hero-video__scroll-down svg {
