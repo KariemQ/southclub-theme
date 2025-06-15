@@ -4423,41 +4423,85 @@ header-actions {
   gap: 20px;
 }
 
-/* -- V15 - Final Stable Solution -- */
+/* =================================================================== */
+/* Final Hero Video & Sticky Header Solution
+/* =================================================================== */
 
-/* 1. The hero video section is a standard block that takes up the full viewport height. */
+/* 1. Create a CSS Grid layout on our new container */
+.site-grid-container {
+  display: grid;
+  grid-template-columns: 100%;
+  /* All content will live in a single row and column, creating layers */
+  grid-template-areas: "main-content";
+}
+
+/* 2. Assign all major sections to the same grid area */
+#shopify-section-header-group,
+#shopify-section-hero-video,
+#MainContent,
+#shopify-section-footer-group {
+  grid-area: main-content;
+}
+
+/* 3. Style the layers */
+
+/* The Video layer is at the bottom of the stack */
 #shopify-section-hero-video {
   position: relative;
   height: 100vh;
-  width: 100%;
-  overflow: hidden;
+  z-index: 1;
 }
-
-/* 2. The video is positioned to fill this section. */
 #shopify-section-hero-video .hero-video__wrapper {
-  position: absolute;
+  position: sticky; /* Stick to the top of the grid container */
   top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  height: 100vh;
 }
 #shopify-section-hero-video .hero-video__media {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* 3. The header group is sticky to the top of the page from the start. */
+/* The Header layer sits on top and is positioned absolutely */
 #shopify-section-header-group {
-  position: -webkit-sticky;
-  position: sticky;
+  position: absolute;
   top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh; /* It's a full-screen container for the header */
   z-index: 10;
-  background-color: var(--color-background); /* Ensures it's not transparent */
+  pointer-events: none; /* Make the container non-interactable */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* This pushes the header to the bottom */
+}
+#shopify-section-header-group > .header-section {
+  pointer-events: auto; /* Make the actual header interactable again */
 }
 
-/* 4. The main content simply follows the hero section */
-main#MainContent {
-  position: relative; /* This is needed for child element positioning */
+/* The Main Content and Footer layer scroll over the top */
+#MainContent, #shopify-section-footer-group {
+  position: relative;
+  z-index: 3;
+  margin-top: 100vh; /* This creates the initial scrollable space */
+  background-color: var(--color-background); /* Hides video behind content */
+}
+
+/* 4. This class will be added by our script to make the header sticky */
+#shopify-section-header-group.header--is-sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: auto; /* Let it shrink to its content's height */
+  justify-content: flex-start; /* Move the header to the top */
   background-color: var(--color-background);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  animation: fadeInDown 0.3s ease-out;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
