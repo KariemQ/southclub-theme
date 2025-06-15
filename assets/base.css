@@ -4162,13 +4162,12 @@ text-component {
 }
 
 /* =====================================================
-   South Club – Deluxe 3-D Flip (v8)
+   South Club – Deluxe 3-D Flip (v9)
    -----------------------------------------------------
-   • Keeps the clean v6 flip / reverse
-   • Adds a subtle "settle" pop so the penguin icon
-     feels alive without drawing too much attention.
-   • Word-mark softly fades at midpoint to smooth the
-     transition.
+   • Refined penguin reveal: elegant fade + slight
+     lift-in (translateZ) so it feels like it glides
+     toward the viewer before settling.
+   • Keeps v8’s smooth flip & reverse behaviour.
    =====================================================*/
 
 /* ---------- Layout ---------- */
@@ -4205,15 +4204,13 @@ text-component {
   will-change: opacity, transform;
 }
 
-/* Word-mark (front face) */
 .header-logo__image-container--original {
   transition: opacity 0.25s ease-out;
 }
 
-/* Penguin icon (back face) */
 .header-logo__image-container--icon {
   transform: rotateY(180deg);
-  opacity: 0.96; /* keeps PNG edges crisp but avoids halo */
+  opacity: 0;
 }
 
 .header-logo__image {
@@ -4228,15 +4225,16 @@ header-component.scrolled-down .header-logo__flipper {
   animation: scFlip 0.8s cubic-bezier(0.645,0.045,0.355,1);
 }
 
-/* Fade word-mark out half-way through the flip */
+/* Word-mark fade */
 header-component.scrolled-down .header-logo__image-container--original {
   opacity: 0;
-  transition-delay: 0.35s;
+  transition-delay: 0.32s;
 }
 
-/* Penguin subtle pop after flip completes */
-header-component.scrolled-down .header-logo__image-container--icon .header-logo__image {
-  animation: penguinSettle 0.35s ease-out 0.48s forwards;
+/* Penguin glide-in */
+header-component.scrolled-down .header-logo__image-container--icon {
+  opacity: 1;
+  animation: penguinGlide 0.5s cubic-bezier(0.33,1,0.68,1) 0.38s forwards;
 }
 
 /* ---------- Keyframes ---------- */
@@ -4246,9 +4244,10 @@ header-component.scrolled-down .header-logo__image-container--icon .header-logo_
   100% { transform: rotateY(180deg) scale(1);   }
 }
 
-@keyframes penguinSettle {
-  0%   { transform: scale(1.08); }
-  100% { transform: scale(1);    }
+@keyframes penguinGlide {
+  0%   { transform: rotateY(180deg) translateZ(-40px) scale(0.92); }
+  70%  { transform: rotateY(180deg) translateZ(8px)  scale(1.02); }
+  100% { transform: rotateY(180deg) translateZ(0)    scale(1);    }
 }
 
 /* ---------------- Accessibility ---------------- */
@@ -4259,11 +4258,10 @@ header-component.scrolled-down .header-logo__image-container--icon .header-logo_
     transition: none;
     transform: rotateY(180deg);
   }
+  .header-logo__image-container--icon,
   .header-logo__image-container--original {
-    transition: none;
-  }
-  .header-logo__image-container--icon .header-logo__image {
     animation: none;
+    transition: none;
   }
 }
 
