@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const heroVideoSection = document.querySelector('#shopify-section-hero-video');
   const headerGroup = document.querySelector('#shopify-section-header-group');
-  const scrollTrigger = document.querySelector('[data-scroll-trigger]');
 
   // If the essential elements don't exist, don't run the script.
   if (!heroVideoSection || !headerGroup) {
@@ -10,40 +9,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 1. Sticky Header Logic ---
   const handleScroll = () => {
-    // Get the position of the hero section relative to the viewport.
-    const heroBottom = heroVideoSection.getBoundingClientRect().bottom;
+    // The trigger point is when we have scrolled past the full height of the hero video spacer.
+    const scrollTriggerPoint = heroVideoSection.offsetHeight;
 
-    // When the bottom of the hero spacer reaches the top of the viewport (or passes it),
-    // add the sticky class to the header. Otherwise, remove it.
-    if (heroBottom <= 0) {
+    if (window.scrollY >= scrollTriggerPoint) {
       headerGroup.classList.add('header-is-sticky');
     } else {
       headerGroup.classList.remove('header-is-sticky');
     }
   };
 
-  // Listen for scroll events to run the function.
   window.addEventListener('scroll', handleScroll, { passive: true });
-  // Run it once on load in case the page is already scrolled.
-  handleScroll();
-
+  handleScroll(); // Run on load to set the initial state
 
   // --- 2. Click-to-Scroll Logic ---
   const scrollToContent = () => {
-    // Scroll the window to the exact height of the hero spacer.
-    // This brings the header perfectly to the top of the screen.
+    // Scroll to the point where the header becomes sticky.
+    const scrollTarget = heroVideoSection.offsetHeight;
     window.scrollTo({
-      top: heroVideoSection.offsetHeight,
-      behavior: 'smooth' // This creates the smooth scrolling animation.
+      top: scrollTarget,
+      behavior: 'smooth'
     });
   };
 
-  // Attach the scroll function to the arrow.
-  if (scrollTrigger) {
-    scrollTrigger.addEventListener('click', scrollToContent);
+  const scrollTriggerArrow = document.querySelector('[data-scroll-trigger]');
+  if (scrollTriggerArrow) {
+    scrollTriggerArrow.addEventListener('click', scrollToContent);
   }
-
-  // Attach the scroll function to the entire video wrapper as well.
   const heroWrapper = heroVideoSection.querySelector('.hero-video__wrapper');
   if (heroWrapper) {
     heroWrapper.addEventListener('click', scrollToContent);
