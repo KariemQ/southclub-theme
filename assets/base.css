@@ -4423,20 +4423,19 @@ header-actions {
   gap: 20px;
 }
 
-/* -- Advanced Hero Video Layout (V3 - Robust) -- */
+/* -- Advanced Hero Video Layout (V4 - Final) -- */
 
-/* 1. The video wrapper is a fixed background layer. This remains the same. */
+/* 1. The video wrapper is a fixed background layer. */
 #shopify-section-hero-video .hero-video__wrapper {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  height: 100svh;
-  z-index: 1;
+  width: 100%;
+  height: 100vh; /* vh is a unit for viewport height */
+  height: 100svh; /* A newer unit that accounts for mobile browser bars */
+  z-index: 1; /* Sits behind everything */
   background-color: black;
 }
-
 .hero-video__media {
   position: absolute;
   top: 50%;
@@ -4447,52 +4446,56 @@ header-actions {
   object-fit: cover;
 }
 
-/* 2. The hero section is now ONLY a 100vh spacer. Its only job is to create scrollable space. */
+/* 2. The hero-video section itself should take up no space in the page layout. */
 #shopify-section-hero-video {
-  height: 100vh;
-  height: 100svh;
   position: relative;
+  /* This element is now just a logical container for the video and arrow. */
 }
 
-/* 3. The header group is FIXED to the bottom of the VIEWPORT initially. This guarantees it is visible. */
+/* 3. The header group is FIXED to the bottom of the VIEWPORT initially. */
 #shopify-section-header-group {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  z-index: 10;
-  background-color: transparent; /* Has no background at first to show the video */
-  transition: background-color 0.4s ease-in-out;
+  z-index: 10; /* High z-index to be on top of everything */
 }
 
-/* 4. This class, added by JS, makes the header "sticky" at the top AFTER scrolling. */
+/* 4. This class makes the header "sticky" at the top AFTER scrolling. */
 #shopify-section-header-group.header-is-sticky {
   position: fixed;
   top: 0;
   bottom: auto;
-  background-color: var(--color-background); /* Add a solid background when it's sticky */
+  background-color: var(--color-background); /* Add a solid background when sticky */
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* 5. The content and footer scroll on a higher layer than the video. */
-main#MainContent,
-#shopify-section-footer-group {
-  position: relative;
-  z-index: 3; /* This ensures it sits on top of the video's z-index: 1 */
-  background-color: var(--color-background); /* This hides the video as the content scrolls over it */
+/* 5. We create the "scroll space" by adding margin to the top of the main content. */
+main#MainContent {
+  position: relative; /* Required for z-index to work */
+  z-index: 3; /* To scroll over the video background (z-index: 1) */
+  margin-top: 100vh;
+  margin-top: 100svh;
+  background-color: var(--color-background); /* Crucial to hide the video behind the content */
 }
 
-/* 6. The arrow also needs to be fixed to the viewport so it's always visible with the video. */
+/* 6. The footer also needs a z-index and background to scroll over the video. */
+#shopify-section-footer-group {
+  position: relative;
+  z-index: 3;
+  background-color: var(--color-background);
+}
+
+/* 7. The arrow must be fixed to the viewport to be visible over the video. */
 .hero-video__scroll-down {
     position: fixed;
     /* IMPORTANT: Adjust '140px' below to position the arrow just above your header. */
     bottom: 140px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 11;
+    z-index: 11; /* Higher than the header */
     cursor: pointer;
 }
-
 .hero-video__scroll-down svg {
     color: white;
     width: 28px;
