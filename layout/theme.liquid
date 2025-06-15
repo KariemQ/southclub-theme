@@ -40,21 +40,16 @@
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
 
     {% comment %}
-      This new container uses CSS Grid to solve layout conflicts.
-      The hero, main content, footer, and header are reordered to prevent rendering bugs.
+      Restoring the original, logical order of sections to ensure stability.
     {% endcomment %}
-    <div class="page-container">
+    {% sections 'header-group' %}
+    {% section 'hero-video' %}
 
-      {% section 'hero-video' %}
+    <main id="MainContent" class="content-for-layout" role="main">
+      {{ content_for_layout }}
+    </main>
 
-      <main id="MainContent" class="content-for-layout" role="main">
-        {{ content_for_layout }}
-      </main>
-
-      {% sections 'footer-group' %}
-      {% sections 'header-group' %}
-
-    </div>
+    {% sections 'footer-group' %}
 
     {% render 'search-modal' %}
     <script src="{{ 'critical.js' | asset_url }}"></script>
@@ -63,6 +58,5 @@
     {% endif %}
 
     <script src="{{ 'logo-scroll-animation.js' | asset_url }}" defer></script>
-    {% comment %} You should NOT need a custom scroll script with this new structure {% endcomment %}
   </body>
 </html>
