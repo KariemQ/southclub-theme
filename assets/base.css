@@ -4162,30 +4162,24 @@ text-component {
 }
 
 /* =========================================
-   South Club – Signature Logo Animation v3
+   South Club – Logo Scroll Animation v4
    -----------------------------------------
-   Fixes “icon not showing” + smooths the
-   motion.  Pure‑CSS cube‑flip stripped back
-   to a single Y‑axis rotation so the penguin
-   always lands perfectly upright.
+   ✦ Clean cross‑fade + gentle zoom
+   ✦ No 3‑D tricks, no shimmer — just a classy
+     morph from word‑mark ➞ penguin icon.
+   ✦ Pure CSS, GPU‑accelerated, easy to tweak.
    ========================================*/
 
-/* ---------- Base Layout ---------- */
+/* ---------- Base layout ---------- */
 .header-logo {
-  perspective: 1200px;
   display: inline-flex;
   align-items: center;
 }
 
 .header-logo__flipper {
-  /* Sizing inherited from inline vars set in Liquid */
+  position: relative;
   height: var(--header-logo-image-height-mobile);
   width:  var(--header-logo-image-width-mobile);
-  position: relative;
-  transform-style: preserve-3d;
-  will-change: transform;
-  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
-  transform-origin: center center;
 }
 
 @media screen and (width >= 750px) {
@@ -4195,20 +4189,22 @@ text-component {
   }
 }
 
-/* ---------- Faces ---------- */
+/* ---------- Faces (word‑mark + penguin) ---------- */
 .header-logo__image-container {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: opacity 0.45s ease, transform 0.45s ease;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
-/* Back face holds the penguin icon */
+/* Penguin starts hidden & a bit smaller */
 .header-logo__image-container--icon {
-  transform: rotateY(180deg);
+  opacity: 0;
+  transform: scale(0.7) rotate(-6deg);
 }
 
 /* Fit images neatly */
@@ -4218,51 +4214,26 @@ text-component {
   object-fit: contain;
 }
 
-/* ---------- Shimmer overlay ---------- */
-.header-logo__flipper::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -80%;
-  width: 60%;
-  height: 100%;
-  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.6) 50%, transparent 100%);
-  transform: skewX(-25deg);
-  pointer-events: none;
-  opacity: 0;
-}
-
 /* =============================================================
-   Scroll‑triggered state – make sure you’re toggling the SAME
-   class that your theme adds when the header sticks.  If your
-   theme uses .sticky-header or .is-scrolled, swap below.
+   Scroll-triggered state — replace the selector below if your
+   theme toggles a different class when the header becomes sticky.
    ==============================================================*/
-header-component.scrolled-down .header-logo__flipper {
-  animation: clubFlip 0.85s cubic-bezier(0.65, 0, 0.35, 1) forwards,
-             clubShimmer 0.95s 0.15s ease-out forwards;
+header-component.scrolled-down .header-logo__image-container--icon {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.24));
 }
 
-/* ---------- Keyframes ---------- */
-@keyframes clubFlip {
-  0%   { transform: rotateY(0deg);   }
-  40%  { transform: scale(0.92) rotateY(90deg); }
-  100% { transform: rotateY(180deg); }
-}
-
-@keyframes clubShimmer {
-  0%   { left: -80%; opacity: 0; }
-  15%  { opacity: 1; }
-  65%  { left: 110%; opacity: 1; }
-  100% { left: 110%; opacity: 0; }
+header-component.scrolled-down .header-logo__image-container--original {
+  opacity: 0;
+  transform: scale(1.15) rotate(4deg);
 }
 
 /* ---------------- Accessibility ---------------- */
 @media (prefers-reduced-motion: reduce) {
-  .header-logo__flipper,
-  header-component.scrolled-down .header-logo__flipper {
+  .header-logo__image-container,
+  header-component.scrolled-down .header-logo__image-container {
     transition: none;
-    animation: none;
-    transform: rotateY(180deg); /* Fall back to static flipped state */
   }
 }
 
