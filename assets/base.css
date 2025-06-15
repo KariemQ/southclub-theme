@@ -4162,12 +4162,12 @@ text-component {
 }
 
 /* =====================================================
-   South Club – Deluxe 3‑D Flip (v6)
+   South Club – Deluxe 3-D Flip (v7)
    -----------------------------------------------------
-   ✦ Keeps the premium mid‑flip scale dip
-   ✦ Adds smooth reverse spin when scrolling up
-   ✦ Removes heavy drop‑shadow to eliminate the
-     "outline" effect around the penguin
+   • Classic 180° flip with mid-flip scale dip
+   • Word-mark fades/zooms away
+   • Penguin icon eases in with a gentle pop
+   • Fully reversible on scroll-up (no snap)
    =====================================================*/
 
 /* ---------- Layout ---------- */
@@ -4182,8 +4182,6 @@ text-component {
   height: var(--header-logo-image-height-mobile);
   width:  var(--header-logo-image-width-mobile);
   transform-style: preserve-3d;
-
-  /* Smooth reverse spin */
   transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
@@ -4203,35 +4201,52 @@ text-component {
   justify-content: center;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  will-change: opacity, transform;
 }
 
+/* Original word-mark (front face) */
+.header-logo__image-container--original {
+  opacity: 1;
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+}
+
+/* Penguin icon (back face) */
 .header-logo__image-container--icon {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) scale(0.85);
+  opacity: 0;
+  transition: opacity 0.35s ease-out 0.45s, /* delay until flip passes midpoint */
+              transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0.45s; /* elastic pop */
 }
 
+/* Images fit container */
 .header-logo__image {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-/* ---------- Scroll state & animation ---------- */
+/* ---------- Scroll states ---------- */
 header-component.scrolled-down .header-logo__flipper {
-  transform: rotateY(180deg) scale(1); /* Persists so reverse can animate */
+  transform: rotateY(180deg) scale(1);
   animation: scFlip 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
+header-component.scrolled-down .header-logo__image-container--original {
+  opacity: 0;
+  transform: scale(1.1);
+}
+
+header-component.scrolled-down .header-logo__image-container--icon {
+  opacity: 1;
+  transform: rotateY(180deg) scale(1);
+}
+
+/* ---------- Keyframes (depth dip) ---------- */
 @keyframes scFlip {
   0%   { transform: rotateY(0deg)   scale(1);   }
   45%  { transform: rotateY(90deg)  scale(0.86); }
   100% { transform: rotateY(180deg) scale(1);   }
 }
-
-/* Clean—no heavy outline */
-/* (Drop-shadow removed; tweak below if you want a softer halo) */
-/* header-component.scrolled-down .header-logo__image-container--icon .header-logo__image {
-     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
-   } */
 
 /* ---------------- Accessibility ---------------- */
 @media (prefers-reduced-motion: reduce) {
@@ -4241,8 +4256,11 @@ header-component.scrolled-down .header-logo__flipper {
     transition: none;
     transform: rotateY(180deg);
   }
+  .header-logo__image-container--original,
+  .header-logo__image-container--icon {
+    transition: none;
+  }
 }
-
 
 /*
 // --- Penguin Icon Size Override ---
