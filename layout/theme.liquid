@@ -40,9 +40,9 @@
   {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
 
   {%- comment -%}
-    NEW STRUCTURE:
-    1. The Header Group is first. We will position it with CSS.
-    2. The Hero Video section now acts as a background and a spacer.
+    FINAL CORRECT STRUCTURE:
+    The header, video, and main content are siblings.
+    We will use CSS to create the visual layering effect.
   {%- endcomment -%}
   {% section 'header-group' %}
   {% section 'hero-video' %}
@@ -53,12 +53,12 @@
 
   {% sections 'footer-group' %}
 
-  {%- comment -%} Your other scripts remain at the bottom {%- endcomment -%}
   {% render 'search-modal' %}
   <script src="{{ 'critical.js' | asset_url }}"></script>
   {% if settings.quick_add or settings.mobile_quick_add %}
     {% render 'quick-add-modal' %}
   {% endif %}
+
   <script src="{{ 'logo-scroll-animation.js' | asset_url }}" defer></script>
   <script src="{{ 'hero-video.js' | asset_url }}" defer></script>
 
