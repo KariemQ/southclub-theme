@@ -4161,61 +4161,116 @@ text-component {
   z-index: 100;
 }
 
-/*
-// --- 3D Flip Logo (Final Sizing & Animation) ---
-*/
+/* =========================================
+   South Club – Signature Logo Animation v2
+   -----------------------------------------
+   Replaces the original 3‑D flip with a "cube
+   spin + shimmer" reveal that feels premium
+   and playful, echoing the brand’s urban &
+   futuristic vibe.
+   
+   HOW IT WORKS
+   • Word‑mark (front face) → Icon (back face)
+   • 3‑axis rotation with subtle scale dip
+   • Iridescent light sweep timed to the flip
+   • Zero‑JS, pure CSS, GPU‑accelerated
+   ----------------------------------------*/
+
+/* ---------- Base Layout ---------- */
 .header-logo {
-  perspective: 1000px;
-  display: inline-flex; /* Changed to inline-flex for better alignment */
+  perspective: 1200px;
+  display: inline-flex;
   align-items: center;
-  vertical-align: middle;
 }
 
 .header-logo__flipper {
-  /* This element gets its size from the inline style attribute we moved in the liquid file.
-     The CSS below uses those variables to set the height and width. */
+  /* Sizing inherited from inline vars set in Liquid */
   height: var(--header-logo-image-height-mobile);
-  width: var(--header-logo-image-width-mobile);
+  width:  var(--header-logo-image-width-mobile);
   position: relative;
   transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.6, 0.05, 0.4, 1);
+  will-change: transform;
+  transition: transform 0.8s cubic-bezier(0.65, 0, 0.35, 1);
 }
+
 @media screen and (width >= 750px) {
   .header-logo__flipper {
     height: var(--header-logo-image-height);
-    width: var(--header-logo-image-width);
+    width:  var(--header-logo-image-width);
   }
 }
 
-header-component.scrolled-down .header-logo__flipper {
-  transform: rotateY(180deg);
-}
-
-.header-logo__image-container {
+/* ---------- Shimmer overlay (initially parked off canvas) ---------- */
+.header-logo__flipper::after {
+  content: "";
   position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
+  left: -85%;
+  width: 50%;
   height: 100%;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  background: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.65) 50%, transparent 100%);
+  transform: skewX(-25deg);
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* ---------- Faces ---------- */
+.header-logo__image-container {
+  position: absolute;
+  inset: 0; /* shorthand for top/right/bottom/left:0 */
   display: flex;
   align-items: center;
   justify-content: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: opacity 0.3s ease-in-out;
 }
 
+/* Back face holds the penguin icon */
 .header-logo__image-container--icon {
   transform: rotateY(180deg);
+  opacity: 0; /* hidden until flip completes */
 }
 
-/* Ensure the images themselves fit perfectly inside their containers */
+/* Fit images neatly */
 .header-logo__image {
-  max-width: 100%;
-  max-height: 100%;
-  height: auto;
-  width: auto;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
+
+/* =============================================================
+   SCROLL‑TRIGGERED STATE
+   Add / remove .scrolled-down on <header-component> via JS or
+   Shopify’s built‑in sticky‑header class toggling.
+   ==============================================================*/
+header-component.scrolled-down .header-logo__flipper {
+  animation: clubCube 0.85s cubic-bezier(0.65, 0, 0.35, 1) forwards,
+             clubShimmer 0.95s 0.15s ease-out forwards;
+}
+
+header-component.scrolled-down .header-logo__image-container--icon {
+  opacity: 1; /* fade in penguin as cube completes */
+}
+header-component.scrolled-down .header-logo__image-container:not(.header-logo__image-container--icon) {
+  opacity: 0; /* fade out word‑mark */
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes clubCube {
+  0%   { transform: rotateX(0deg)  rotateY(0deg)   scale(1);    }
+  35%  { transform: rotateX(25deg) rotateY(90deg)  scale(0.85); }
+  65%  { transform: rotateX(-20deg)rotateY(180deg) scale(0.85); }
+  100% { transform: rotateX(0deg)  rotateY(180deg) scale(1);    }
+}
+
+@keyframes clubShimmer {
+  0%   { left: -85%; opacity: 0; }
+  10%  { opacity: 1; }
+  60%  { left: 110%; opacity: 1; }
+  100% { left: 110%; opacity: 0; }
+}
+
 
 /*
 // --- Penguin Icon Size Override ---
