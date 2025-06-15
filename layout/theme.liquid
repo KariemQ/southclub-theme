@@ -36,38 +36,29 @@
   </head>
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
-  
+
   {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
 
   {%- comment -%}
-    CORRECTED STRUCTURE:
-    1. The 'hero-video' section is now the first element.
-    2. The 'header-group' is rendered *inside* hero-video.liquid, so it is removed from this file.
+    NEW STRUCTURE:
+    1. The Header Group is first. We will position it with CSS.
+    2. The Hero Video section now acts as a background and a spacer.
   {%- endcomment -%}
+  {% section 'header-group' %}
   {% section 'hero-video' %}
 
-  <main
-    id="MainContent"
-    class="content-for-layout"
-    role="main"
-    data-page-transition-enabled="{{ settings.page_transition_enabled }}"
-    data-product-transition="{{ settings.transition_to_main_product }}"
-    data-template="{{ template }}"
-  >
+  <main id="MainContent" class="content-for-layout" role="main">
     {{ content_for_layout }}
   </main>
 
   {% sections 'footer-group' %}
 
+  {%- comment -%} Your other scripts remain at the bottom {%- endcomment -%}
   {% render 'search-modal' %}
-
   <script src="{{ 'critical.js' | asset_url }}"></script>
-
   {% if settings.quick_add or settings.mobile_quick_add %}
     {% render 'quick-add-modal' %}
   {% endif %}
-  
-  {%- comment -%} Your custom scripts remain at the bottom {%- endcomment -%}
   <script src="{{ 'logo-scroll-animation.js' | asset_url }}" defer></script>
   <script src="{{ 'hero-video.js' | asset_url }}" defer></script>
 
