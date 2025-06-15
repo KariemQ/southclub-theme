@@ -1,18 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const heroVideoSection = document.querySelector('#shopify-section-hero-video');
   const headerGroup = document.querySelector('#shopify-section-header-group');
+  const mainContent = document.querySelector('#MainContent');
 
-  // If the essential elements don't exist, don't run the script.
-  if (!heroVideoSection || !headerGroup) {
-    return;
-  }
+  if (!headerGroup || !mainContent) return;
 
   // --- 1. Sticky Header Logic ---
   const handleScroll = () => {
-    // The trigger point is when we have scrolled past the full height of the hero video spacer.
-    const scrollTriggerPoint = heroVideoSection.offsetHeight;
+    // Get the top position of the main content area.
+    const mainContentTop = mainContent.getBoundingClientRect().top;
 
-    if (window.scrollY >= scrollTriggerPoint) {
+    // When the top of the main content reaches the top of the viewport, make the header sticky.
+    if (mainContentTop <= 0) {
       headerGroup.classList.add('header-is-sticky');
     } else {
       headerGroup.classList.remove('header-is-sticky');
@@ -24,10 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 2. Click-to-Scroll Logic ---
   const scrollToContent = () => {
-    // Scroll to the point where the header becomes sticky.
-    const scrollTarget = heroVideoSection.offsetHeight;
-    window.scrollTo({
-      top: scrollTarget,
+    // Scroll smoothly to the main content section.
+    mainContent.scrollIntoView({
       behavior: 'smooth'
     });
   };
@@ -36,7 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (scrollTriggerArrow) {
     scrollTriggerArrow.addEventListener('click', scrollToContent);
   }
-  const heroWrapper = heroVideoSection.querySelector('.hero-video__wrapper');
+
+  const heroWrapper = document.querySelector('#shopify-section-hero-video .hero-video__wrapper');
   if (heroWrapper) {
     heroWrapper.addEventListener('click', scrollToContent);
   }
