@@ -4175,37 +4175,55 @@ text-component {
 
 
 /*
-// --- Logo Scroll Animation (Final Fix) ---
+// --- Logo Scroll Animation (Final Layout Fix) ---
 */
 
-/* The container is a positioning context for the icon.
-   overflow: hidden prevents the larger SVG from expanding the header. */
 .header-logo__image-container {
   position: relative;
-  overflow: hidden; /* Add this line to clip the oversized icon */
+  /* Set explicit height/width for mobile based on your theme settings.
+     This creates a fixed-size "stage" for the animation. */
+  height: 12px;
+  width: 55px;
+  margin: auto; /* Ensures the logo stays centered in its column */
 }
 
-/* The text logo stays in the layout to give the container its size. */
-.header-logo__image--text {
-  transition: opacity 0.4s ease-in-out;
+/* Set explicit height/width for desktop */
+@media screen and (width >= 750px) {
+  .header-logo__image-container {
+    height: 36px;
+    width: 164px;
+  }
 }
 
-/* The icon logo is positioned on top and sized correctly by the theme. */
-.header-logo__image--icon {
-  transition: opacity 0.4s ease-in-out;
+/* Position BOTH images absolutely within the container */
+.header-logo__image {
+  transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  opacity: 0; /* Hidden by default */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* This scales your SVGs to fit inside the box without cropping */
 }
 
-/* When scrolling down, fade out the text logo... */
+/* By default, show the text logo and hide the icon logo */
+.header-logo__image--text {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.header-logo__image--icon {
+  opacity: 0;
+  transform: scale(0.8);
+}
+
+/* On scroll down, fade out the text logo and fade in the icon logo */
 header-component[data-scroll-direction="down"] .header-logo__image--text {
   opacity: 0;
+  transform: scale(0.8);
 }
 
-/* ...and fade in the icon logo. */
 header-component[data-scroll-direction="down"] .header-logo__image--icon {
   opacity: 1;
+  transform: scale(1);
 }
