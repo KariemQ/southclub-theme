@@ -1,3 +1,27 @@
+/* --- DEBUGGING STYLES --- */
+#shopify-section-header-group,
+#shopify-section-footer-group {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    position: fixed !important; /* Forcing position for debug */
+    background-color: rgba(255, 0, 0, 0.7) !important; /* Bright red! */
+    border: 3px solid yellow !important;
+    z-index: 999999 !important; /* Highest possible z-index */
+}
+
+#shopify-section-header-group {
+    top: 10px !important; /* Forcing it to the top */
+    bottom: auto !important;
+}
+
+#shopify-section-footer-group {
+    bottom: 10px !important; /* Forcing it to the bottom */
+    top: auto !important;
+}
+/* --- END DEBUGGING STYLES --- */
+
 /* -- Custom Font: Suisse Intl -- */
 
 /* Light Weight */
