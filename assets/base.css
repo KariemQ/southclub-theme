@@ -4411,36 +4411,26 @@ header-actions {
 }
 
 /* =================================================================== */
-/* Final Hero Video & Sticky Header Solution  (v2 – wildcard selectors) */
+/*  HERO VIDEO  +  BOTTOM-HUGGING HEADER                               */
 /* =================================================================== */
 
-/* 1 – Grid layout that lets layers overlap */
+/* Grid skeleton:  row-1 = hero (100vh)  |  row-2 = site             */
 .site-grid-container{
   display:grid;
-  grid-template-columns:100%;
-  grid-template-areas:"main-content";
+  grid-template-rows:100vh auto;   /* hero | rest */
 }
 
-/* 2 – All major sections occupy the same grid cell */
-[id^="shopify-section-header-group"],
-[id^="shopify-section-hero-video"],
-#MainContent,
-[id^="shopify-section-footer-group"]{
-  grid-area:main-content;
-}
-
-/* 3 – Hero-video layer (bottom of the stack) */
-[id^="shopify-section-hero-video"]{
-  position:relative;
-  height:100vh;
+/* ------------ Row 1: Hero video itself ------------ */
+#shopify-section-hero-video{
+  position:relative;               /* anchor for header overlay   */
   z-index:1;
 }
-[id^="shopify-section-hero-video"] .hero-video__wrapper{
+#shopify-section-hero-video .hero-video__wrapper{
   position:sticky;
   top:0;
   height:100vh;
 }
-[id^="shopify-section-hero-video"] .hero-video__media{
+#shopify-section-hero-video .hero-video__media{
   position:absolute;
   inset:0;
   width:100%;
@@ -4448,32 +4438,21 @@ header-actions {
   object-fit:cover;
 }
 
-/* 4 – Header/announcement layer starts at viewport bottom */
-[id^="shopify-section-header-group"]{
-  position:absolute;
-  inset:0;                       /* top/left/right/bottom: 0 */
-  height:100vh;
-  z-index:10;
+/* ------------ Row 1 overlay: Header group ------------ */
+.header-group-wrapper{
+  grid-row:1;                      /* sit in the hero row         */
+  position:absolute;               /* overlay the video           */
+  inset:0;
   display:flex;
   flex-direction:column;
-  justify-content:flex-end;      /* push bar to bottom edge */
-  pointer-events:none;
+  justify-content:flex-end;        /* bar hugs the bottom edge    */
+  pointer-events:none;             /* clicks pass through wrapper */
+  z-index:10;
 }
-[id^="shopify-section-header-group"] > .header-section{
-  pointer-events:auto;           /* keep header clickable */
-}
+.header-group-wrapper > *{ pointer-events:auto; }  /* re-enable clicks */
 
-/* 5 – Main content & footer scroll over the video */
-#MainContent,
-[id^="shopify-section-footer-group"]{
-  position:relative;
-  z-index:3;
-  margin-top:100vh;              /* room to scroll past hero */
-  background:var(--color-background,#fff);
-}
-
-/* 6 – Sticky state once header reaches the top */
-[id^="shopify-section-header-group"].header--is-sticky{
+/* Sticky state (added by JS when hero scrolls out) */
+.header-group-wrapper.header--is-sticky{
   position:fixed;
   top:0;
   height:auto;
@@ -4487,7 +4466,16 @@ header-actions {
   to  {opacity:1;transform:translateY(0);}
 }
 
-/* 7 – Minimal white arrow cue */
+/* ------------ Row 2: push rest of site below hero ------------ */
+#MainContent,
+[id^="shopify-section-footer-group"]{
+  grid-row:2;
+  margin-top:0;                    /* no fake spacer needed now   */
+  z-index:3;
+  background:var(--color-background,#fff);
+}
+
+/* ------------ Minimal white arrow cue ------------ */
 .hero-video__scroll-down{
   position:absolute;
   left:50%;
@@ -4505,7 +4493,4 @@ header-actions {
   height:32px;
   transition:transform .25s ease;
 }
-.hero-video__scroll-down:hover svg{
-  transform:translateY(4px);
-}
-
+.hero-video__scroll-down:hover svg{ transform:translateY(4px); }
