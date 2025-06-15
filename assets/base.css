@@ -4424,45 +4424,53 @@ header-actions {
 }
 
 /*
-// --- Hero Video Section (Corrected Layout) ---
+// ===================================================================
+// FINAL FIX for Hero Video & Invisible Header
+// ===================================================================
 */
+
+/* --- 1. Hero Video Section Layout --- */
+
 .hero-video__wrapper {
   height: 100vh;
-  height: 100svh; /* More accurate viewport height for mobile */
+  height: 100svh;
   position: relative;
-  background-color: #000; /* Black background fallback */
+  background-color: #000;
 }
 
 .hero-video__media,
 .hero-video__placeholder {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
+  min-width: 100%; min-height: 100%;
+  width: auto; height: auto;
   z-index: 1;
   object-fit: cover;
 }
 
-/* Position the header container absolutely at the bottom of the video */
+/* --- 2. Header Positioning & Visibility FIX --- */
+
+/* Position the header's container at the bottom of the video screen */
 .hero-video__content {
   position: absolute;
-  top: 0;
+  bottom: 0;
   left: 0;
   width: 100%;
   z-index: 3;
 }
 
-/* Force a visible background on the header when it's over the video */
+/*
+  THIS IS THE KEY FIX:
+  The theme applies 'display: contents' which makes the header disappear when nested.
+  This rule overrides it, forcing the header group to be a visible block.
+*/
 .hero-video__wrapper #header-group {
-  /* You can adjust the color and opacity (the last value) as needed */
-  background-color: rgba(0, 0, 0, 0.2);
+  display: block !important;
 }
 
-/* Position the scroll-down arrow */
+/* --- 3. Scroll Down Arrow --- */
+
 .hero-video__scroll-down {
   position: absolute;
   bottom: 120px; /* Adjust this to position the arrow above your header */
@@ -4477,10 +4485,4 @@ header-actions {
   height: 28px;
   color: white;
   opacity: 0.7;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.hero-video__scroll-down:hover svg {
-  opacity: 1;
-  transform: translateY(5px);
 }
