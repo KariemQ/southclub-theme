@@ -140,9 +140,9 @@ class HeaderComponent extends Component {
     const barGrp = document.querySelector('#header-group');
     if (!hero || !barGrp) return;
   
-    const headerH   = barGrp.offsetHeight;
-    const trigger   = hero.getBoundingClientRect().bottom + window.scrollY - headerH;
-  
+    const headerH = barGrp.offsetHeight;
+    const trigger = hero.offsetTop + hero.offsetHeight - headerH;   // ← replace this line  
+    
     if (window.scrollY >= trigger){
       barGrp.classList.add('header--is-sticky');
       this.classList.add('scrolled-down');      // logo flip ON
