@@ -4400,3 +4400,13 @@ body {
 .announcement-bar .announcement-bar__text {
   font-size: 11px !important;
 }
+
+/*
+// --- Increase Header Icon Spacing ---
+*/
+
+/* This targets the container for the icons on the right
+   and increases the gap between them. */
+.header__column--right {
+  gap: 30px;
+}
