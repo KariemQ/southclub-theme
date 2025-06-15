@@ -4415,7 +4415,13 @@ header-actions {
    ─────────────────────────────────────────── */
 .site-grid-container{
   display:grid;
-  grid-template-rows:auto 1fr auto;     /* hero ▸ page ▸ footer */
+
+  /* one-column layout prevents side-by-side auto-placement */
+  grid-template-columns:1fr;            /* ← NEW */
+  grid-auto-columns:1fr;                /* fallback for auto items */
+
+  /* hero ▸ main ▸ footer rows */
+  grid-template-rows:auto 1fr auto;
 }
 
 /* hero section (row-1) gets explicit full-viewport height */
