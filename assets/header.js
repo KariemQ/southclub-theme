@@ -132,24 +132,24 @@ class HeaderComponent extends Component {
 
   #handleWindowScroll = () => {
     if (this.#isHeroHeader) {
-      /* ----- HERO-VIDEO sticky logic ----- */
       const heroVideoSection = document.querySelector('#shopify-section-hero-video');
-      const headerGroup      = document.querySelector('#shopify-section-header-group');
-    
+      const headerGroup      = document.querySelector('#header-group');   // wrapper we just added
       if (!heroVideoSection || !headerGroup) return;
     
-      const headerHeight = headerGroup.offsetHeight;
-      const triggerPoint = heroVideoSection.offsetHeight - headerHeight; // <─ key fix
+      const heroHeight   = heroVideoSection.offsetHeight;                 // 100 vh
+      const barHeight    = headerGroup.offsetHeight;                      // actual bar
+      const triggerPoint = heroHeight - barHeight;                        // bar’s top meets viewport top
     
       if (window.scrollY >= triggerPoint) {
         headerGroup.classList.add('header--is-sticky');
-        this.classList.add('scrolled-down');     // logo flip
+        this.classList.add('scrolled-down');    // logo flip
       } else {
         headerGroup.classList.remove('header--is-sticky');
-        this.classList.remove('scrolled-down');  // reset flip
+        this.classList.remove('scrolled-down');
       }
-      return; // Skip the theme’s default scroll-up logic
+      return;                                   // don’t run default scroll-up logic
     }
+
 
   
     // --- ORIGINAL THEME LOGIC ---
