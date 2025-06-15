@@ -4480,4 +4480,21 @@ header-actions {
   object-fit:cover;
 }
 
+/*──────────────── HERO AS BACKDROP ────────────────*/
+.site-grid-container{            /* make sure the grid itself
+                                    establishes a stacking ctx */
+  position:relative;
+}
+
+#shopify-section-hero-video{
+  position:fixed;                /*   ⟵ key change  */
+  inset:0;                       /* full-viewport */
+  width:100%;
+  height:100svh;                 /* same height you had */
+  object-fit:cover;              /* keeps video nicely cropped */
+  z-index:-1;                    /* behind everything */
+  pointer-events:none;           /* video won’t trap clicks */
+}
+
+
 
