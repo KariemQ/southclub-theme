@@ -36,34 +36,40 @@
   </head>
 
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
-    {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
-    <div id="header-group">
-      {% section 'hero-video' %}
-    </div>
+  
+  {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
 
-    <main
-      id="MainContent"
-      class="content-for-layout"
-      role="main"
-      data-page-transition-enabled="{{ settings.page_transition_enabled }}"
-      data-product-transition="{{ settings.transition_to_main_product }}"
-      data-template="{{ template }}"
-    >
-      {{ content_for_layout }}
-    </main>
+  {%- comment -%}
+    CORRECTED STRUCTURE:
+    1. The 'hero-video' section is now the first element.
+    2. The 'header-group' is rendered *inside* hero-video.liquid, so it is removed from this file.
+  {%- endcomment -%}
+  {% section 'hero-video' %}
 
-    {% sections 'footer-group' %}
+  <main
+    id="MainContent"
+    class="content-for-layout"
+    role="main"
+    data-page-transition-enabled="{{ settings.page_transition_enabled }}"
+    data-product-transition="{{ settings.transition_to_main_product }}"
+    data-template="{{ template }}"
+  >
+    {{ content_for_layout }}
+  </main>
 
-    {% render 'search-modal' %}
+  {% sections 'footer-group' %}
 
-    {% # theme-check-disable ParserBlockingScript %}
-    <script src="{{ 'critical.js' | asset_url }}"></script>
-    {% # theme-check-enable ParserBlockingScript %}
+  {% render 'search-modal' %}
 
-    {% if settings.quick_add or settings.mobile_quick_add %}
-      {% render 'quick-add-modal' %}
-    {% endif %}
-    <script src="{{ 'logo-scroll-animation.js' | asset_url }}" defer></script>
-    <script src="{{ 'hero-video.js' | asset_url }}" defer></script>
-  </body>
+  <script src="{{ 'critical.js' | asset_url }}"></script>
+
+  {% if settings.quick_add or settings.mobile_quick_add %}
+    {% render 'quick-add-modal' %}
+  {% endif %}
+  
+  {%- comment -%} Your custom scripts remain at the bottom {%- endcomment -%}
+  <script src="{{ 'logo-scroll-animation.js' | asset_url }}" defer></script>
+  <script src="{{ 'hero-video.js' | asset_url }}" defer></script>
+
+</body>
 </html>
