@@ -4162,13 +4162,14 @@ text-component {
 }
 
 /* =====================================================
-   South Club – Deluxe 3-D Flip (v11)
+   South Club – Deluxe 3-D Flip (v12)
    -----------------------------------------------------
-   • Foundation: v6 that you liked.
-   • Improvement: Penguin icon stays invisible until
-     ~65% of the flip, then glides in with a quick
-     opacity + scale reveal (no early flip glimpse).
-   • Reverse scroll stays smooth.
+   Goal: keep the improved reveal from v11 but make the
+   scroll-up (reverse) just as smooth—no snap.
+
+   Strategy: replace keyframe-based iconAppear with
+   pure transitions + delay.  This way, both directions
+   animate symmetrically.
    =====================================================*/
 
 /* ---------- Layout ---------- */
@@ -4204,14 +4205,25 @@ text-component {
   -webkit-backface-visibility: hidden;
 }
 
-.header-logo__image-container--original {
-  transition: opacity 0.28s ease, transform 0.28s ease;
+.header-logo__image-container--original,
+.header-logo__image-container--icon {
+  transition-property: opacity, transform;
+  transition-duration: 0.35s;
+  transition-timing-function: ease;
 }
 
-/* Penguin icon hidden by default */
+/* Word-mark (front face) */
+.header-logo__image-container--original {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Penguin icon (back face) – hidden initial */
 .header-logo__image-container--icon {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) scale(0.92);
   opacity: 0;
+  /* delay will be overridden when active */
+  transition-delay: 0s;
 }
 
 .header-logo__image {
@@ -4220,35 +4232,29 @@ text-component {
   object-fit: contain;
 }
 
-/* ---------- Scroll state ---------- */
+/* ---------- Scroll-down (active) ---------- */
 header-component.scrolled-down .header-logo__flipper {
   transform: rotateY(180deg);
   animation: scFlip 0.8s cubic-bezier(0.645,0.045,0.355,1);
 }
 
-/* Word-mark fades half-way */
 header-component.scrolled-down .header-logo__image-container--original {
   opacity: 0;
   transform: scale(1.08);
-  transition-delay: 0.3s;
+  transition-delay: 0.25s; /* fades out near midpoint */
 }
 
-/* Penguin appear animation */
 header-component.scrolled-down .header-logo__image-container--icon {
-  animation: iconAppear 0.8s forwards;
+  opacity: 1;
+  transform: rotateY(180deg) scale(1);
+  transition-delay: 0.4s; /* appear after midpoint */
 }
 
-/* ---------- Keyframes ---------- */
+/* ---------- Keyframes (depth dip) ---------- */
 @keyframes scFlip {
   0%   { transform: rotateY(0deg)   scale(1);   }
   45%  { transform: rotateY(90deg)  scale(0.86); }
   100% { transform: rotateY(180deg) scale(1);   }
-}
-
-@keyframes iconAppear {
-  0%   { opacity: 0; transform: rotateY(180deg) scale(0.92); }
-  65%  { opacity: 0; transform: rotateY(180deg) scale(0.92); }
-  100% { opacity: 1; transform: rotateY(180deg) scale(1);    }
 }
 
 /* ---------------- Accessibility ---------------- */
@@ -4259,9 +4265,8 @@ header-component.scrolled-down .header-logo__image-container--icon {
     transition: none;
     transform: rotateY(180deg);
   }
-  .header-logo__image-container--icon,
-  .header-logo__image-container--original {
-    animation: none;
+  .header-logo__image-container--original,
+  .header-logo__image-container--icon {
     transition: none;
   }
 }
