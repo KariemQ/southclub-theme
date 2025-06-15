@@ -4162,23 +4162,15 @@ text-component {
 }
 
 /*
-// --- 3D Flip Logo (Final Sizing & Animation) ---
+// --- Minimalist Switch Logo Animation ---
 */
-.header-logo {
-  perspective: 1000px;
-  display: inline-flex; /* Changed to inline-flex for better alignment */
-  align-items: center;
-  vertical-align: middle;
-}
 
+/* The flipper div acts as a container for stacking the logos.
+   It gets its size from the inline style we set up. */
 .header-logo__flipper {
-  /* This element gets its size from the inline style attribute we moved in the liquid file.
-     The CSS below uses those variables to set the height and width. */
+  position: relative;
   height: var(--header-logo-image-height-mobile);
   width: var(--header-logo-image-width-mobile);
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.6, 0.05, 0.4, 1);
 }
 @media screen and (width >= 750px) {
   .header-logo__flipper {
@@ -4187,34 +4179,40 @@ text-component {
   }
 }
 
-header-component.scrolled-down .header-logo__flipper {
-  transform: rotateY(180deg);
-}
-
+/* Both containers are positioned absolutely to stack on top of each other */
 .header-logo__image-container {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.header-logo__image-container--icon {
-  transform: rotateY(180deg);
+/* The text logo has a quick fade-out */
+.header-logo__image-container--original {
+  transition: opacity 0.2s ease-out;
+  opacity: 1;
 }
 
-/* Ensure the images themselves fit perfectly inside their containers */
-.header-logo__image {
-  max-width: 100%;
-  max-height: 100%;
-  height: auto;
-  width: auto;
-  object-fit: contain;
+/* The icon fades in and scales up slightly for a "pop" effect.
+   The custom cubic-bezier creates a subtle, bold bounce. */
+.header-logo__image-container--icon {
+  transform: scale(0.9);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.3, 0, 0.2, 1.5), opacity 0.2s ease-in;
+}
+
+/* When scrolled, trigger the switch */
+header-component.scrolled-down .header-logo__image-container--original {
+  opacity: 0;
+}
+
+header-component.scrolled-down .header-logo__image-container--icon {
+  transform: scale(1);
+  opacity: 1;
 }
 
 /*
