@@ -40,16 +40,23 @@
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
 
     {% comment %}
-      Restoring the original, logical order of sections to ensure stability.
+      This new structure creates two main layers for the entire site
+      to prevent layout and rendering conflicts.
     {% endcomment %}
-    {% sections 'header-group' %}
-    {% section 'hero-video' %}
+    <div class="site-background">
+      {% section 'hero-video' %}
+    </div>
 
-    <main id="MainContent" class="content-for-layout" role="main">
-      {{ content_for_layout }}
-    </main>
+    <div class="site-foreground">
+      {% sections 'header-group' %}
 
-    {% sections 'footer-group' %}
+      <main id="MainContent" class="content-for-layout" role="main">
+        {{ content_for_layout }}
+      </main>
+
+      {% sections 'footer-group' %}
+    </div>
+
 
     {% render 'search-modal' %}
     <script src="{{ 'critical.js' | asset_url }}"></script>
@@ -58,5 +65,6 @@
     {% endif %}
 
     <script src="{{ 'logo-scroll-animation.js' | asset_url }}" defer></script>
+    <script src="{{ 'hero-manager.js' | asset_url }}" defer></script>
   </body>
 </html>
