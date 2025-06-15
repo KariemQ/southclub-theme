@@ -4379,9 +4379,10 @@ body {
 }
 
 /*
-  This rule ensures the header menu links use the font weight
-  assigned to the Body/Paragraph text (Light, 300).
+// --- Direct Override for Header Menu Font ---
+// This rule targets the menu links specifically to ensure the custom font is applied.
 */
 .header-menu .menu-list__link {
-  font-weight: var(--font-paragraph--weight) !important;
+  font-family: "Suisse Intl" !important;
+  font-weight: 300 !important; /* Light weight, to match the Body text */
 }
