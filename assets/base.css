@@ -4411,18 +4411,19 @@ header-actions {
 }
 
 /* =================================================================== */
-/*  HERO VIDEO  +  BOTTOM-HUGGING HEADER                               */
+/*  HERO VIDEO  +  BOTTOM-HUGGING, STICKY HEADER                       */
 /* =================================================================== */
 
-/* Grid skeleton:  row-1 = hero (100vh)  |  row-2 = site             */
+/* Two-row grid: 100 vh hero  |  auto rest */
 .site-grid-container{
   display:grid;
-  grid-template-rows:100vh auto;   /* hero | rest */
+  grid-template-rows:100vh auto;
 }
 
-/* ------------ Row 1: Hero video itself ------------ */
+/* ---------- Row 1 : hero video (bottom layer) ---------- */
 #shopify-section-hero-video{
-  position:relative;               /* anchor for header overlay   */
+  grid-row:1;
+  position:relative;
   z-index:1;
 }
 #shopify-section-hero-video .hero-video__wrapper{
@@ -4438,20 +4439,20 @@ header-actions {
   object-fit:cover;
 }
 
-/* ------------ Row 1 overlay: Header group ------------ */
+/* ---------- Row 1 overlay : header group ---------- */
 .header-group-wrapper{
-  grid-row:1;                      /* sit in the hero row         */
-  position:absolute;               /* overlay the video           */
-  inset:0;
+  grid-row:1;                 /* share row with the video   */
+  position:absolute;          /* overlay, not part of flow  */
+  left:0; right:0; bottom:0;  /* hug bottom edge of hero    */
   display:flex;
   flex-direction:column;
-  justify-content:flex-end;        /* bar hugs the bottom edge    */
-  pointer-events:none;             /* clicks pass through wrapper */
+  justify-content:flex-end;
+  pointer-events:none;
   z-index:10;
 }
-.header-group-wrapper > *{ pointer-events:auto; }  /* re-enable clicks */
+.header-group-wrapper > *{ pointer-events:auto; }
 
-/* Sticky state (added by JS when hero scrolls out) */
+/* Sticky state (JS adds .header--is-sticky) */
 .header-group-wrapper.header--is-sticky{
   position:fixed;
   top:0;
@@ -4466,16 +4467,15 @@ header-actions {
   to  {opacity:1;transform:translateY(0);}
 }
 
-/* ------------ Row 2: push rest of site below hero ------------ */
+/* ---------- Row 2 : main content + footer ---------- */
 #MainContent,
-[id^="shopify-section-footer-group"]{
+[id^="shopify-section-footer"]{
   grid-row:2;
-  margin-top:0;                    /* no fake spacer needed now   */
   z-index:3;
   background:var(--color-background,#fff);
 }
 
-/* ------------ Minimal white arrow cue ------------ */
+/* ---------- White arrow cue ---------- */
 .hero-video__scroll-down{
   position:absolute;
   left:50%;
@@ -4488,9 +4488,7 @@ header-actions {
   cursor:pointer;
 }
 .hero-video__scroll-down svg{
-  display:block;
-  width:32px;
-  height:32px;
+  width:32px; height:32px;
   transition:transform .25s ease;
 }
 .hero-video__scroll-down:hover svg{ transform:translateY(4px); }
