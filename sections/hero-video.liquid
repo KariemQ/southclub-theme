@@ -1,6 +1,70 @@
+<div
+  class="hero-video__wrapper"
+  data-video-section
+  data-scroll-target="#shopify-section-header-group"
+>
+  {%- if section.settings.video != blank -%}
+    {{ section.settings.video | video_tag:
+      class: 'hero-video__media',
+      image_size: '2048x',
+      autoplay: true,
+      loop: true,
+      muted: true,
+      playsinline: true,
+      controls: false,
+      preload: 'metadata'
+    }}
+  {%- elsif section.settings.video_url != blank -%}
+    {%- assign video_id = section.settings.video_url.id -%}
+    {{ section.settings.video_url | video_tag:
+      class: 'hero-video__media',
+      image_size: '2048x',
+      autoplay: true,
+      loop: true,
+      muted: true,
+      playsinline: true,
+      controls: false,
+      preload: 'metadata'
+    }}
+  {%- else -%}
+    {{ 'collection-2' | placeholder_svg_tag: 'hero-video__placeholder' }}
+  {%- endif -%}
+
+  <div class="hero-video__content">
+    {%- comment -%} This renders your existing header at the bottom of the video {%- endcomment -%}
+    {% section 'header-group' %}
+  </div>
+
+  <div class="hero-video__scroll-down" data-scroll-trigger>
+    <span class="visually-hidden">Scroll down</span>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="7 13 12 18 17 13"></polyline>
+      <polyline points="7 6 12 11 17 6"></polyline>
+    </svg>
+  </div>
+</div>
+
 {% schema %}
-  {
-    "name": "Section name",
-    "settings": []
-  }
+{
+  "name": "Hero Video",
+  "settings": [
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Background Video"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "Video URL",
+      "accept": ["youtube", "vimeo"],
+      "info": "For YouTube or Vimeo videos."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Video"
+    }
+  ]
+}
 {% endschema %}
