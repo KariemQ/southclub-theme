@@ -4383,5 +4383,5 @@ body {
   assigned to the Body/Paragraph text (Light, 300).
 */
 .header-menu .menu-list__link {
-  font-weight: var(--font-paragraph--weight);
+  font-weight: var(--font-paragraph--weight) !important;
 }
