@@ -4161,46 +4161,42 @@ text-component {
   z-index: 100;
 }
 
-/* Part 2: The Logo Animation */
+/*
+// --- 3D Flip Logo Scroll Animation ---
+*/
 
-/* The main <a> tag becomes the positioning context */
+/* The main link tag provides the 3D perspective space */
 .header-logo {
+  perspective: 1000px;
+}
+
+/* This new div is the flipper that will rotate */
+.header-logo__flipper {
   position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.6, 0.05, 0.4, 1); /* A smooth, luxurious easing */
 }
 
-/* Position both logo containers to stack on top of each other */
+/* When scrolled down, rotate the flipper */
+header-component[data-scroll-direction="down"] .header-logo__flipper {
+  transform: rotateY(180deg);
+}
+
+/* Both logo containers are positioned absolutely within the flipper.
+   backface-visibility hides them when they are facing away from the screen. */
 .header-logo__image-container {
-  transition: opacity 0.4s ease-in-out, visibility 0s 0.4s;
-}
-
-.header-logo__image-container--icon {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden; /* Safari compatibility */
 }
 
-/* By default, show the original logo and hide the icon */
-.header-logo__image-container--original {
-  opacity: 1;
-  visibility: visible;
-}
-
+/* The icon container starts pre-rotated on the "back" of the card */
 .header-logo__image-container--icon {
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.4s ease-in-out, visibility 0s 0.4s;
-}
-
-/* When the 'scrolled-down' class is added, hide the original and show the icon */
-header-component.scrolled-down .header-logo__image-container--original {
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.4s ease-in-out, visibility 0s 0.4s;
-}
-
-header-component.scrolled-down .header-logo__image-container--icon {
-  opacity: 1;
-  visibility: visible;
-  transition-delay: 0s; /* Make the icon appear instantly on scroll down */
+  transform: rotateY(180deg);
 }
