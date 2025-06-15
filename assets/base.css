@@ -4216,3 +4216,11 @@ header-component.scrolled-down .header-logo__flipper {
   width: auto;
   object-fit: contain;
 }
+
+/*
+// --- Penguin Icon Size Override ---
+// This removes the theme's default max-height limit on the scrolling logo icon.
+*/
+.header-logo__image-container--icon .header-logo__image {
+  max-height: none !important;
+}
