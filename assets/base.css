@@ -4410,62 +4410,42 @@ header-actions {
   gap: 20px;
 }
 
-/* ─────── MAIN PAGE GRID ─────── */
+/* ─────────────────────────────────────────────
+   HERO + STICKY HEADER LAYOUT
+   ─────────────────────────────────────────── */
 .site-grid-container{
-  /* simple vertical stack */
   display:grid;
-  grid-template-rows:auto 1fr auto;   /* hero ▸ main ▸ footer */
+  grid-template-rows:auto 1fr auto;     /* hero ▸ page ▸ footer */
 }
 
-/* hero section (row 1) */
-#shopify-section-hero-video{ grid-row:1; z-index:1; }
+/* hero section (row-1) gets explicit full-viewport height */
+#shopify-section-hero-video{
+  grid-row:1;
+  min-height:100svh;                    /* always fills the view-port */
+  position:relative;
+  z-index:0;
+}
+#shopify-section-hero-video video{
+  width:100%;
+  height:100%;
+  object-fit:cover;                     /* keeps video visible */
+}
 
-/* footer group (row 3 — Shopify already assigns a class) */
+/* main page (row-2) and footer (row-3) keep Shopify defaults */
+#MainContent{ grid-row:2; }
 .shopify-section-group-footer-group{ grid-row:3; }
 
-/* main site content (row 2) */
-#MainContent{ grid-row:2; }
-
-/* ─────── OVERLAY HEADER/ANNOUNCEMENT BAR ─────── */
+/* ───────── overlay   header + announcement bar ───────── */
 #header-group{
-  position:sticky;         /* sticks at top of viewport      */
-  top:0;
-  z-index:20;              /* above the video & everything   */
+  position:sticky;
+  top:0;                                /*      <- sticks here  */
+  grid-row:1;                           /* lives in hero track  */
   width:100%;
-  grid-row:1;              /* physically still in row 1      */
-  margin-top:calc(-1 * var(--header-height)); /* pull it *over* video */
-}
-/* ─────────── HERO VIDEO + OVERLAYING HEADER LAYOUT ─────────── */
-.site-grid-container{
-  /* one column, three stacked areas                             */
-  display:grid;
-  grid-template-areas:
-    "hero"
-    "main"
-    "footer";
-}
+  z-index:20;                           /* above the video      */
 
-/* hero video (row 1, behind the header)                         */
-#shopify-section-hero-video,
-.hero-video{
-  grid-area:hero;
-  width:100%;
-  z-index:1;              /* video stays underneath              */
+  /* put it at   **bottom of the hero video**   when page loads */
+  margin-top:calc( -1 * var(--header-height) );
 }
-
-/* header + announcement bar wrapper (shares the same area)      */
-#header-group{
-  grid-area:hero;         /* same cell as the hero video         */
-  align-self:end;         /* hug the *bottom* of the hero frame  */
-  width:100%;
-  z-index:2;              /* on top of the video                 */
-  position:sticky;        /* becomes sticky when it meets top    */
-  top:0;
-}
-
-/* main page content                                             */
-#MainContent{ grid-area:main; }
-
-/* footer (Shopify’s auto-generated group)                       */
-.shopify-section-group-footer-group{ grid-area:footer; }
+/* when it’s sticky add a helper class for JS / CSS */
+#header-group.header--is-sticky{ margin-top:0; }
 
