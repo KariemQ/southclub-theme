@@ -40,15 +40,12 @@
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
 
     {% comment %}
-      This new structure creates two main layers for the entire site
-      to prevent layout and rendering conflicts.
+      This new structure uses a CSS Grid to layer the site elements correctly,
+      preventing the rendering bugs we encountered before.
     {% endcomment %}
-    <div class="site-background">
-      {% section 'hero-video' %}
-    </div>
-
-    <div class="site-foreground">
+    <div class="site-grid-container">
       {% sections 'header-group' %}
+      {% section 'hero-video' %}
 
       <main id="MainContent" class="content-for-layout" role="main">
         {{ content_for_layout }}
@@ -57,7 +54,6 @@
       {% sections 'footer-group' %}
     </div>
 
-
     {% render 'search-modal' %}
     <script src="{{ 'critical.js' | asset_url }}"></script>
     {% if settings.quick_add or settings.mobile_quick_add %}
@@ -65,5 +61,7 @@
     {% endif %}
 
     <script src="{{ 'logo-scroll-animation.js' | asset_url }}" defer></script>
+    <script src="{{ 'custom-scroll-manager.js' | asset_url }}" defer></script>
+
   </body>
 </html>
