@@ -131,16 +131,33 @@ class HeaderComponent extends Component {
   }
 
   #handleWindowScroll = () => {
+    if (this.#isHeroHeader) {
+      // --- CUSTOM LOGIC FOR HERO VIDEO HEADER ---
+      const heroVideoSection = document.querySelector('#shopify-section-hero-video');
+      const triggerPoint = heroVideoSection ? heroVideoSection.offsetHeight : 0;
+      const headerGroup = document.querySelector('#shopify-section-header-group');
+  
+      if (window.scrollY >= triggerPoint) {
+        headerGroup.classList.add('header--is-sticky');
+        this.classList.add('scrolled-down'); // For logo animation
+      } else {
+        headerGroup.classList.remove('header--is-sticky');
+        this.classList.remove('scrolled-down'); // Reset logo animation
+      }
+      return; // Exit here to not run the original logic
+    }
+  
+    // --- ORIGINAL THEME LOGIC ---
     const stickyMode = this.getAttribute('sticky');
     if (!this.#offscreen && stickyMode !== 'always') return;
-
+  
     const scrollTop = document.scrollingElement?.scrollTop ?? 0;
     const isScrollingUp = scrollTop < this.#lastScrollTop;
     if (this.#timeout) {
       clearTimeout(this.#timeout);
       this.#timeout = null;
     }
-
+  
     if (stickyMode === 'always') {
       if (isScrollingUp) {
         if (this.getBoundingClientRect().top >= 0) {
@@ -151,14 +168,14 @@ class HeaderComponent extends Component {
       } else {
         this.dataset.scrollDirection = 'down';
       }
-
+  
       this.#lastScrollTop = scrollTop;
       return;
     }
-
+  
     if (isScrollingUp) {
       this.removeAttribute('data-animating');
-
+  
       if (this.getBoundingClientRect().top >= 0) {
         // reset sticky state when header is scrolled up to natural position
         this.#offscreen = false;
@@ -173,7 +190,7 @@ class HeaderComponent extends Component {
       this.dataset.scrollDirection = 'none';
       // delay transitioning to idle hidden state for hiding animation
       this.setAttribute('data-animating', '');
-
+  
       this.#timeout = setTimeout(() => {
         this.dataset.stickyState = 'idle';
         this.removeAttribute('data-animating');
@@ -182,11 +199,17 @@ class HeaderComponent extends Component {
       this.dataset.scrollDirection = 'none';
       this.dataset.stickyState = 'idle';
     }
-
+  
     this.#lastScrollTop = scrollTop;
   };
 
   connectedCallback() {
+
+    // Check if a hero video section exists on the page
+    const heroVideoSection = document.querySelector('#shopify-section-hero-video');
+    if (heroVideoSection) {
+      this.#isHeroHeader = true;
+    }
     super.connectedCallback();
     this.#resizeObserver.observe(this);
     this.addEventListener('overflowMinimum', this.#handleOverflowMinimum);
