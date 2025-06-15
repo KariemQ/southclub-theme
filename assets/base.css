@@ -1,27 +1,3 @@
-/* --- DEBUGGING STYLES --- */
-#shopify-section-header-group,
-#shopify-section-footer-group {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    transform: none !important;
-    position: fixed !important; /* Forcing position for debug */
-    background-color: rgba(255, 0, 0, 0.7) !important; /* Bright red! */
-    border: 3px solid yellow !important;
-    z-index: 999999 !important; /* Highest possible z-index */
-}
-
-#shopify-section-header-group {
-    top: 10px !important; /* Forcing it to the top */
-    bottom: auto !important;
-}
-
-#shopify-section-footer-group {
-    bottom: 10px !important; /* Forcing it to the bottom */
-    top: auto !important;
-}
-/* --- END DEBUGGING STYLES --- */
-
 /* -- Custom Font: Suisse Intl -- */
 
 /* Light Weight */
@@ -4447,7 +4423,7 @@ header-actions {
   gap: 20px;
 }
 
-/* -- Advanced Hero Video Layout (V4 - Final) -- */
+/* -- Advanced Hero Video Layout (V5 - Final) -- */
 
 /* 1. The video wrapper is a fixed background layer. */
 #shopify-section-hero-video .hero-video__wrapper {
@@ -4455,9 +4431,9 @@ header-actions {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh; /* vh is a unit for viewport height */
-  height: 100svh; /* A newer unit that accounts for mobile browser bars */
-  z-index: 1; /* Sits behind everything */
+  height: 100vh;
+  height: 100svh;
+  z-index: 1;
   background-color: black;
 }
 .hero-video__media {
@@ -4470,54 +4446,50 @@ header-actions {
   object-fit: cover;
 }
 
-/* 2. The hero-video section itself should take up no space in the page layout. */
+/* 2. The hero-video SECTION ITSELF is now the 100vh spacer. */
+/* This pushes the <main> content down without needing any margins. */
 #shopify-section-hero-video {
-  position: relative;
-  /* This element is now just a logical container for the video and arrow. */
+  height: 100vh;
+  height: 100svh;
+  position: relative; /* This is for positioning the scroll-down arrow inside it */
+  z-index: 2;
 }
 
-/* 3. The header group is FIXED to the bottom of the VIEWPORT initially. */
+/* 3. The header is fixed to the bottom of the viewport initially. */
 #shopify-section-header-group {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
-  z-index: 10; /* High z-index to be on top of everything */
+  z-index: 10;
 }
 
-/* 4. This class makes the header "sticky" at the top AFTER scrolling. */
+/* 4. This class makes the header "sticky" at the top after scrolling. */
 #shopify-section-header-group.header-is-sticky {
   position: fixed;
   top: 0;
   bottom: auto;
-  background-color: var(--color-background); /* Add a solid background when sticky */
+  background-color: var(--color-background);
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-/* 5. We create the "scroll space" by adding margin to the top of the main content. */
-main#MainContent {
-  position: relative; /* Required for z-index to work */
-  z-index: 3; /* To scroll over the video background (z-index: 1) */
-  margin-top: 100vh;
-  margin-top: 100svh;
-  background-color: var(--color-background); /* Crucial to hide the video behind the content */
-}
-
-/* 6. The footer also needs a z-index and background to scroll over the video. */
+/* 5. Main content and footer simply need a background color and z-index to scroll over the video. */
+/* No more margin-top! They will naturally follow the 100vh spacer. */
+main#MainContent,
 #shopify-section-footer-group {
   position: relative;
   z-index: 3;
   background-color: var(--color-background);
 }
 
-/* 7. The arrow must be fixed to the viewport to be visible over the video. */
+/* 6. The arrow is now positioned absolutely within the 100vh spacer section. */
 .hero-video__scroll-down {
-    position: fixed;
-    /* IMPORTANT: Adjust '140px' below to position the arrow just above your header. */
+    position: absolute;
+    /* Adjust '140px' to position the arrow just above your header. */
     bottom: 140px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 11; /* Higher than the header */
+    z-index: 5;
     cursor: pointer;
 }
 .hero-video__scroll-down svg {
