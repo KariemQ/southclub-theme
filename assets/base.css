@@ -4410,89 +4410,6 @@ header-actions {
   gap: 20px;
 }
 
-/* =================================================================== */
-/*  HERO VIDEO  +  BOTTOM-HUGGING, STICKY HEADER                       */
-/* =================================================================== */
-
-/* Two-row grid: 100 vh hero  |  auto rest */
-.site-grid-container{
-  display:grid;
-  grid-template-rows:100vh auto;
-}
-
-/* ---------- Row 1 : hero video (bottom layer) ---------- */
-#shopify-section-hero-video{
-  grid-row:1;
-  position:relative;
-  z-index:1;
-}
-#shopify-section-hero-video .hero-video__wrapper{
-  position:sticky;
-  top:0;
-  height:100vh;
-}
-#shopify-section-hero-video .hero-video__media{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-/* ---------- Row 1 overlay : header group ---------- */
-.header-group-wrapper{
-  grid-row:1;                 /* share row with the video   */
-  position:absolute;          /* overlay, not part of flow  */
-  left:0; right:0; bottom:0;  /* hug bottom edge of hero    */
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-end;
-  pointer-events:none;
-  z-index:10;
-}
-.header-group-wrapper > *{ pointer-events:auto; }
-
-/* Sticky state (JS adds .header--is-sticky) */
-.header-group-wrapper.header--is-sticky{
-  position:fixed;
-  top:0;
-  height:auto;
-  justify-content:flex-start;
-  background:var(--color-background,#fff);
-  box-shadow:0 2px 5px rgb(0 0 0 / .1);
-  animation:fadeInDown .3s ease-out;
-}
-@keyframes fadeInDown{
-  from{opacity:0;transform:translateY(-20px);}
-  to  {opacity:1;transform:translateY(0);}
-}
-
-/* ---------- Row 2 : main content + footer ---------- */
-#MainContent,
-[id^="shopify-section-footer"]{
-  grid-row:2;
-  z-index:3;
-  background:var(--color-background,#fff);
-}
-
-/* ---------- White arrow cue ---------- */
-.hero-video__scroll-down{
-  position:absolute;
-  left:50%;
-  bottom:2.5rem;
-  translate:-50% 0;
-  background:none;
-  border:0;
-  padding:0;
-  color:#fff;
-  cursor:pointer;
-}
-.hero-video__scroll-down svg{
-  width:32px; height:32px;
-  transition:transform .25s ease;
-}
-.hero-video__scroll-down:hover svg{ transform:translateY(4px); }
-
 /* ─────── MAIN PAGE GRID ─────── */
 .site-grid-container{
   /* simple vertical stack */
@@ -4518,3 +4435,37 @@ header-actions {
   grid-row:1;              /* physically still in row 1      */
   margin-top:calc(-1 * var(--header-height)); /* pull it *over* video */
 }
+/* ─────────── HERO VIDEO + OVERLAYING HEADER LAYOUT ─────────── */
+.site-grid-container{
+  /* one column, three stacked areas                             */
+  display:grid;
+  grid-template-areas:
+    "hero"
+    "main"
+    "footer";
+}
+
+/* hero video (row 1, behind the header)                         */
+#shopify-section-hero-video,
+.hero-video{
+  grid-area:hero;
+  width:100%;
+  z-index:1;              /* video stays underneath              */
+}
+
+/* header + announcement bar wrapper (shares the same area)      */
+#header-group{
+  grid-area:hero;         /* same cell as the hero video         */
+  align-self:end;         /* hug the *bottom* of the hero frame  */
+  width:100%;
+  z-index:2;              /* on top of the video                 */
+  position:sticky;        /* becomes sticky when it meets top    */
+  top:0;
+}
+
+/* main page content                                             */
+#MainContent{ grid-area:main; }
+
+/* footer (Shopify’s auto-generated group)                       */
+.shopify-section-group-footer-group{ grid-area:footer; }
+
