@@ -131,23 +131,24 @@ class HeaderComponent extends Component {
   }
 
   #handleWindowScroll = () => {
-    if (this.#isHeroHeader) {
-      const heroVideoSection = document.querySelector('#shopify-section-hero-video');
-      const headerGroup      = document.querySelector('#header-group');
-      if (!heroVideoSection || !headerGroup) return;
+    if (!this.#isHeroHeader) {
+      /* untouched theme scroll-up logic */
+      return super.#handleWindowScroll?.();
+    }
   
-      /* bottom-of-video minus bar height */
-      const triggerPoint =
-        heroVideoSection.offsetHeight - headerGroup.offsetHeight;
+    const hero   = document.querySelector('#shopify-section-hero-video');
+    const barGrp = document.querySelector('#header-group');
+    if (!hero || !barGrp) return;
   
-      if (window.scrollY >= triggerPoint) {
-        headerGroup.classList.add('header--is-sticky');
-        this.classList.add('scrolled-down');      // logo flip ON
-      } else {
-        headerGroup.classList.remove('header--is-sticky');
-        this.classList.remove('scrolled-down');   // logo flip OFF
-      }
-      return;                                     // skip default logic
+    const headerH   = barGrp.offsetHeight;
+    const trigger   = hero.getBoundingClientRect().bottom + window.scrollY - headerH;
+  
+    if (window.scrollY >= trigger){
+      barGrp.classList.add('header--is-sticky');
+      this.classList.add('scrolled-down');      // logo flip ON
+    }else{
+      barGrp.classList.remove('header--is-sticky');
+      this.classList.remove('scrolled-down');   // logo flip OFF
     }
 
   
