@@ -4294,7 +4294,9 @@ header-component.scrolled-down .header-logo__image-container--icon {
 // --- Bold Header Menu on Hover ---
 */
 
-/* When you hover over a menu link, change its font-weight to bold */
+/* On hover, apply a subtle text-shadow to create a "faux bold" effect
+   that does not change the layout. */
 .header-menu .menu-list__link:hover {
-  font-weight: bold;
+  /* You can adjust the '0.04em' value for a thicker or thinner bold effect */
+  text-shadow: 0 0 0.04em currentColor;
 }
