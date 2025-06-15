@@ -4408,7 +4408,7 @@ body {
 /* This forcefully overrides the theme's default gap variable
    for the container holding the icons on the right. */
 .header__column--right {
-  gap: 35px !important;
+  gap: 40px !important;
 }
 
 /*
