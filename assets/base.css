@@ -4178,37 +4178,31 @@ text-component {
 // --- Logo Scroll Animation (Final Sizing Fix) ---
 */
 
-/* The container is a positioning context for the icon. Its size is
-   determined by the original text logo which remains in the layout. */
+/* The container is a positioning context for the icon. */
 .header-logo__image-container {
   position: relative;
-  display: inline-flex;
+  /* Match the parent flex properties to ensure alignment */
+  display: flex;
   align-items: center;
+  justify-content: center;
 }
 
-/* The text logo gives the container its size. We only animate its opacity. */
+/* The text logo gives the container its size and is prepared for transition. */
 .header-logo__image--text {
   transition: opacity 0.4s ease-in-out;
-  opacity: 1;
 }
 
-/* The icon is positioned absolutely on top of the text logo. */
+/*
+  The icon is positioned on top. It gets its dimensions automatically
+  from the theme's ".header-logo__image" stylesheet rule, just like the text logo.
+  This ensures both images have the exact same size.
+*/
 .header-logo__image--icon {
   transition: opacity 0.4s ease-in-out;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
-  /*
-    KEY FIX: Set the height to 100% of the container (which is the height
-    of the text logo) and let the width adjust automatically. This will
-    ensure the penguin is never taller than the original logo.
-  */
-  height: 100%;
-  width: auto;
-  max-width: 100%; /* Prevent it from being wider than the container */
-
   opacity: 0; /* Hidden by default */
 }
 
