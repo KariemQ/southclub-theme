@@ -1,98 +1,52 @@
+/*  assets/header.js  */
+/* -------------------------------------------------------------------------- */
 import { Component } from '@theme/component';
 import { onDocumentReady, changeMetaThemeColor } from '@theme/utilities';
 
 /**
  * @typedef {Object} HeaderComponentRefs
- * @property {HTMLDivElement} headerDrawerContainer - The header drawer container element
- * @property {HTMLElement} headerMenu - The header menu element
- * @property {HTMLElement} headerRowTop - The header top row element
+ * @property {HTMLDivElement} headerDrawerContainer
+ * @property {HTMLElement}     headerMenu
+ * @property {HTMLElement}     headerRowTop
  */
 
 /**
  * @typedef {CustomEvent<{ minimumReached: boolean }>} OverflowMinimumEvent
  */
 
-/**
- * A custom element that manages the site header.
- *
- * @extends {Component<HeaderComponentRefs>}
- */
-
 class HeaderComponent extends Component {
+  /* ---------- required DOM refs ---------- */
   requiredRefs = ['headerDrawerContainer', 'headerMenu', 'headerRowTop'];
 
-  /**
-   * Width of window when header drawer was hidden
-   * @type {number | null}
-   */
+  /* ---------- private fields ---------- */
   #menuDrawerHiddenWidth = null;
+  #intersectionObserver  = null;
+  #offscreen             = false;
+  #lastScrollTop         = 0;
+  #timeout               = null;
+  #animationDelay        = 150;
+  #isHeroHeader          = false;
 
-  /**
-   * An intersection observer for monitoring sticky header position
-   * @type {IntersectionObserver | null}
-   */
-  #intersectionObserver = null;
-
-  /**
-   * Whether the header has been scrolled offscreen, when sticky behavior is 'scroll-up'
-   * @type {boolean}
-   */
-  #offscreen = false;
-
-  /**
-   * The last recorded scrollTop of the document, when sticky behavior is 'scroll-up
-   * @type {number}
-   */
-  #lastScrollTop = 0;
-
-  /**
-   * A timeout to allow for hiding animation, when sticky behavior is 'scroll-up'
-   * @type {number | null}
-   */
-  #timeout = null;
-
-  /**
-   * The duration to wait for hiding animation, when sticky behavior is 'scroll-up'
-   * @constant {number}
-   */
-  #animationDelay = 150;
-
-  /**
-   * A flag to indicate if this header is part of the hero video effect.
-   * @type {boolean}
-   */
-  #isHeroHeader = false;
-
-  /**
-   * Keeps the global `--header-height` custom property up to date,
-   * which other theme components can then consume
-   */
+  /* ---------- keep --header-height up-to-date ---------- */
   #resizeObserver = new ResizeObserver(([entry]) => {
     if (!entry) return;
-
     const { height } = entry.target.getBoundingClientRect();
     document.body.style.setProperty('--header-height', `${height}px`);
 
-    // Check if the menu drawer should be hidden in favor of the header menu
+    /* if we hid the drawer because of a small window,
+       show it again when the window is wide enough */
     if (this.#menuDrawerHiddenWidth && window.innerWidth > this.#menuDrawerHiddenWidth) {
       this.#updateMenuVisibility(false);
     }
   });
 
-  /**
-   * Observes the header while scrolling the viewport to track when its actively sticky
-   * @param {Boolean} alwaysSticky - Determines if we need to observe when the header is offscreen
-   */
+  /* ---------- sticky position observer ---------- */
   #observeStickyPosition = (alwaysSticky = true) => {
     if (this.#intersectionObserver) return;
 
-    const config = {
-      threshold: alwaysSticky ? 1 : 0,
-    };
-
+    const config = { threshold: alwaysSticky ? 1 : 0 };
     this.#intersectionObserver = new IntersectionObserver(([entry]) => {
       if (!entry) return;
-
       const { isIntersecting } = entry;
 
       if (alwaysSticky) {
@@ -106,20 +60,13 @@ class HeaderComponent extends Component {
     this.#intersectionObserver.observe(this);
   };
 
-  /**
-   * Handles the overflow minimum event from the header menu
-   * @param {OverflowMinimumEvent} event
-   */
-  #handleOverflowMinimum = (event) => {
+  /* ---------- menu overflow from header-menu ---------- */
+  #handleOverflowMinimum = (event /** @type {OverflowMinimumEvent} */) => {
     this.#updateMenuVisibility(event.detail.minimumReached);
   };
 
-  /**
-   * Updates the visibility of the menu and drawer
-   * @param {boolean} hideMenu - Whether to hide the menu and show the drawer
-   */
-  #updateMenuVisibility(hideMenu) {
-    if (hideMenu) {
+  #updateMenuVisibility(hide) {
+    if (hide) {
       this.refs.headerDrawerContainer.classList.remove('desktop:hidden');
       this.#menuDrawerHiddenWidth = window.innerWidth;
       this.refs.headerMenu.classList.add('hidden');
@@ -130,90 +77,93 @@ class HeaderComponent extends Component {
     }
   }
 
+  /* ------------------------------------------------------------------------
+     MAIN SCROLL HANDLER
+     – first block handles the hero-video layout
+     – afterwards the untouched Dawn “scroll-up” logic
+     ------------------------------------------------------------------------ */
   #handleWindowScroll = () => {
+    /* ===== HERO VIDEO MODE ============================================= */
     if (this.#isHeroHeader) {
-            /*  ===== Sticky trigger for a FIXED hero =====  */
-      const heroHeight  = hero.offsetHeight || window.innerHeight;   // 100 svh
-      const headerH     = barGrp.offsetHeight;
-      const trigger     = heroHeight - headerH;                      // one-time constant
-      
+      const hero   = document.querySelector('#shopify-section-hero-video');
+      const barGrp = document.querySelector('#header-group');
+      if (!hero || !barGrp) return;
+
+      /* hero is position:fixed, so its height is a constant */
+      const heroHeight = hero.offsetHeight || window.innerHeight; // 100 svh fallback
+      const headerH    = barGrp.offsetHeight;
+      const trigger    = heroHeight - headerH;                    // slide-up point
+
       if (window.scrollY >= trigger) {
         barGrp.classList.add('header--is-sticky');
-        this.classList.add('scrolled-down');       // logo flip ON
+        this.classList.add('scrolled-down');     // logo flip ON
       } else {
         barGrp.classList.remove('header--is-sticky');
-        this.classList.remove('scrolled-down');    // logo flip OFF
+        this.classList.remove('scrolled-down');  // logo flip OFF
       }
 
-      }
-    
-      /* We’re handling sticky state ourselves → skip the old maths. */
+      /* all sticky logic handled above – skip Dawn’s scroll-up block */
       return;
     }
-  
-    // --- ORIGINAL THEME LOGIC ---
+
+    /* ===== ORIGINAL DAWN “scroll-up” LOGIC ============================= */
     const stickyMode = this.getAttribute('sticky');
     if (!this.#offscreen && stickyMode !== 'always') return;
-  
-    const scrollTop = document.scrollingElement?.scrollTop ?? 0;
-    const isScrollingUp = scrollTop < this.#lastScrollTop;
+
+    const scrollTop      = document.scrollingElement?.scrollTop ?? 0;
+    const isScrollingUp  = scrollTop < this.#lastScrollTop;
+
     if (this.#timeout) {
       clearTimeout(this.#timeout);
       this.#timeout = null;
     }
-  
+
     if (stickyMode === 'always') {
       if (isScrollingUp) {
-        if (this.getBoundingClientRect().top >= 0) {
-          this.dataset.scrollDirection = 'none';
-        } else {
-          this.dataset.scrollDirection = 'up';
-        }
+        this.dataset.scrollDirection =
+          this.getBoundingClientRect().top >= 0 ? 'none' : 'up';
       } else {
         this.dataset.scrollDirection = 'down';
       }
-  
       this.#lastScrollTop = scrollTop;
       return;
     }
-  
+
     if (isScrollingUp) {
       this.removeAttribute('data-animating');
-  
+
       if (this.getBoundingClientRect().top >= 0) {
-        // reset sticky state when header is scrolled up to natural position
-        this.#offscreen = false;
-        this.dataset.stickyState = 'inactive';
-        this.dataset.scrollDirection = 'none';
+        this.#offscreen               = false;
+        this.dataset.stickyState      = 'inactive';
+        this.dataset.scrollDirection  = 'none';
       } else {
-        // show sticky header when scrolling up
-        this.dataset.stickyState = 'active';
-        this.dataset.scrollDirection = 'up';
+        this.dataset.stickyState      = 'active';
+        this.dataset.scrollDirection  = 'up';
       }
     } else if (this.dataset.stickyState === 'active') {
       this.dataset.scrollDirection = 'none';
-      // delay transitioning to idle hidden state for hiding animation
       this.setAttribute('data-animating', '');
-  
+
       this.#timeout = setTimeout(() => {
         this.dataset.stickyState = 'idle';
         this.removeAttribute('data-animating');
       }, this.#animationDelay);
     } else {
       this.dataset.scrollDirection = 'none';
-      this.dataset.stickyState = 'idle';
+      this.dataset.stickyState     = 'idle';
     }
-  
+
     this.#lastScrollTop = scrollTop;
   };
+  /* -------------------------------------------------------------------- */
 
+  /* ---------- lifecycle ------------------------------------------------ */
   connectedCallback() {
-
-    // Check if a hero video section exists on the page
-    const heroVideoSection = document.querySelector('#shopify-section-hero-video');
-    if (heroVideoSection) {
+    /* detect if this header sits on a hero-video section */
+    if (document.querySelector('#shopify-section-hero-video')) {
       this.#isHeroHeader = true;
     }
+
     super.connectedCallback();
     this.#resizeObserver.observe(this);
     this.addEventListener('overflowMinimum', this.#handleOverflowMinimum);
@@ -238,41 +188,36 @@ class HeaderComponent extends Component {
   }
 }
 
+/* ---------- register ---------- */
 if (!customElements.get('header-component')) {
   customElements.define('header-component', HeaderComponent);
 }
 
+/* ---------- helper: update header-group height for the rest of the site ---------- */
 onDocumentReady(() => {
-  const header = document.querySelector('#header-component');
-  const headerGroup = document.querySelector('#header-group');
+  const header       = document.querySelector('#header-component');
+  const headerGroup  = document.querySelector('#header-group');
 
-  // Update header group height on resize of any child
   if (headerGroup) {
-    const resizeObserver = new ResizeObserver(() => calculateHeaderGroupHeight(header, headerGroup));
+    const resizeObserver = new ResizeObserver(() =>
+      calculateHeaderGroupHeight(header, headerGroup)
+    );
 
-    // Observe all children of the header group
-    const children = headerGroup.children;
-    for (let i = 0; i < children.length; i++) {
-      const element = children[i];
-      if (element === header || !(element instanceof HTMLElement)) continue;
-      resizeObserver.observe(element);
-    }
+    /* observe all current children */
+    [...headerGroup.children].forEach((el) => {
+      if (el !== header && el instanceof HTMLElement) resizeObserver.observe(el);
+    });
 
-    // Also observe the header group itself for child changes
+    /* observe future child changes */
     const mutationObserver = new MutationObserver((mutations) => {
-      for (const mutation of mutations) {
-        if (mutation.type === 'childList') {
-          // Re-observe all children when the list changes
-          const children = headerGroup.children;
-          for (let i = 0; i < children.length; i++) {
-            const element = children[i];
-            if (element === header || !(element instanceof HTMLElement)) continue;
-            resizeObserver.observe(element);
-          }
+      for (const m of mutations) {
+        if (m.type === 'childList') {
+          [...headerGroup.children].forEach((el) => {
+            if (el !== header && el instanceof HTMLElement) resizeObserver.observe(el);
+          });
         }
       }
     });
-
     mutationObserver.observe(headerGroup, { childList: true });
   }
 });
