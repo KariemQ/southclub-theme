@@ -131,26 +131,32 @@ class HeaderComponent extends Component {
   }
 
   #handleWindowScroll = () => {
-    if (!this.#isHeroHeader) {
-      /* untouched theme scroll-up logic */
-      return super.#handleWindowScroll?.();
-    }
-  
-    const hero   = document.querySelector('#shopify-section-hero-video');
-    const barGrp = document.querySelector('#header-group');
-    if (!hero || !barGrp) return;
-  
-    const headerH = barGrp.offsetHeight;
-    const trigger = hero.offsetTop + hero.offsetHeight - headerH;   // ← replace this line  
+    if (this.#isHeroHeader) {
+      const headerGroup = document.querySelector('#header-group');
+      const triggerEl   = document.querySelector('#hero-trigger'); // the new 1-px bar
+      if (!headerGroup || !triggerEl) return;
     
-    if (window.scrollY >= trigger){
-      barGrp.classList.add('header--is-sticky');
-      this.classList.add('scrolled-down');      // logo flip ON
-    }else{
-      barGrp.classList.remove('header--is-sticky');
-      this.classList.remove('scrolled-down');   // logo flip OFF
+      // lazy-initialise the observer only once
+      if (!this._heroObserver) {
+        this._heroObserver = new IntersectionObserver(
+          ([entry]) => {
+            const stuck = !entry.isIntersecting;     // sentinel scrolled above viewport
+            headerGroup.classList.toggle('header--is-sticky', stuck);
+            this.classList.toggle('scrolled-down',    stuck);   // logo flip
+          },
+          {
+            root:   null,
+            threshold: 0,
+            // subtract bar height so it flips exactly when it kisses the top
+            rootMargin: `-${headerGroup.offsetHeight}px 0px 0px 0px`,
+          }
+        );
+        this._heroObserver.observe(triggerEl);
+      }
+    
+      /* We’re handling sticky state ourselves → skip the old maths. */
+      return;
     }
-
   
     // --- ORIGINAL THEME LOGIC ---
     const stickyMode = this.getAttribute('sticky');
