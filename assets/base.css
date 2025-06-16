@@ -4502,6 +4502,14 @@ header-actions {
   margin-top:100svh;      /* no header subtraction needed  */
 }
 
+/* stop the video from bleeding through the footer */
+.shopify-section-group-footer-group,
+footer{                       /* add more selectors if your theme uses them */
+  position:relative;          /* new stacking context – stays above video   */
+  z-index:10;
+  background:var(--color-background, #fff);   /* falls back to white */
+}
+
 
 
 
