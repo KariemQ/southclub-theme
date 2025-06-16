@@ -1,8 +1,10 @@
-/*  assets/header.js  –– hero-video version  */
+/*  assets/header.js  – sentinel version  */
 import { Component } from '@theme/component';
 import { onDocumentReady, changeMetaThemeColor } from '@theme/utilities';
 
-/* ---------------------------- boiler-plate ---------------------------- */
+/* ----------------------------------------------------------------------
+   Header component (Dawn boiler-plate + hero-video additions)
+   ------------------------------------------------------------------- */
 class HeaderComponent extends Component {
   requiredRefs = ['headerDrawerContainer', 'headerMenu', 'headerRowTop'];
 
@@ -24,60 +26,33 @@ class HeaderComponent extends Component {
     }
   });
 
-  #observeStickyPosition = (alwaysSticky = true) => {
-    if (this.#intersectionObserver) return;
-    this.#intersectionObserver = new IntersectionObserver(([entry]) => {
-      if (!entry) return;
-      const { isIntersecting } = entry;
+  /* =============== HERO SENTINEL SET-UP ============================== */
+  #createHeroObserver() {
+    const hero    = document.querySelector('#shopify-section-hero-video');
+    const barGrp  = document.querySelector('#header-group');
+    if (!hero || !barGrp) return;
 
-      if (alwaysSticky) {
-        this.dataset.stickyState = isIntersecting ? 'inactive' : 'active';
-        changeMetaThemeColor(this.refs.headerRowTop);
-      } else {
-        this.#offscreen = !isIntersecting || this.dataset.stickyState === 'active';
-      }
-    }, { threshold: alwaysSticky ? 1 : 0 });
+    /* 1 px sentinel that sits right after the hero */
+    const sentinel = document.createElement('div');
+    sentinel.id    = 'hero-sticky-trigger';
+    sentinel.style.cssText = 'position:relative;width:100%;height:1px;';
+    hero.insertAdjacentElement('afterend', sentinel);
 
-    this.#intersectionObserver.observe(this);
-  };
+    /* Watch when the sentinel leaves the viewport (top ≤ 0) */
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        const isPastHero = entry.boundingClientRect.top < 0;
+        barGrp.classList.toggle('header--is-sticky', isPastHero);
+        this.classList.toggle('scrolled-down',               isPastHero);
+      },
+      { root: null, threshold: 0 }
+    );
 
-  #updateMenuVisibility(hide) {
-    if (hide) {
-      this.refs.headerDrawerContainer.classList.remove('desktop:hidden');
-      this.#menuDrawerHiddenWidth = window.innerWidth;
-      this.refs.headerMenu.classList.add('hidden');
-    } else {
-      this.refs.headerDrawerContainer.classList.add('desktop:hidden');
-      this.#menuDrawerHiddenWidth = null;
-      this.refs.headerMenu.classList.remove('hidden');
-    }
+    io.observe(sentinel);
   }
 
-  /* --------------------------------------------------------------------
-     MAIN SCROLL HANDLER
-     – first block handles the hero-video + slide-up
-     – afterwards Dawn’s original “scroll-up” logic (untouched)
-     -------------------------------------------------------------------- */
+  /* =============== DAWN’S ORIGINAL “scroll-up” HANDLER =============== */
   #handleWindowScroll = () => {
-    /* ===== HERO VIDEO MODE =========================================== */
-    if (this.#isHeroHeader) {
-      const barGrp = document.querySelector('#header-group');
-      if (!barGrp) return;
-
-      /* viewport height (100 vh) minus the bar’s own height */
-      const trigger = window.innerHeight - barGrp.offsetHeight;
-
-      if (window.scrollY >= trigger) {
-        barGrp.classList.add('header--is-sticky');
-        this.classList.add('scrolled-down');          // flip logo
-      } else {
-        barGrp.classList.remove('header--is-sticky');
-        this.classList.remove('scrolled-down');
-      }
-      return;                                         // done
-    }
-
-    /* ===== ORIGINAL DAWN STICKY (“scroll-up”) ======================== */
     const stickyMode = this.getAttribute('sticky');
     if (!this.#offscreen && stickyMode !== 'always') return;
 
@@ -126,12 +101,13 @@ class HeaderComponent extends Component {
 
     this.#lastScrollTop = scrollTop;
   };
-  /* ------------------------------------------------------------------ */
 
-  /* ---------------------------- lifecycle --------------------------- */
+  /* ===================  LIFECYCLE HOOKS ============================== */
   connectedCallback() {
+    /* Detect hero-video presence once */
     if (document.querySelector('#shopify-section-hero-video')) {
       this.#isHeroHeader = true;
+      this.#createHeroObserver();   // <-- sentinel magic
     }
 
     super.connectedCallback();
@@ -147,9 +123,6 @@ class HeaderComponent extends Component {
         document.addEventListener('scroll', this.#handleWindowScroll, { passive: true });
       }
     }
-
-    /* run once so the bar is correct on first paint */
-    this.#handleWindowScroll();
   }
 
   disconnectedCallback() {
@@ -159,14 +132,44 @@ class HeaderComponent extends Component {
     document.removeEventListener('scroll', this.#handleWindowScroll);
     document.body.style.setProperty('--header-height', '0px');
   }
+
+  /* ===== Helpers copied from Dawn (unchanged) ======================== */
+  #updateMenuVisibility(hide) {
+    if (hide) {
+      this.refs.headerDrawerContainer.classList.remove('desktop:hidden');
+      this.#menuDrawerHiddenWidth = window.innerWidth;
+      this.refs.headerMenu.classList.add('hidden');
+    } else {
+      this.refs.headerDrawerContainer.classList.add('desktop:hidden');
+      this.#menuDrawerHiddenWidth = null;
+      this.refs.headerMenu.classList.remove('hidden');
+    }
+  }
+
+  #observeStickyPosition(alwaysSticky = true) {
+    if (this.#intersectionObserver) return;
+    this.#intersectionObserver = new IntersectionObserver(([entry]) => {
+      if (!entry) return;
+      const { isIntersecting } = entry;
+
+      if (alwaysSticky) {
+        this.dataset.stickyState = isIntersecting ? 'inactive' : 'active';
+        changeMetaThemeColor(this.refs.headerRowTop);
+      } else {
+        this.#offscreen = !isIntersecting || this.dataset.stickyState === 'active';
+      }
+    }, { threshold: alwaysSticky ? 1 : 0 });
+
+    this.#intersectionObserver.observe(this);
+  }
 }
 
-/* register the custom-element only once */
+/* register the custom element once */
 if (!customElements.get('header-component')) {
   customElements.define('header-component', HeaderComponent);
 }
 
-/* ---------------- helper: keep --header-group-height ---------------- */
+/* ---- keep --header-group-height up to date (from Dawn) -------------- */
 onDocumentReady(() => {
   const header      = document.querySelector('#header-component');
   const headerGroup = document.querySelector('#header-group');
