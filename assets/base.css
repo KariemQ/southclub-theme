@@ -4503,11 +4503,18 @@ header-actions {
 }
 
 /* stop the video from bleeding through the footer */
+#MainContent,
 .shopify-section-group-footer-group,
-footer{                       /* add more selectors if your theme uses them */
-  position:relative;          /* new stacking context – stays above video   */
+footer{
+  position:relative;
   z-index:10;
-  background:var(--color-background, #fff);   /* falls back to white */
+  background:var(--color-background, #fff);   /* uses scheme or falls back */
+}
+
+.site-grid-container{
+  display:grid;
+  grid-template-columns:100%;     /* prevent accidental 2-column split   */
+  grid-template-rows:auto 1fr auto;
 }
 
 
