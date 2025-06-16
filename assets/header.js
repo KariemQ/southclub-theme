@@ -132,26 +132,19 @@ class HeaderComponent extends Component {
 
   #handleWindowScroll = () => {
     if (this.#isHeroHeader) {
-      const headerGroup = document.querySelector('#header-group');
-      const triggerEl   = document.querySelector('#hero-trigger'); // the new 1-px bar
-      if (!headerGroup || !triggerEl) return;
-    
-      // lazy-initialise the observer only once
-      if (!this._heroObserver) {
-        this._heroObserver = new IntersectionObserver(
-          ([entry]) => {
-            const stuck = !entry.isIntersecting;     // sentinel scrolled above viewport
-            headerGroup.classList.toggle('header--is-sticky', stuck);
-            this.classList.toggle('scrolled-down',    stuck);   // logo flip
-          },
-          {
-            root:   null,
-            threshold: 0,
-            // subtract bar height so it flips exactly when it kisses the top
-            rootMargin: `-${headerGroup.offsetHeight}px 0px 0px 0px`,
-          }
-        );
-        this._heroObserver.observe(triggerEl);
+            /*  ===== Sticky trigger for a FIXED hero =====  */
+      const heroHeight  = hero.offsetHeight || window.innerHeight;   // 100 svh
+      const headerH     = barGrp.offsetHeight;
+      const trigger     = heroHeight - headerH;                      // one-time constant
+      
+      if (window.scrollY >= trigger) {
+        barGrp.classList.add('header--is-sticky');
+        this.classList.add('scrolled-down');       // logo flip ON
+      } else {
+        barGrp.classList.remove('header--is-sticky');
+        this.classList.remove('scrolled-down');    // logo flip OFF
+      }
+
       }
     
       /* We’re handling sticky state ourselves → skip the old maths. */
