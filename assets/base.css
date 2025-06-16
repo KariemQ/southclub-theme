@@ -4456,12 +4456,13 @@ header-actions {
   width:100%;
   z-index:20;
 
-  /* start flush with the BOTTOM edge of the hero on page-load      *
-   * 100svh  = viewport height,   var(--header-height) = bar height */
-  margin-top:calc(100svh - var(--header-height));
+  transform:translateY(calc(100svh - var(--header-height)));
+  transition:transform .28s ease-out;
 }
 /* once JS adds the helper class (see header.js) the bar snaps to 0 */
-#header-group.header--is-sticky{ margin-top:0; }
+#header-group.header--is-sticky{
+  transform:translateY(0);
+}
 
 /* --------------------------------------------------------------
    Make sure the <video> itself always fills the hero section
