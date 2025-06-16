@@ -1,24 +1,11 @@
-/*  assets/header.js  */
-/* -------------------------------------------------------------------------- */
+/*  assets/header.js  –– hero-video version  */
 import { Component } from '@theme/component';
 import { onDocumentReady, changeMetaThemeColor } from '@theme/utilities';
 
-/**
- * @typedef {Object} HeaderComponentRefs
- * @property {HTMLDivElement} headerDrawerContainer
- * @property {HTMLElement}     headerMenu
- * @property {HTMLElement}     headerRowTop
- */
-
-/**
- * @typedef {CustomEvent<{ minimumReached: boolean }>} OverflowMinimumEvent
- */
-
+/* ---------------------------- boiler-plate ---------------------------- */
 class HeaderComponent extends Component {
-  /* ---------- required DOM refs ---------- */
   requiredRefs = ['headerDrawerContainer', 'headerMenu', 'headerRowTop'];
 
-  /* ---------- private fields ---------- */
   #menuDrawerHiddenWidth = null;
   #intersectionObserver  = null;
   #offscreen             = false;
@@ -27,24 +14,18 @@ class HeaderComponent extends Component {
   #animationDelay        = 150;
   #isHeroHeader          = false;
 
-  /* ---------- keep --header-height up-to-date ---------- */
   #resizeObserver = new ResizeObserver(([entry]) => {
     if (!entry) return;
     const { height } = entry.target.getBoundingClientRect();
     document.body.style.setProperty('--header-height', `${height}px`);
 
-    /* if we hid the drawer because of a small window,
-       show it again when the window is wide enough */
     if (this.#menuDrawerHiddenWidth && window.innerWidth > this.#menuDrawerHiddenWidth) {
       this.#updateMenuVisibility(false);
     }
   });
 
-  /* ---------- sticky position observer ---------- */
   #observeStickyPosition = (alwaysSticky = true) => {
     if (this.#intersectionObserver) return;
-
-    const config = { threshold: alwaysSticky ? 1 : 0 };
     this.#intersectionObserver = new IntersectionObserver(([entry]) => {
       if (!entry) return;
       const { isIntersecting } = entry;
@@ -55,14 +36,9 @@ class HeaderComponent extends Component {
       } else {
         this.#offscreen = !isIntersecting || this.dataset.stickyState === 'active';
       }
-    }, config);
+    }, { threshold: alwaysSticky ? 1 : 0 });
 
     this.#intersectionObserver.observe(this);
-  };
-
-  /* ---------- menu overflow from header-menu ---------- */
-  #handleOverflowMinimum = (event /** @type {OverflowMinimumEvent} */) => {
-    this.#updateMenuVisibility(event.detail.minimumReached);
   };
 
   #updateMenuVisibility(hide) {
@@ -77,41 +53,36 @@ class HeaderComponent extends Component {
     }
   }
 
-  /* ------------------------------------------------------------------------
+  /* --------------------------------------------------------------------
      MAIN SCROLL HANDLER
-     – first block handles the hero-video layout
-     – afterwards the untouched Dawn “scroll-up” logic
-     ------------------------------------------------------------------------ */
+     – first block handles the hero-video + slide-up
+     – afterwards Dawn’s original “scroll-up” logic (untouched)
+     -------------------------------------------------------------------- */
   #handleWindowScroll = () => {
-    /* ===== HERO VIDEO MODE ============================================= */
+    /* ===== HERO VIDEO MODE =========================================== */
     if (this.#isHeroHeader) {
-      const hero   = document.querySelector('#shopify-section-hero-video');
       const barGrp = document.querySelector('#header-group');
-      if (!hero || !barGrp) return;
+      if (!barGrp) return;
 
-      /* hero is position:fixed, so its height is a constant */
-      const heroHeight = hero.offsetHeight || window.innerHeight; // 100 svh fallback
-      const headerH    = barGrp.offsetHeight;
-      const trigger    = heroHeight - headerH;                    // slide-up point
+      /* viewport height (100 vh) minus the bar’s own height */
+      const trigger = window.innerHeight - barGrp.offsetHeight;
 
       if (window.scrollY >= trigger) {
         barGrp.classList.add('header--is-sticky');
-        this.classList.add('scrolled-down');     // logo flip ON
+        this.classList.add('scrolled-down');          // flip logo
       } else {
         barGrp.classList.remove('header--is-sticky');
-        this.classList.remove('scrolled-down');  // logo flip OFF
+        this.classList.remove('scrolled-down');
       }
-
-      /* all sticky logic handled above – skip Dawn’s scroll-up block */
-      return;
+      return;                                         // done
     }
 
-    /* ===== ORIGINAL DAWN “scroll-up” LOGIC ============================= */
+    /* ===== ORIGINAL DAWN STICKY (“scroll-up”) ======================== */
     const stickyMode = this.getAttribute('sticky');
     if (!this.#offscreen && stickyMode !== 'always') return;
 
-    const scrollTop      = document.scrollingElement?.scrollTop ?? 0;
-    const isScrollingUp  = scrollTop < this.#lastScrollTop;
+    const scrollTop     = document.scrollingElement?.scrollTop ?? 0;
+    const isScrollingUp = scrollTop < this.#lastScrollTop;
 
     if (this.#timeout) {
       clearTimeout(this.#timeout);
@@ -133,12 +104,12 @@ class HeaderComponent extends Component {
       this.removeAttribute('data-animating');
 
       if (this.getBoundingClientRect().top >= 0) {
-        this.#offscreen               = false;
-        this.dataset.stickyState      = 'inactive';
-        this.dataset.scrollDirection  = 'none';
+        this.#offscreen              = false;
+        this.dataset.stickyState     = 'inactive';
+        this.dataset.scrollDirection = 'none';
       } else {
-        this.dataset.stickyState      = 'active';
-        this.dataset.scrollDirection  = 'up';
+        this.dataset.stickyState     = 'active';
+        this.dataset.scrollDirection = 'up';
       }
     } else if (this.dataset.stickyState === 'active') {
       this.dataset.scrollDirection = 'none';
@@ -155,69 +126,64 @@ class HeaderComponent extends Component {
 
     this.#lastScrollTop = scrollTop;
   };
-  /* -------------------------------------------------------------------- */
+  /* ------------------------------------------------------------------ */
 
-  /* ---------- lifecycle ------------------------------------------------ */
+  /* ---------------------------- lifecycle --------------------------- */
   connectedCallback() {
-    /* detect if this header sits on a hero-video section */
     if (document.querySelector('#shopify-section-hero-video')) {
       this.#isHeroHeader = true;
     }
 
     super.connectedCallback();
     this.#resizeObserver.observe(this);
-    this.addEventListener('overflowMinimum', this.#handleOverflowMinimum);
+    this.addEventListener('overflowMinimum', (e) =>
+      this.#updateMenuVisibility(e.detail.minimumReached)
+    );
 
     const stickyMode = this.getAttribute('sticky');
     if (stickyMode) {
       this.#observeStickyPosition(stickyMode === 'always');
-
       if (stickyMode === 'scroll-up' || stickyMode === 'always') {
-        document.addEventListener('scroll', this.#handleWindowScroll);
+        document.addEventListener('scroll', this.#handleWindowScroll, { passive: true });
       }
     }
+
+    /* run once so the bar is correct on first paint */
+    this.#handleWindowScroll();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.#resizeObserver.disconnect();
     this.#intersectionObserver?.disconnect();
-    this.removeEventListener('overflowMinimum', this.#handleOverflowMinimum);
     document.removeEventListener('scroll', this.#handleWindowScroll);
     document.body.style.setProperty('--header-height', '0px');
   }
 }
 
-/* ---------- register ---------- */
+/* register the custom-element only once */
 if (!customElements.get('header-component')) {
   customElements.define('header-component', HeaderComponent);
 }
 
-/* ---------- helper: update header-group height for the rest of the site ---------- */
+/* ---------------- helper: keep --header-group-height ---------------- */
 onDocumentReady(() => {
-  const header       = document.querySelector('#header-component');
-  const headerGroup  = document.querySelector('#header-group');
+  const header      = document.querySelector('#header-component');
+  const headerGroup = document.querySelector('#header-group');
 
-  if (headerGroup) {
-    const resizeObserver = new ResizeObserver(() =>
-      calculateHeaderGroupHeight(header, headerGroup)
-    );
+  if (!headerGroup) return;
 
-    /* observe all current children */
+  const resizeObserver = new ResizeObserver(() =>
+    calculateHeaderGroupHeight(header, headerGroup)
+  );
+
+  [...headerGroup.children].forEach((el) => {
+    if (el !== header && el instanceof HTMLElement) resizeObserver.observe(el);
+  });
+
+  new MutationObserver(() => {
     [...headerGroup.children].forEach((el) => {
       if (el !== header && el instanceof HTMLElement) resizeObserver.observe(el);
     });
-
-    /* observe future child changes */
-    const mutationObserver = new MutationObserver((mutations) => {
-      for (const m of mutations) {
-        if (m.type === 'childList') {
-          [...headerGroup.children].forEach((el) => {
-            if (el !== header && el instanceof HTMLElement) resizeObserver.observe(el);
-          });
-        }
-      }
-    });
-    mutationObserver.observe(headerGroup, { childList: true });
-  }
+  }).observe(headerGroup, { childList: true });
 });
