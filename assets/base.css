@@ -4517,6 +4517,19 @@ footer{
   grid-template-rows:auto 1fr auto;
 }
 
+/* base.css  – add just this block */
+#header-group{
+  position:sticky;
+  top:0;
+  grid-row:1;               /* lives above the video */
+  width:100%;
+  z-index:20;
+  transform: translateY(calc(100vh - var(--header-height)));
+  transition: transform .35s ease;     /* smooth slide-up */
+}
+#header-group.header--is-sticky{
+  transform: translateY(0);            /* snaps to the top */
+}
 
 
 
