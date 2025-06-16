@@ -4499,11 +4499,9 @@ header-actions {
 
 /* First content block starts **after** the hero height */
 #MainContent{
-  margin-top:100svh;             /* matches hero's height     */
-  grid-row:2;                    /* keep your existing row map */
-  position:relative;
-  z-index:10;                    /* above the video, below header */
+  margin-top:100svh;      /* no header subtraction needed  */
 }
+
 
 
 
