@@ -4478,25 +4478,25 @@ header-actions {
   object-fit:cover;
 }
 
-/*──────────────── HERO AS BACKDROP ────────────────*/
-.site-grid-container{            /* make sure the grid itself
-                                    establishes a stacking ctx */
-  position:relative;
-}
+/* ===== HERO SECTION LAYOUT  ======================================= */
 
+/* keep the hero in the normal flow, so it pushes content below it */
 #shopify-section-hero-video{
-  position:fixed;                /*   ⟵ key change  */
-  inset:0;                       /* full-viewport */
-  width:100%;
-  height:100svh;                 /* same height you had */
-  object-fit:cover;              /* keeps video nicely cropped */
-  z-index:-1;                    /* behind everything */
-  pointer-events:none;           /* video won’t trap clicks */
+  position: relative;      /*  ←  back to relative  */
+  height:   100svh;        /* full viewport height */
+  overflow: hidden;        /* just in case          */
 }
 
-/* First content block starts **after** the hero height */
-#MainContent{
-  margin-top:100svh;      /* no header subtraction needed  */
+/* let only the <video> itself be fixed, so the picture stays put
+   while the section still occupies space in the flow            */
+#shopify-section-hero-video > video{
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;             /* behind everything else */
+  pointer-events: none;
 }
 
 /* stop the video from bleeding through the footer */
