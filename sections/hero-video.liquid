@@ -3,7 +3,7 @@
 {% endcomment %}
 
 {% if section.settings.video != blank or section.settings.video_url != blank %}
-<section class="hero-video" data-section-id="{{ section.id }}">
+<section class="hero-section" data-section-id="{{ section.id }}" id="hero">
   <div class="hero-video__wrapper">
     {%- comment -%} Preferred: video uploaded in Settings > Files {%- endcomment -%}
     {% if section.settings.video != blank %}
