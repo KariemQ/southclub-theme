@@ -1,0 +1,32 @@
+:root{
+  --header-height:            88px;    /* starting height */
+  --header-height-scrolled:   64px;    /* height after shrink */
+  --header-bg:                rgba(255,255,255,0);   /* transparent over hero */
+  --header-bg-scrolled:       #ffffff;               /* solid after hero */
+  --header-shadow:            0 0 0 rgba(0,0,0,0);
+  --header-shadow-scrolled:   0 2px 6px rgba(0,0,0,.08);
+  --transition-ms:            300ms;
+}
+
+.site-header[data-sticky-header]{
+  position:fixed; inset:0 0 auto 0;
+  height:var(--header-height);
+  background:var(--header-bg);
+  box-shadow:var(--header-shadow);
+  z-index:50;
+  transition:height var(--transition-ms) ease,
+             background-color var(--transition-ms) ease,
+             box-shadow var(--transition-ms) ease,
+             transform var(--transition-ms) ease;
+}
+
+.site-header[data-sticky-header].is-scrolled{
+  height:var(--header-height-scrolled);
+  background:var(--header-bg-scrolled);
+  box-shadow:var(--header-shadow-scrolled);
+  transform:translateY(-4px);
+}
+
+/* Prevent the whole page from jumping when header becomes fixed */
+body{padding-top:var(--header-height);}
+body.has-shrunk-header{padding-top:var(--header-height-scrolled);}
