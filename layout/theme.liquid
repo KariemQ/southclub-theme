@@ -4,6 +4,9 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
+    {{ 'sticky-header.css' | asset_url | stylesheet_tag }}
+    {{ 'sticky-header.js'  | asset_url | script_tag | replace: '<script', '<script defer' }}
+
     {{ 'base.css' | asset_url | stylesheet_tag }}
 
     {%- if settings.favicon != blank -%}
