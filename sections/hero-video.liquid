@@ -1,5 +1,5 @@
 {% comment %}
-  Hero-video section.  Requires a video file or URL in the customizer.
+  Hero-video section with improved scroll functionality
 {% endcomment %}
 
 {% if section.settings.video != blank or section.settings.video_url != blank %}
@@ -24,7 +24,7 @@
 
     {%- comment -%} Minimal white arrow scroll cue {%- endcomment -%}
     <button class="hero-video__scroll-down"
-            aria-label="Scroll down"
+            aria-label="Scroll down to content"
             data-scroll-trigger>
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
            stroke="currentColor" stroke-width="1.5"
@@ -33,8 +33,6 @@
       </svg>
     </button>
   </div>
-  <div id="hero-trigger"
-     style="position:absolute;bottom:0;left:0;width:100%;height:1px;"></div>
 </section>
 
 {% endif %}
@@ -43,9 +41,22 @@
 {
   "name": "Hero Video",
   "settings": [
-    { "type": "video", "id": "video", "label": "Background Video" },
-    { "type": "url",  "id": "video_url", "label": "Or Video URL (MP4)" }
+    { 
+      "type": "video", 
+      "id": "video", 
+      "label": "Background Video",
+      "info": "Upload your logo video here. Recommended format: MP4"
+    },
+    { 
+      "type": "url",  
+      "id": "video_url", 
+      "label": "Or Video URL (MP4)",
+      "info": "Alternative: paste a direct link to your video file"
+    }
   ],
-  "presets": [{ "name": "Hero Video" }]
+  "presets": [{ 
+    "name": "Hero Video",
+    "category": "Video" 
+  }]
 }
 {% endschema %}
