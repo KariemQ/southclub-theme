@@ -1,31 +1,47 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const headerGroup = document.querySelector('#shopify-section-header-group');
+  const headerGroup = document.querySelector('#header-group');
   const headerComponent = document.querySelector('header-component');
   const mainContent = document.querySelector('#MainContent');
+  const heroSection = document.querySelector('.hero-section');
 
-  if (!headerGroup || !headerComponent || !mainContent) {
+  if (!headerGroup || !headerComponent || !mainContent || !heroSection) {
     return;
   }
 
-  const handleScroll = () => {
-    // Trigger point is when the top of the main content reaches the top of the viewport
-    const triggerPoint = mainContent.getBoundingClientRect().top;
+  let isSticky = false;
 
-    if (triggerPoint <= 0) {
+  const handleScroll = () => {
+    const scrollY = window.scrollY;
+    const heroHeight = heroSection.offsetHeight;
+    const headerHeight = headerGroup.offsetHeight;
+    
+    // Trigger point: when we've scrolled past the hero minus header height
+    const triggerPoint = heroHeight - headerHeight;
+
+    if (scrollY >= triggerPoint && !isSticky) {
       headerGroup.classList.add('header--is-sticky');
-      headerComponent.classList.add('scrolled-down'); // Trigger logo animation
-    } else {
+      headerComponent.classList.add('scrolled-down');
+      isSticky = true;
+    } else if (scrollY < triggerPoint && isSticky) {
       headerGroup.classList.remove('header--is-sticky');
-      headerComponent.classList.remove('scrolled-down'); // Reset logo animation
+      headerComponent.classList.remove('scrolled-down');
+      isSticky = false;
     }
   };
 
   window.addEventListener('scroll', handleScroll, { passive: true });
-  handleScroll();
+  handleScroll(); // Run once on load
 
+  // Handle click on video or arrow to scroll to content
   const clickTriggers = document.querySelectorAll('.hero-video__wrapper, .hero-video__scroll-down');
   const scrollToContent = () => {
-    mainContent.scrollIntoView({ behavior: 'smooth' });
+    const heroHeight = heroSection.offsetHeight;
+    const headerHeight = headerGroup.offsetHeight;
+    
+    window.scrollTo({
+      top: heroHeight - headerHeight,
+      behavior: 'smooth'
+    });
   };
 
   clickTriggers.forEach(trigger => {
