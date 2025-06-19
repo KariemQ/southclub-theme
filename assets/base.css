@@ -4410,157 +4410,200 @@ header-actions {
   gap: 20px;
 }
 
-/* ─────────────────────────────────────────────
-   HERO + STICKY HEADER LAYOUT (FIXED VERSION)
-   ─────────────────────────────────────────── */
+/* === HERO VIDEO & HEADER OVERLAY SYSTEM === */
 
-/* Remove body padding that conflicts with our layout */
-body {
-  padding-top: 0 !important;
+/* Override the default body flex layout when hero video is present */
+body:has(.hero-section) {
+  display: block; /* Override the flex layout */
+  margin: 0;
+  min-height: 100vh;
 }
 
+/* Site Grid Container */
 .site-grid-container {
+  display: grid;
+  grid-template-rows: 100vh auto;
+  grid-template-areas: 
+    "hero"
+    "content";
+  min-height: 100vh;
   position: relative;
 }
 
-/* Hero video section - full screen */
+/* Hero Video Section */
 .hero-section {
+  grid-area: hero;
   position: relative;
-  height: 100vh;
   width: 100%;
+  height: 100vh;
   overflow: hidden;
   z-index: 1;
 }
 
 .hero-video__wrapper {
-  position: absolute;
-  inset: 0;
+  position: relative;
   width: 100%;
   height: 100%;
+  cursor: pointer;
 }
 
 .hero-video__media {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-/* Scroll down arrow */
+/* Scroll Down Arrow */
 .hero-video__scroll-down {
   position: absolute;
-  bottom: 100px; /* Space for header */
+  bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  background: none;
+  background: rgba(255, 255, 255, 0.9);
   border: none;
-  color: white;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  z-index: 10;
-  padding: 10px;
-  transition: opacity 0.3s ease;
+  z-index: 3;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
 }
 
 .hero-video__scroll-down:hover {
-  opacity: 0.7;
+  background: rgba(255, 255, 255, 1);
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Header group positioning */
-#header-group {
-  position: fixed;
-  bottom: 0;
+.hero-video__scroll-down svg {
+  color: #333;
+  width: 24px;
+  height: 24px;
+}
+
+/* Header Group Overlay - This is the key fix */
+.header-group-wrapper {
+  grid-area: hero;
+  position: absolute;
+  top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateY(0);
-}
-
-/* When header becomes sticky at top */
-#header-group.header--is-sticky {
-  bottom: auto;
-  top: 0;
-  transform: translateY(0);
-}
-
-/* Ensure main content starts after hero */
-#MainContent {
-  position: relative;
-  z-index: 2;
-  background: white;
-  margin-top: 0;
-}
-
-/* Make sure footer stays at bottom */
-.shopify-section-group-footer-group {
-  position: relative;
-  z-index: 2;
-}
-
-/* ───────── overlay   header + announcement bar ───────── */
-#header-group{
-  position:sticky;
-  top:0;
-  width:100%;
-  z-index:20;
-  transform:translateY(calc(100svh - var(--header-height)));
-  transition:transform .35s ease;
-}
-#header-group.header--is-sticky{
-  transform:translateY(0);
-}
-
-
-/* --------------------------------------------------------------
-   Make sure the <video> itself always fills the hero section
-   -------------------------------------------------------------- */
-#shopify-section-hero-video{
-  grid-row:1;                 /* already declared above, but harmless */
-  min-height:100svh;
-  position:relative;
-  z-index:0;                  /* sits under the bar */
-}
-#shopify-section-hero-video video{
-  position:absolute;          /* <<< NEW */
-  inset:0;                    /* fill the hero */
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-
-/* ===== HERO SECTION LAYOUT  ======================================= */
-
-/* keep the hero in the normal flow, so it pushes content below it */
-#shopify-section-hero-video{
-  position: relative;      /*  ←  back to relative  */
-  height:   100svh;        /* full viewport height */
-  overflow: hidden;        /* just in case          */
-}
-
-/* let only the <video> itself be fixed, so the picture stays put
-   while the section still occupies space in the flow            */
-#shopify-section-hero-video > video{
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -1;             /* behind everything else */
+  height: 100vh;
+  z-index: 10;
   pointer-events: none;
+  
+  /* Position header at bottom of hero initially */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  
+  /* Smooth transition */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* stop the video from bleeding through the footer */
-#MainContent,
-.shopify-section-group-footer-group,
-footer{
-  position:relative;
-  z-index:10;
-  background:var(--color-background, #fff);   /* uses scheme or falls back */
+.header-group-wrapper > * {
+  pointer-events: auto;
 }
 
-.site-grid-container{
-  display:grid;
-  grid-template-columns:100%;     /* prevent accidental 2-column split   */
-  grid-template-rows:auto 1fr auto;
+/* Sticky State - when header reaches top */
+.header-group-wrapper.header--is-sticky {
+  position: fixed;
+  top: 0;
+  height: auto;
+  justify-content: flex-start;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Main Content */
+.content-for-layout {
+  grid-area: content;
+  position: relative;
+  z-index: 2;
+  background: var(--color-background);
+  min-height: 100vh;
+}
+
+/* Override the default content-for-layout flex behavior when hero is present */
+body:has(.hero-section) .content-for-layout {
+  flex: none; /* Remove flex: 1 behavior */
+}
+
+/* Header Component Enhancements */
+header-component {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+header-component.scrolled-down {
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Disable default header sticky behavior when using hero video */
+body:has(.hero-section) .header[data-sticky-state] {
+  position: static !important;
+  opacity: 1 !important;
+}
+
+body:has(.hero-section) #header-group:has(#header-component[sticky]) {
+  display: block !important;
+}
+
+/* Ensure header transparency doesn't interfere */
+body:has(.hero-section) .header[transparent] {
+  position: static !important;
+  background-color: transparent !important;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 749px) {
+  .hero-video__scroll-down {
+    width: 40px;
+    height: 40px;
+    bottom: 1.5rem;
+  }
+  
+  .hero-video__scroll-down svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .site-grid-container {
+    grid-template-rows: 100vh auto;
+  }
+}
+
+/* Animation for header transition */
+@media (prefers-reduced-motion: no-preference) {
+  .header-group-wrapper {
+    will-change: transform, background-color;
+  }
+  
+  .header-group-wrapper.header--is-sticky {
+    animation: headerStick 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+@keyframes headerStick {
+  from {
+    transform: translateY(20px);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Footer positioning */
+body:has(.hero-section) [data-section-type="footer"] {
+  margin-top: auto;
 }
 
 
