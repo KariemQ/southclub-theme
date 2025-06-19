@@ -5,7 +5,7 @@
 >
   <head>
     {{ 'base.css' | asset_url | stylesheet_tag }}
-    {{ 'hero-video-layout.css' | asset_url | stylesheet_tag }}
+    {{ 'hero-video-complete.css' | asset_url | stylesheet_tag }}
 
     {%- if settings.favicon != blank -%}
       <link
@@ -40,26 +40,20 @@
 
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
 
-    {% comment %}
-      Enhanced structure with CSS Grid for proper video/header layering
-    {% endcomment %}
-    <div class="site-grid-container">
+    {%- comment -%} Hero video section {%- endcomment -%}
+    {% section 'hero-video' %}
 
-      {%- comment -%} Hero video section {%- endcomment -%}
-      {% section 'hero-video' %}
-    
-      {%- comment -%} Header + Announcement Bar Overlay {%- endcomment -%}
-      <div id="header-group" class="header-group-wrapper">
-        {% sections 'header-group' %}
-      </div>
-    
-      {%- comment -%} Main content area {%- endcomment -%}
-      <main id="MainContent" class="content-for-layout" role="main">
-        {{ content_for_layout }}
-      </main>
-    
-      {% sections 'footer-group' %}
+    {%- comment -%} Header + Announcement Bar Overlay {%- endcomment -%}
+    <div id="header-group" class="header-group-wrapper">
+      {% sections 'header-group' %}
     </div>
+
+    {%- comment -%} Main content area {%- endcomment -%}
+    <main id="MainContent" class="content-for-layout" role="main">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
 
     {% render 'search-modal' %}
     <script src="{{ 'critical.js' | asset_url }}"></script>
@@ -67,7 +61,7 @@
       {% render 'quick-add-modal' %}
     {% endif %}
 
-    <script src="{{ 'custom-scroll-manager.js' | asset_url }}" defer></script>
+    <script src="{{ 'hero-video-manager.js' | asset_url }}" defer></script>
 
   </body>
 </html>
