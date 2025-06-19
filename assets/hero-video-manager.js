@@ -29,6 +29,8 @@
     // State management
     let isSticky = false;
     let ticking = false;
+    let lastScrollY = window.pageYOffset;
+    let transitionTimeout = null;
 
     // Calculate scroll trigger point
     function getTriggerPoint() {
@@ -37,30 +39,47 @@
       return heroHeight - headerHeight;
     }
 
-    // Handle scroll events
+    // Handle scroll events with smoother transitions
     function handleScroll() {
       const scrollY = window.pageYOffset;
       const triggerPoint = getTriggerPoint();
       const shouldBeSticky = scrollY >= triggerPoint;
-
-      // Only update if state changed
+      
+      // Only update if state changed to prevent unnecessary reflows
       if (shouldBeSticky !== isSticky) {
-        isSticky = shouldBeSticky;
-        
-        if (isSticky) {
-          console.log('📌 Making header sticky');
-          headerGroup.classList.add('header--is-sticky');
-          if (headerComponent) {
-            headerComponent.classList.add('scrolled-down');
-          }
+        // Prevent any teleportation by handling transition states properly
+        if (shouldBeSticky) {
+          // First add transition class
+          headerGroup.classList.add('header--transition');
+          
+          // Then after a tiny delay, add sticky class
+          clearTimeout(transitionTimeout);
+          transitionTimeout = setTimeout(() => {
+            headerGroup.classList.add('header--is-sticky');
+            if (headerComponent) {
+              headerComponent.classList.add('scrolled-down');
+            }
+          }, 10);
         } else {
-          console.log('📍 Making header non-sticky');
+          // For removing sticky, do it in reverse
+          headerGroup.classList.add('header--transition');
           headerGroup.classList.remove('header--is-sticky');
           if (headerComponent) {
             headerComponent.classList.remove('scrolled-down');
           }
+          
+          // Keep transition active for a bit
+          clearTimeout(transitionTimeout);
+          transitionTimeout = setTimeout(() => {
+            headerGroup.classList.remove('header--transition');
+          }, 300);
         }
+        
+        isSticky = shouldBeSticky;
       }
+      
+      // Track last scroll position for direction detection
+      lastScrollY = scrollY;
     }
 
     // Throttled scroll handler
@@ -105,6 +124,25 @@
         }
       });
     });
+
+    // Add arrow if it doesn't exist yet
+    if (!document.querySelector('.hero-video__scroll-down')) {
+      const arrowElement = document.createElement('div');
+      arrowElement.className = 'hero-video__scroll-down';
+      arrowElement.innerHTML = `
+        <svg width="20" height="12" viewBox="0 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 1L10 10L19 1" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      `;
+      arrowElement.setAttribute('tabindex', '0');
+      arrowElement.setAttribute('role', 'button');
+      arrowElement.setAttribute('aria-label', 'Scroll down');
+      
+      // Add to hero section if it exists
+      if (heroSection) {
+        heroSection.appendChild(arrowElement);
+      }
+    }
 
     // Initialize scroll state
     handleScroll();
