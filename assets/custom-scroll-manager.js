@@ -19,21 +19,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const heroHeight = heroSection.offsetHeight;
         const headerHeight = headerGroup.offsetHeight;
         
-        // Trigger point: when header reaches the top
+        // Trigger point: when header would reach the top
         const triggerPoint = heroHeight - headerHeight;
 
         if (scrollY >= triggerPoint && !isSticky) {
           headerGroup.classList.add('header--is-sticky');
           headerComponent.classList.add('scrolled-down');
-          
-          // Add body class for additional styling if needed
           document.body.classList.add('header-is-sticky');
           isSticky = true;
           
         } else if (scrollY < triggerPoint && isSticky) {
           headerGroup.classList.remove('header--is-sticky');
           headerComponent.classList.remove('scrolled-down');
-          
           document.body.classList.remove('header-is-sticky');
           isSticky = false;
         }
@@ -51,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerHeight = headerGroup.offsetHeight;
     
     window.scrollTo({
-      top: heroHeight - headerHeight + 1, // +1 to ensure sticky state triggers
+      top: heroHeight - headerHeight + 1,
       behavior: 'smooth'
     });
   };
@@ -67,15 +64,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Initial check on load
+  // Initial check
   handleScroll();
   
-  // Handle resize events
+  // Handle resize
   let resizeTimeout;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      handleScroll();
-    }, 100);
+    resizeTimeout = setTimeout(handleScroll, 100);
   });
 });
