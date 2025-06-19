@@ -4,7 +4,6 @@
   lang="{{ request.locale.iso_code }}"
 >
   <head>
-
     {{ 'base.css' | asset_url | stylesheet_tag }}
 
     {%- if settings.favicon != blank -%}
@@ -41,29 +40,25 @@
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
 
     {% comment %}
-      This new structure uses a CSS Grid to layer the site elements correctly,
-      preventing the rendering bugs we encountered before.
+      Enhanced structure with CSS Grid for proper video/header layering
     {% endcomment %}
     <div class="site-grid-container">
 
-      {%- comment -%} Row 1 – hero video & overlapping header {%- endcomment -%}
+      {%- comment -%} Hero video section {%- endcomment -%}
       {% section 'hero-video' %}
     
-      <!--  HEADER + ANNOUNCEMENT BAR OVERLAY  -->
+      {%- comment -%} Header + Announcement Bar Overlay {%- endcomment -%}
       <div id="header-group" class="header-group-wrapper">
         {% sections 'header-group' %}
       </div>
     
-      {%- comment -%} Row 2 – rest of the site {%- endcomment -%}
+      {%- comment -%} Main content area {%- endcomment -%}
       <main id="MainContent" class="content-for-layout" role="main">
         {{ content_for_layout }}
       </main>
     
       {% sections 'footer-group' %}
     </div>
-
-
-
 
     {% render 'search-modal' %}
     <script src="{{ 'critical.js' | asset_url }}"></script>
