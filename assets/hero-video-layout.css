@@ -1,21 +1,24 @@
-/* Essential CSS for hero video + header layout - FIXED VERSION */
+/* ==========================================================================
+   HERO VIDEO + HEADER INTEGRATION - COMPLETE SOLUTION
+   ========================================================================== */
 
-/* Site Grid Container - Simplified approach */
-.site-grid-container {
-  position: relative;
-  min-height: 100vh;
+/* Reset any conflicting body styles when hero is present */
+body:has(.hero-section) {
+  display: block !important;
+  flex-direction: unset !important;
 }
 
-/* Hero Section - Make it fill viewport properly */
+/* Hero Section - Full viewport height */
 .hero-section {
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
   z-index: 1;
-  background: #000; /* Fallback color */
+  background: #000;
 }
 
+/* Hero Video Wrapper */
 .hero-video__wrapper {
   position: absolute;
   top: 0;
@@ -26,6 +29,7 @@
   z-index: 2;
 }
 
+/* Hero Video Media */
 .hero-video__media {
   position: absolute;
   top: 0;
@@ -34,7 +38,6 @@
   height: 100%;
   object-fit: cover;
   z-index: 3;
-  background: #000;
 }
 
 /* Scroll Down Arrow */
@@ -70,81 +73,88 @@
   height: 24px;
 }
 
-/* Header Group Positioning - Fixed approach */
+/* ==========================================================================
+   HEADER GROUP POSITIONING
+   ========================================================================== */
+
+/* Header positioned at bottom of hero initially */
 .header-group-wrapper {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 100;
-  
-  /* Smooth transition */
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  
-  /* Semi-transparent background when over hero */
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* When header becomes sticky - Use transform instead of position change */
+/* When header becomes sticky */
 .header-group-wrapper.header--is-sticky {
-  position: fixed;
-  top: 0;
-  bottom: auto;
-  z-index: 1000;
-  background: rgba(255, 255, 255, 0.98);
+  position: fixed !important;
+  top: 0 !important;
+  bottom: auto !important;
+  z-index: 1000 !important;
+  background: rgba(255, 255, 255, 0.98) !important;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-  transform: translateY(0);
 }
 
-/* Main Content - Keep it simple */
-.content-for-layout {
+/* ==========================================================================
+   MAIN CONTENT POSITIONING
+   ========================================================================== */
+
+/* Main content starts right after hero */
+body:has(.hero-section) .content-for-layout {
   position: relative;
   z-index: 50;
   background: var(--color-background);
-  min-height: 100vh;
-  
-  /* Ensure content starts right after hero */
-  margin-top: 0;
-  padding-top: 0;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  flex: none !important;
 }
 
-/* Header Component Enhancements */
-header-component {
-  transition: all 0.3s ease;
-}
+/* ==========================================================================
+   OVERRIDE ALL CONFLICTING HEADER STYLES
+   ========================================================================== */
 
-/* Override problematic default styles */
+/* Disable all default header positioning when hero is present */
 body:has(.hero-section) .header[data-sticky-state] {
   position: static !important;
   opacity: 1 !important;
   transform: none !important;
+  z-index: auto !important;
 }
 
 body:has(.hero-section) .header[transparent] {
   position: static !important;
   background-color: transparent !important;
+  z-index: auto !important;
 }
 
-/* Disable default header sticky behavior when hero is present */
 body:has(.hero-section) .header-section {
   position: static !important;
 }
 
-/* Ensure body doesn't have conflicting flex */
-body:has(.hero-section) {
-  display: block;
+body:has(.hero-section) #header-group:has(#header-component[sticky]) {
+  display: block !important;
 }
 
-body:has(.hero-section) .content-for-layout {
-  flex: none;
+/* Force header component to be static */
+body:has(.hero-section) header-component {
+  position: static !important;
+  z-index: auto !important;
 }
 
-/* Responsive Adjustments */
+body:has(.hero-section) header-component[data-sticky-header] {
+  position: static !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   ========================================================================== */
+
 @media screen and (max-width: 749px) {
   .hero-video__scroll-down {
     width: 40px;
@@ -158,20 +168,37 @@ body:has(.hero-section) .content-for-layout {
   }
 }
 
-/* Accessibility improvements */
+/* ==========================================================================
+   ACCESSIBILITY & PERFORMANCE
+   ========================================================================== */
+
 @media (prefers-reduced-motion: reduce) {
   .header-group-wrapper,
-  header-component,
   .hero-video__scroll-down {
     transition: none;
   }
 }
 
-/* Debug helpers - remove in production */
+/* Ensure proper video loading */
+.hero-video__media {
+  will-change: auto;
+}
+
+/* ==========================================================================
+   DEBUG STYLES (REMOVE AFTER TESTING)
+   ========================================================================== */
+
+/* Uncomment these to debug positioning issues */
+/*
 .hero-section {
-  border: 2px solid red; /* Temporary - remove this line once working */
+  border: 3px solid red !important;
 }
 
 .hero-video__media {
-  border: 2px solid blue; /* Temporary - remove this line once working */
+  border: 3px solid blue !important;
 }
+
+.header-group-wrapper {
+  border: 3px solid green !important;
+}
+*/
