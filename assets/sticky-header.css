@@ -1,32 +1,66 @@
-:root{
-  --header-height:            88px;    /* starting height */
-  --header-height-scrolled:   64px;    /* height after shrink */
-  --header-bg:                rgba(255,255,255,0);   /* transparent over hero */
-  --header-bg-scrolled:       #ffffff;               /* solid after hero */
-  --header-shadow:            0 0 0 rgba(0,0,0,0);
-  --header-shadow-scrolled:   0 2px 6px rgba(0,0,0,.08);
-  --transition-ms:            300ms;
+/* Updated sticky header styles for hero video integration */
+:root {
+  --header-transition-duration: 0.3s;
+  --header-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.site-header[data-sticky-header]{
-  position:fixed; inset:0 0 auto 0;
-  height:var(--header-height);
-  background:var(--header-bg);
-  box-shadow:var(--header-shadow);
-  z-index:50;
-  transition:height var(--transition-ms) ease,
-             background-color var(--transition-ms) ease,
-             box-shadow var(--transition-ms) ease,
-             transform var(--transition-ms) ease;
+/* Base header group positioning */
+#header-group {
+  position: relative;
+  z-index: 100;
+  transition: all var(--header-transition-duration) var(--header-transition-easing);
+  will-change: transform;
 }
 
-.site-header[data-sticky-header].is-scrolled{
-  height:var(--header-height-scrolled);
-  background:var(--header-bg-scrolled);
-  box-shadow:var(--header-shadow-scrolled);
-  transform:translateY(-4px);
+/* When header becomes sticky */
+#header-group.header--is-sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-/* Prevent the whole page from jumping when header becomes fixed */
-body{padding-top:var(--header-height);}
-body.has-shrunk-header{padding-top:var(--header-height-scrolled);}
+/* Header component transitions */
+header-component {
+  transition: all var(--header-transition-duration) var(--header-transition-easing);
+  will-change: transform, background-color;
+}
+
+/* When scrolled down state */
+header-component.scrolled-down {
+  /* Add any specific scrolled styles here */
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Prevent layout shifts during transitions */
+body.is-scrolling {
+  /* Optional: Add any styles for when actively scrolling */
+}
+
+/* Ensure smooth transitions for all header elements */
+.header__row {
+  transition: background-color var(--header-transition-duration) var(--header-transition-easing);
+}
+
+/* Hero video specific styles */
+.hero-video__wrapper {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.hero-video__wrapper:hover {
+  transform: scale(1.02);
+}
+
+.hero-video__scroll-down {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hero-video__scroll-down:hover {
+  transform: translateY(-2px);
+  opacity: 0.8;
+}
