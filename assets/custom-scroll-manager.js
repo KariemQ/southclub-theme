@@ -2,116 +2,86 @@ document.addEventListener('DOMContentLoaded', () => {
   const headerGroup = document.querySelector('#header-group');
   const headerComponent = document.querySelector('header-component');
   const mainContent = document.querySelector('#MainContent');
-  const heroSection = document.querySelector('.hero-section');
+  const heroSection = document.querySelector('[id^="shopify-section"][id$="hero-video"]');
 
+  // Only run this script if we have all required elements including hero video
   if (!headerGroup || !headerComponent || !mainContent || !heroSection) {
-    console.warn('Hero video scroll manager: Required elements not found');
     return;
   }
 
-  let isSticky = false;
-  let ticking = false;
-  let hasReachedTrigger = false; // Track if we've ever reached the trigger point
+  let isScrolling = false;
+  let scrollTimeout;
 
   const handleScroll = () => {
+    // Clear any existing timeout
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout);
+    }
+
+    // Mark that we're scrolling
+    if (!isScrolling) {
+      isScrolling = true;
+      document.body.classList.add('is-scrolling');
+    }
+
+    // Calculate trigger point based on main content position
+    const mainContentRect = mainContent.getBoundingClientRect();
+    const headerHeight = headerGroup.offsetHeight;
+    
+    // Trigger when main content is about to reach the top
+    const triggerPoint = mainContentRect.top - headerHeight;
+
+    if (triggerPoint <= 0) {
+      headerGroup.classList.add('header--is-sticky');
+      headerComponent.classList.add('scrolled-down');
+    } else {
+      headerGroup.classList.remove('header--is-sticky');
+      headerComponent.classList.remove('scrolled-down');
+    }
+
+    // Set timeout to detect when scrolling ends
+    scrollTimeout = setTimeout(() => {
+      isScrolling = false;
+      document.body.classList.remove('is-scrolling');
+    }, 150);
+  };
+
+  // Use requestAnimationFrame for smoother performance
+  let ticking = false;
+  const onScroll = () => {
     if (!ticking) {
       requestAnimationFrame(() => {
-        const scrollY = window.scrollY;
-        const heroHeight = heroSection.offsetHeight;
-        const headerHeight = headerGroup.offsetHeight;
-        
-        // Trigger point: when header would reach the top
-        const triggerPoint = heroHeight - headerHeight;
-        
-        // Add a small buffer to prevent glitchy behavior
-        const buffer = 10;
-
-        // Only allow sticky behavior if we've scrolled past the trigger point
-        if (scrollY >= (triggerPoint - buffer)) {
-          hasReachedTrigger = true;
-          
-          if (!isSticky) {
-            headerGroup.classList.add('header--is-sticky');
-            headerComponent.classList.add('scrolled-down');
-            document.body.classList.add('header-is-sticky');
-            isSticky = true;
-          }
-        } else if (scrollY < (triggerPoint - buffer) && isSticky && hasReachedTrigger) {
-          // Only remove sticky if we've moved significantly away from trigger
-          headerGroup.classList.remove('header--is-sticky');
-          headerComponent.classList.remove('scrolled-down');
-          document.body.classList.remove('header-is-sticky');
-          isSticky = false;
-          
-          // Reset the trigger flag only if we're significantly above the trigger point
-          if (scrollY < (triggerPoint - buffer * 5)) {
-            hasReachedTrigger = false;
-          }
-        }
-        
+        handleScroll();
         ticking = false;
       });
       ticking = true;
     }
   };
 
-  // Smooth scroll to content function
-  const scrollToContent = (event) => {
-    event.preventDefault();
-    const heroHeight = heroSection.offsetHeight;
-    const headerHeight = headerGroup.offsetHeight;
+  window.addEventListener('scroll', onScroll, { passive: true });
+  
+  // Run once on load
+  handleScroll();
+
+  // Smooth scroll functionality for hero video clicks
+  const clickTriggers = document.querySelectorAll('.hero-video__wrapper, .hero-video__scroll-down');
+  const scrollToContent = (e) => {
+    e.preventDefault();
     
-    // Force trigger the sticky state when clicking
-    hasReachedTrigger = true;
+    // Calculate the exact position where header should be at top
+    const headerHeight = headerGroup.offsetHeight;
+    const targetPosition = mainContent.getBoundingClientRect().top + window.pageYOffset - headerHeight;
     
     window.scrollTo({
-      top: heroHeight - headerHeight + 1,
+      top: targetPosition,
       behavior: 'smooth'
     });
   };
 
-  // Event listeners
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  
-  // Click handlers for video and arrow
-  const clickTriggers = document.querySelectorAll('.hero-video__wrapper, .hero-video__scroll-down');
   clickTriggers.forEach(trigger => {
     if (trigger) {
       trigger.addEventListener('click', scrollToContent);
+      trigger.style.cursor = 'pointer'; // Make it clear it's clickable
     }
-  });
-
-  // Initial check - but don't set hasReachedTrigger on load
-  const initialCheck = () => {
-    const scrollY = window.scrollY;
-    const heroHeight = heroSection.offsetHeight;
-    const headerHeight = headerGroup.offsetHeight;
-    const triggerPoint = heroHeight - headerHeight;
-    
-    // Only set sticky if we're already past the trigger on page load
-    if (scrollY >= triggerPoint) {
-      hasReachedTrigger = true;
-      headerGroup.classList.add('header--is-sticky');
-      headerComponent.classList.add('scrolled-down');
-      document.body.classList.add('header-is-sticky');
-      isSticky = true;
-    }
-  };
-  
-  initialCheck();
-  
-  // Handle resize
-  let resizeTimeout;
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      // Reset state on resize to recalculate positions
-      isSticky = false;
-      hasReachedTrigger = false;
-      headerGroup.classList.remove('header--is-sticky');
-      headerComponent.classList.remove('scrolled-down');
-      document.body.classList.remove('header-is-sticky');
-      initialCheck();
-    }, 100);
   });
 });
