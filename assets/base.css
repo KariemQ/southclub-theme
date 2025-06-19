@@ -4410,175 +4410,90 @@ header-actions {
   gap: 20px;
 }
 
-/* === HERO VIDEO & HEADER OVERLAY SYSTEM === */
+/* ─────────────────────────────────────────────
+   HERO + STICKY HEADER LAYOUT (FIXED VERSION)
+   ─────────────────────────────────────────── */
+
+/* Remove body padding that conflicts with our layout */
+body {
+  padding-top: 0 !important;
+}
 
 .site-grid-container {
-  display: grid;
-  grid-template-rows: 100vh auto;
-  grid-template-areas: 
-    "hero"
-    "content";
-  min-height: 100vh;
   position: relative;
 }
 
-/* Hero Video Section */
+/* Hero video section - full screen */
 .hero-section {
-  grid-area: hero;
   position: relative;
-  width: 100%;
   height: 100vh;
+  width: 100%;
   overflow: hidden;
   z-index: 1;
 }
 
 .hero-video__wrapper {
-  position: relative;
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  cursor: pointer;
 }
 
 .hero-video__media {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block;
 }
 
-/* Scroll Down Arrow */
+/* Scroll down arrow */
 .hero-video__scroll-down {
   position: absolute;
-  bottom: 2rem;
+  bottom: 100px; /* Space for header */
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.9);
+  background: none;
   border: none;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: white;
   cursor: pointer;
-  z-index: 3;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(4px);
+  z-index: 10;
+  padding: 10px;
+  transition: opacity 0.3s ease;
 }
 
 .hero-video__scroll-down:hover {
-  background: rgba(255, 255, 255, 1);
-  transform: translateX(-50%) translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0.7;
 }
 
-.hero-video__scroll-down svg {
-  color: #333;
-  width: 24px;
-  height: 24px;
-}
-
-/* Header Group Overlay */
-.header-group-wrapper {
-  grid-area: hero;
-  position: sticky;
-  top: 0;
+/* Header group positioning */
+#header-group {
+  position: fixed;
+  bottom: 0;
   left: 0;
   right: 0;
-  z-index: 10;
-  pointer-events: none;
-  height: 0;
-  
-  /* Initial positioning at bottom of hero */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding-bottom: 0;
+  z-index: 100;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
 }
 
-.header-group-wrapper > * {
-  pointer-events: auto;
-}
-
-/* Sticky State */
-.header-group-wrapper.header--is-sticky {
-  justify-content: flex-start;
-  padding-bottom: 0;
-  height: auto;
-  position: fixed;
+/* When header becomes sticky at top */
+#header-group.header--is-sticky {
+  bottom: auto;
   top: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
 }
 
-/* Main Content */
-.content-for-layout {
-  grid-area: content;
+/* Ensure main content starts after hero */
+#MainContent {
   position: relative;
   z-index: 2;
-  background: var(--color-background);
-  min-height: 100vh;
+  background: white;
+  margin-top: 0;
 }
 
-/* Header Component Enhancements */
-header-component {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-header-component.scrolled-down {
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-}
-
-/* Responsive Adjustments */
-@media screen and (max-width: 749px) {
-  .hero-video__scroll-down {
-    width: 40px;
-    height: 40px;
-    bottom: 1.5rem;
-  }
-  
-  .hero-video__scroll-down svg {
-    width: 20px;
-    height: 20px;
-  }
-}
-
-/* Ensure footer stays at bottom */
-[data-section-type="footer"] {
-  margin-top: auto;
-}
-
-/* Animation for header transition */
-@media (prefers-reduced-motion: no-preference) {
-  .header-group-wrapper {
-    will-change: transform, background-color;
-  }
-  
-  .header-group-wrapper.header--is-sticky {
-    animation: headerStick 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-}
-
-@keyframes headerStick {
-  from {
-    transform: translateY(20px);
-    opacity: 0.8;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Hide default header sticky behavior when using hero video */
-body:has(.hero-section) .header[data-sticky-state] {
-  position: static;
-}
-
-body:has(.hero-section) #header-group:has(#header-component[sticky]) {
-  display: block;
+/* Make sure footer stays at bottom */
+.shopify-section-group-footer-group {
+  position: relative;
+  z-index: 2;
 }
 
 /* ───────── overlay   header + announcement bar ───────── */
