@@ -1,6 +1,6 @@
 /* ================================================================
    South-Club custom header – hero-video variant
-   (v1.1 – robust hero selector + tiny guard)
+   (v2.0 – unified scroll management)
    ================================================================ */
 import { Component } from '@theme/component';
 import { onDocumentReady } from '@theme/utilities';
@@ -17,51 +17,33 @@ class HeaderComponent extends Component {
   });
 
   #isHeroHeader = false;
-  #lastScrollTop = 0;
-  #offscreen = false;
-  #timeout = null;
-  #animationDelay = 150;
 
   /* ─────────────────────────────────────────────
-     HERO scroll routine
+     HERO scroll routine - disabled in favor of custom-scroll-manager
      ──────────────────────────────────────────── */
   #handleWindowScroll = () => {
+    // Skip all scroll handling if we have a hero video
+    // Let custom-scroll-manager.js handle everything
     if (this.#isHeroHeader) {
-      const headerGroup = document.querySelector('#header-group');
-      if (!headerGroup) return;
-
-      /* ---------------- CHANGE ① ---------------- */
-      const hero = document.querySelector(
-        '[id^="shopify-section"][id$="hero-video"]'
-      );
-      if (!hero) return; // ← extra guard for 404 etc.
-
-      const trigger = window.innerHeight - headerGroup.offsetHeight;
-
-      if (window.scrollY >= trigger) {
-        headerGroup.classList.add('header--is-sticky');
-        this.classList.add('scrolled-down');
-      } else {
-        headerGroup.classList.remove('header--is-sticky');
-        this.classList.remove('scrolled-down');
-      }
-      return; // skip theme’s default “scroll-up” logic
+      return;
     }
 
-    /* default Dawn behaviour unchanged … */
+    /* default Dawn behaviour for non-hero pages can go here if needed */
   };
 
   connectedCallback() {
-    /* ---------------- CHANGE ② ---------------- */
-    if (
-      document.querySelector('[id^="shopify-section"][id$="hero-video"]')
-    ) {
+    // Detect if we have a hero video section
+    if (document.querySelector('[id^="shopify-section"][id$="hero-video"]')) {
       this.#isHeroHeader = true;
     }
 
     super.connectedCallback();
     this.#resizeObserver.observe(this);
-    document.addEventListener('scroll', this.#handleWindowScroll);
+    
+    // Only add scroll listener for non-hero pages
+    if (!this.#isHeroHeader) {
+      document.addEventListener('scroll', this.#handleWindowScroll);
+    }
   }
 
   disconnectedCallback() {
