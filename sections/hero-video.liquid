@@ -1,15 +1,20 @@
 {% comment %}
-  Hero-video section with improved scroll functionality
+  Enhanced Hero Video section with improved scroll functionality and accessibility
 {% endcomment %}
 
 {% if section.settings.video != blank or section.settings.video_url != blank %}
-<section class="hero-section" data-section-id="{{ section.id }}" id="hero">
-  <div class="hero-video__wrapper">
+<section class="hero-section" data-section-id="{{ section.id }}" id="hero" role="banner" aria-label="Hero video">
+  <div class="hero-video__wrapper" role="button" tabindex="0" aria-label="Click to scroll to main content">
     {%- comment -%} Preferred: video uploaded in Settings > Files {%- endcomment -%}
     {% if section.settings.video != blank %}
       {{ section.settings.video | video_tag:
           class: 'hero-video__media',
-          autoplay: true, loop: true, muted: true, playsinline: true }}
+          autoplay: true, 
+          loop: true, 
+          muted: true, 
+          playsinline: true,
+          loading: 'eager'
+      }}
     {% else %}
       <video
         class="hero-video__media"
@@ -18,17 +23,20 @@
         loop
         muted
         playsinline
-        aria-label="Background video">
+        loading="eager"
+        aria-label="Background video showcasing {{ shop.name }}">
       </video>
     {% endif %}
 
-    {%- comment -%} Minimal white arrow scroll cue {%- endcomment -%}
+    {%- comment -%} Minimal white arrow scroll indicator {%- endcomment -%}
     <button class="hero-video__scroll-down"
-            aria-label="Scroll down to content"
+            aria-label="Scroll down to main content"
+            title="Scroll to explore our products"
             data-scroll-trigger>
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
            stroke="currentColor" stroke-width="1.5"
-           stroke-linecap="round" stroke-linejoin="round">
+           stroke-linecap="round" stroke-linejoin="round"
+           aria-hidden="true">
         <polyline points="6 9 12 15 18 9" />
       </svg>
     </button>
@@ -36,6 +44,33 @@
 </section>
 
 {% endif %}
+
+<style>
+  /* Section-specific styles */
+  .hero-section[data-section-id="{{ section.id }}"] {
+    {% if section.settings.overlay_opacity > 0 %}
+      position: relative;
+    {% endif %}
+  }
+  
+  {% if section.settings.overlay_opacity > 0 %}
+  .hero-section[data-section-id="{{ section.id }}"]::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, {{ section.settings.overlay_opacity | divided_by: 100.0 }});
+    z-index: 2;
+    pointer-events: none;
+  }
+  
+  .hero-section[data-section-id="{{ section.id }}"] .hero-video__scroll-down {
+    z-index: 3;
+  }
+  {% endif %}
+</style>
 
 {% schema %}
 {
@@ -45,13 +80,24 @@
       "type": "video", 
       "id": "video", 
       "label": "Background Video",
-      "info": "Upload your logo video here. Recommended format: MP4"
+      "info": "Upload your logo video here. Recommended format: MP4. For best performance, keep file size under 10MB."
     },
     { 
       "type": "url",  
       "id": "video_url", 
       "label": "Or Video URL (MP4)",
-      "info": "Alternative: paste a direct link to your video file"
+      "info": "Alternative: paste a direct link to your video file. Video URL will be ignored if a video file is uploaded above."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Video Overlay Opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 0,
+      "info": "Add a dark overlay to improve text readability"
     }
   ],
   "presets": [{ 
