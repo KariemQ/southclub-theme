@@ -4411,41 +4411,90 @@ header-actions {
 }
 
 /* ─────────────────────────────────────────────
-   HERO + STICKY HEADER LAYOUT
+   HERO + STICKY HEADER LAYOUT (FIXED VERSION)
    ─────────────────────────────────────────── */
-.site-grid-container{
-  display:grid;
 
-  /* one-column layout prevents side-by-side auto-placement */
-  grid-template-columns:1fr;            /* ← NEW */
-  grid-auto-columns:1fr;                /* fallback for auto items */
-
-  /* hero ▸ main ▸ footer rows */
-  grid-template-rows:auto 1fr auto;
+/* Remove body padding that conflicts with our layout */
+body {
+  padding-top: 0 !important;
 }
 
-/* hero video & header bar both fill the single column */
-#shopify-section-hero-video,
-#header-group{
-  grid-column:1 / -1;                   /* span the whole width */
+.site-grid-container {
+  position: relative;
 }
 
-/* hero section (row-1) gets explicit full-viewport height */
-#shopify-section-hero-video{
-  grid-row:1;
-  min-height:100svh;                    /* always fills the view-port */
-  position:relative;
-  z-index:0;
-}
-#shopify-section-hero-video video{
-  width:100%;
-  height:100%;
-  object-fit:cover;                     /* keeps video visible */
+/* Hero video section - full screen */
+.hero-section {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  z-index: 1;
 }
 
-/* main page (row-2) and footer (row-3) keep Shopify defaults */
-#MainContent{ grid-row:2; }
-.shopify-section-group-footer-group{ grid-row:3; }
+.hero-video__wrapper {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-video__media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Scroll down arrow */
+.hero-video__scroll-down {
+  position: absolute;
+  bottom: 100px; /* Space for header */
+  left: 50%;
+  transform: translateX(-50%);
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  z-index: 10;
+  padding: 10px;
+  transition: opacity 0.3s ease;
+}
+
+.hero-video__scroll-down:hover {
+  opacity: 0.7;
+}
+
+/* Header group positioning */
+#header-group {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+}
+
+/* When header becomes sticky at top */
+#header-group.header--is-sticky {
+  bottom: auto;
+  top: 0;
+  transform: translateY(0);
+}
+
+/* Ensure main content starts after hero */
+#MainContent {
+  position: relative;
+  z-index: 2;
+  background: white;
+  margin-top: 0;
+}
+
+/* Make sure footer stays at bottom */
+.shopify-section-group-footer-group {
+  position: relative;
+  z-index: 2;
+}
 
 /* ───────── overlay   header + announcement bar ───────── */
 #header-group{
