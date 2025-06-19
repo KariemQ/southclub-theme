@@ -1,13 +1,17 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Fix: Use correct selector that matches your HTML structure
   const headerGroup = document.querySelector('#header-group');
   const headerComponent = document.querySelector('header-component');
   const mainContent = document.querySelector('#MainContent');
-  const heroSection = document.querySelector('[id^="shopify-section"][id$="hero-video"]');
+  const heroSection = document.querySelector('.hero-section');
 
-  // Only run this script if we have all required elements including hero video
+  // Only run if we have all required elements including hero
   if (!headerGroup || !headerComponent || !mainContent || !heroSection) {
+    console.log('Hero scroll manager: Required elements not found');
     return;
   }
+
+  console.log('Hero scroll manager: Initialized');
 
   let isScrolling = false;
   let scrollTimeout;
@@ -24,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.classList.add('is-scrolling');
     }
 
-    // Calculate trigger point based on main content position
+    // Calculate when main content reaches viewport top
     const mainContentRect = mainContent.getBoundingClientRect();
     const headerHeight = headerGroup.offsetHeight;
     
@@ -32,9 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const triggerPoint = mainContentRect.top - headerHeight;
 
     if (triggerPoint <= 0) {
+      // Header should be sticky at top
       headerGroup.classList.add('header--is-sticky');
       headerComponent.classList.add('scrolled-down');
     } else {
+      // Header should be at bottom of hero
       headerGroup.classList.remove('header--is-sticky');
       headerComponent.classList.remove('scrolled-down');
     }
@@ -58,15 +64,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // Add scroll listener
   window.addEventListener('scroll', onScroll, { passive: true });
   
-  // Run once on load
+  // Run once on load to set initial state
   handleScroll();
 
   // Smooth scroll functionality for hero video clicks
   const clickTriggers = document.querySelectorAll('.hero-video__wrapper, .hero-video__scroll-down');
   const scrollToContent = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     
     // Calculate the exact position where header should be at top
     const headerHeight = headerGroup.offsetHeight;
@@ -81,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
   clickTriggers.forEach(trigger => {
     if (trigger) {
       trigger.addEventListener('click', scrollToContent);
-      trigger.style.cursor = 'pointer'; // Make it clear it's clickable
+      trigger.style.cursor = 'pointer';
     }
   });
 });
