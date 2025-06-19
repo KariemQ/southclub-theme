@@ -5,48 +5,77 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroSection = document.querySelector('.hero-section');
 
   if (!headerGroup || !headerComponent || !mainContent || !heroSection) {
+    console.warn('Hero video scroll manager: Required elements not found');
     return;
   }
 
   let isSticky = false;
+  let ticking = false;
 
   const handleScroll = () => {
-    const scrollY = window.scrollY;
-    const heroHeight = heroSection.offsetHeight;
-    const headerHeight = headerGroup.offsetHeight;
-    
-    // Trigger point: when we've scrolled past the hero minus header height
-    const triggerPoint = heroHeight - headerHeight;
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        const heroHeight = heroSection.offsetHeight;
+        const headerHeight = headerGroup.offsetHeight;
+        
+        // Trigger point: when header reaches the top
+        const triggerPoint = heroHeight - headerHeight;
 
-    if (scrollY >= triggerPoint && !isSticky) {
-      headerGroup.classList.add('header--is-sticky');
-      headerComponent.classList.add('scrolled-down');
-      isSticky = true;
-    } else if (scrollY < triggerPoint && isSticky) {
-      headerGroup.classList.remove('header--is-sticky');
-      headerComponent.classList.remove('scrolled-down');
-      isSticky = false;
+        if (scrollY >= triggerPoint && !isSticky) {
+          headerGroup.classList.add('header--is-sticky');
+          headerComponent.classList.add('scrolled-down');
+          
+          // Add body class for additional styling if needed
+          document.body.classList.add('header-is-sticky');
+          isSticky = true;
+          
+        } else if (scrollY < triggerPoint && isSticky) {
+          headerGroup.classList.remove('header--is-sticky');
+          headerComponent.classList.remove('scrolled-down');
+          
+          document.body.classList.remove('header-is-sticky');
+          isSticky = false;
+        }
+        
+        ticking = false;
+      });
+      ticking = true;
     }
   };
 
-  window.addEventListener('scroll', handleScroll, { passive: true });
-  handleScroll(); // Run once on load
-
-  // Handle click on video or arrow to scroll to content
-  const clickTriggers = document.querySelectorAll('.hero-video__wrapper, .hero-video__scroll-down');
-  const scrollToContent = () => {
+  // Smooth scroll to content function
+  const scrollToContent = (event) => {
+    event.preventDefault();
     const heroHeight = heroSection.offsetHeight;
     const headerHeight = headerGroup.offsetHeight;
     
     window.scrollTo({
-      top: heroHeight - headerHeight,
+      top: heroHeight - headerHeight + 1, // +1 to ensure sticky state triggers
       behavior: 'smooth'
     });
   };
 
+  // Event listeners
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  
+  // Click handlers for video and arrow
+  const clickTriggers = document.querySelectorAll('.hero-video__wrapper, .hero-video__scroll-down');
   clickTriggers.forEach(trigger => {
     if (trigger) {
       trigger.addEventListener('click', scrollToContent);
     }
+  });
+
+  // Initial check on load
+  handleScroll();
+  
+  // Handle resize events
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      handleScroll();
+    }, 100);
   });
 });
