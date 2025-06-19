@@ -4563,6 +4563,27 @@ footer{
   grid-template-rows:auto 1fr auto;
 }
 
+/* Adjust header and announcement bar positioning */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* Ensure header is above other elements */
+  background-color: var(--header-bg-color, rgba(255, 255, 255, 0.9)); /* Semi-transparent background */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
 
+.header--is-sticky {
+  background-color: rgba(255, 255, 255, 1); /* Solid background for sticky header */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+}
+
+.hero-section {
+  position: relative;
+  height: 100vh; /* Full viewport height for video */
+  overflow: hidden;
+  z-index: 500; /* Ensure video is below header */
+}
 
 
