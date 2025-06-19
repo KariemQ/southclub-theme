@@ -4581,6 +4581,73 @@ body:has(.hero-section) #header-group:has(#header-component[sticky]) {
   display: block;
 }
 
+/* ───────── overlay   header + announcement bar ───────── */
+#header-group{
+  position:sticky;
+  top:0;
+  width:100%;
+  z-index:20;
+  transform:translateY(calc(100svh - var(--header-height)));
+  transition:transform .35s ease;
+}
+#header-group.header--is-sticky{
+  transform:translateY(0);
+}
+
+
+/* --------------------------------------------------------------
+   Make sure the <video> itself always fills the hero section
+   -------------------------------------------------------------- */
+#shopify-section-hero-video{
+  grid-row:1;                 /* already declared above, but harmless */
+  min-height:100svh;
+  position:relative;
+  z-index:0;                  /* sits under the bar */
+}
+#shopify-section-hero-video video{
+  position:absolute;          /* <<< NEW */
+  inset:0;                    /* fill the hero */
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* ===== HERO SECTION LAYOUT  ======================================= */
+
+/* keep the hero in the normal flow, so it pushes content below it */
+#shopify-section-hero-video{
+  position: relative;      /*  ←  back to relative  */
+  height:   100svh;        /* full viewport height */
+  overflow: hidden;        /* just in case          */
+}
+
+/* let only the <video> itself be fixed, so the picture stays put
+   while the section still occupies space in the flow            */
+#shopify-section-hero-video > video{
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;             /* behind everything else */
+  pointer-events: none;
+}
+
+/* stop the video from bleeding through the footer */
+#MainContent,
+.shopify-section-group-footer-group,
+footer{
+  position:relative;
+  z-index:10;
+  background:var(--color-background, #fff);   /* uses scheme or falls back */
+}
+
+.site-grid-container{
+  display:grid;
+  grid-template-columns:100%;     /* prevent accidental 2-column split   */
+  grid-template-rows:auto 1fr auto;
+}
+
 
 
 
