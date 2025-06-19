@@ -7,53 +7,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Only run if we have all required elements including hero
   if (!headerGroup || !headerComponent || !mainContent || !heroSection) {
-    console.log('Hero scroll manager: Required elements not found');
+    console.log('Hero scroll manager: Required elements not found', {
+      headerGroup: !!headerGroup,
+      headerComponent: !!headerComponent,
+      mainContent: !!mainContent,
+      heroSection: !!heroSection
+    });
     return;
   }
 
   console.log('Hero scroll manager: Initialized');
 
-  let isScrolling = false;
-  let scrollTimeout;
+  let isSticky = false;
+  let ticking = false;
 
   const handleScroll = () => {
-    // Clear any existing timeout
-    if (scrollTimeout) {
-      clearTimeout(scrollTimeout);
-    }
-
-    // Mark that we're scrolling
-    if (!isScrolling) {
-      isScrolling = true;
-      document.body.classList.add('is-scrolling');
-    }
-
-    // Calculate when main content reaches viewport top
-    const mainContentRect = mainContent.getBoundingClientRect();
+    // Get current scroll position
+    const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // Get hero section height
+    const heroHeight = heroSection.offsetHeight;
     const headerHeight = headerGroup.offsetHeight;
     
-    // Trigger when main content is about to reach the top
-    const triggerPoint = mainContentRect.top - headerHeight;
+    // Calculate trigger point - when we've scrolled past hero minus header height
+    const triggerPoint = heroHeight - headerHeight;
 
-    if (triggerPoint <= 0) {
-      // Header should be sticky at top
-      headerGroup.classList.add('header--is-sticky');
-      headerComponent.classList.add('scrolled-down');
-    } else {
-      // Header should be at bottom of hero
-      headerGroup.classList.remove('header--is-sticky');
-      headerComponent.classList.remove('scrolled-down');
+    // Determine if header should be sticky
+    const shouldBeSticky = scrollY >= triggerPoint;
+
+    // Only update if state changed (prevents constant updates)
+    if (shouldBeSticky !== isSticky) {
+      isSticky = shouldBeSticky;
+      
+      if (isSticky) {
+        console.log('Making header sticky at scroll:', scrollY);
+        headerGroup.classList.add('header--is-sticky');
+        headerComponent.classList.add('scrolled-down');
+      } else {
+        console.log('Making header non-sticky at scroll:', scrollY);
+        headerGroup.classList.remove('header--is-sticky');
+        headerComponent.classList.remove('scrolled-down');
+      }
     }
-
-    // Set timeout to detect when scrolling ends
-    scrollTimeout = setTimeout(() => {
-      isScrolling = false;
-      document.body.classList.remove('is-scrolling');
-    }, 150);
   };
 
-  // Use requestAnimationFrame for smoother performance
-  let ticking = false;
+  // Throttled scroll handler
   const onScroll = () => {
     if (!ticking) {
       requestAnimationFrame(() => {
@@ -76,9 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     e.stopPropagation();
     
-    // Calculate the exact position where header should be at top
+    console.log('Scrolling to content');
+    
+    // Get hero section height and header height
+    const heroHeight = heroSection.offsetHeight;
     const headerHeight = headerGroup.offsetHeight;
-    const targetPosition = mainContent.getBoundingClientRect().top + window.pageYOffset - headerHeight;
+    
+    // Target position: just past the hero section
+    const targetPosition = heroHeight - headerHeight + 1;
     
     window.scrollTo({
       top: targetPosition,
@@ -90,6 +93,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (trigger) {
       trigger.addEventListener('click', scrollToContent);
       trigger.style.cursor = 'pointer';
+    }
+  });
+
+  // Add keyboard support for accessibility
+  clickTriggers.forEach(trigger => {
+    if (trigger) {
+      trigger.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          scrollToContent(e);
+        }
+      });
     }
   });
 });
