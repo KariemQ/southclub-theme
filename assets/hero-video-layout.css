@@ -1,33 +1,29 @@
-/* Essential CSS for hero video + header layout */
+/* Essential CSS for hero video + header layout - FIXED VERSION */
 
-/* Site Grid Container */
+/* Site Grid Container - Simplified approach */
 .site-grid-container {
-  display: grid;
-  grid-template-areas: 
-    "hero"
-    "content";
-  grid-template-rows: 100vh auto;
+  position: relative;
   min-height: 100vh;
 }
 
-/* Hero Section */
+/* Hero Section - Make it fill viewport properly */
 .hero-section {
-  grid-area: hero;
   position: relative;
   width: 100%;
   height: 100vh;
   overflow: hidden;
   z-index: 1;
+  background: #000; /* Fallback color */
 }
 
 .hero-video__wrapper {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  z-index: 2;
 }
 
 .hero-video__media {
@@ -37,13 +33,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: 1;
+  z-index: 3;
+  background: #000;
 }
 
 /* Scroll Down Arrow */
 .hero-video__scroll-down {
   position: absolute;
-  bottom: 2rem;
+  bottom: 120px; /* Position above header */
   left: 50%;
   transform: translateX(-50%);
   background: rgba(255, 255, 255, 0.9);
@@ -73,9 +70,8 @@
   height: 24px;
 }
 
-/* Header Group Positioning */
+/* Header Group Positioning - Fixed approach */
 .header-group-wrapper {
-  grid-area: hero;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -83,7 +79,9 @@
   z-index: 100;
   
   /* Smooth transition */
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   
   /* Semi-transparent background when over hero */
   background: rgba(255, 255, 255, 0.95);
@@ -91,7 +89,7 @@
   -webkit-backdrop-filter: blur(8px);
 }
 
-/* When header becomes sticky */
+/* When header becomes sticky - Use transform instead of position change */
 .header-group-wrapper.header--is-sticky {
   position: fixed;
   top: 0;
@@ -100,38 +98,31 @@
   background: rgba(255, 255, 255, 0.98);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(0);
 }
 
-/* Main Content */
+/* Main Content - Keep it simple */
 .content-for-layout {
-  grid-area: content;
   position: relative;
   z-index: 50;
   background: var(--color-background);
   min-height: 100vh;
   
-  /* Add padding to prevent content from hiding behind header */
-  padding-top: var(--header-height, 80px);
-  margin-top: calc(-1 * var(--header-height, 80px));
+  /* Ensure content starts right after hero */
+  margin-top: 0;
+  padding-top: 0;
 }
 
 /* Header Component Enhancements */
 header-component {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
 }
 
-header-component.scrolled-down {
-  /* Add any specific styles for when scrolled */
-}
-
-/* Override default header behaviors that conflict */
+/* Override problematic default styles */
 body:has(.hero-section) .header[data-sticky-state] {
   position: static !important;
   opacity: 1 !important;
-}
-
-body:has(.hero-section) #header-group:has(#header-component[sticky]) {
-  display: block !important;
+  transform: none !important;
 }
 
 body:has(.hero-section) .header[transparent] {
@@ -139,7 +130,16 @@ body:has(.hero-section) .header[transparent] {
   background-color: transparent !important;
 }
 
-/* Disable default flex behavior on content when hero is present */
+/* Disable default header sticky behavior when hero is present */
+body:has(.hero-section) .header-section {
+  position: static !important;
+}
+
+/* Ensure body doesn't have conflicting flex */
+body:has(.hero-section) {
+  display: block;
+}
+
 body:has(.hero-section) .content-for-layout {
   flex: none;
 }
@@ -149,32 +149,13 @@ body:has(.hero-section) .content-for-layout {
   .hero-video__scroll-down {
     width: 40px;
     height: 40px;
-    bottom: 1.5rem;
+    bottom: 100px;
   }
   
   .hero-video__scroll-down svg {
     width: 20px;
     height: 20px;
   }
-}
-
-/* Smooth scrolling improvements */
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
-}
-
-/* Ensure proper layering */
-.hero-section,
-.header-group-wrapper,
-.content-for-layout {
-  will-change: transform;
-}
-
-/* Loading state improvements */
-.hero-video__media {
-  background: #000;
 }
 
 /* Accessibility improvements */
@@ -184,4 +165,13 @@ body:has(.hero-section) .content-for-layout {
   .hero-video__scroll-down {
     transition: none;
   }
+}
+
+/* Debug helpers - remove in production */
+.hero-section {
+  border: 2px solid red; /* Temporary - remove this line once working */
+}
+
+.hero-video__media {
+  border: 2px solid blue; /* Temporary - remove this line once working */
 }
