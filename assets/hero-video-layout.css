@@ -1,68 +1,187 @@
-/* Additional styles specifically for hero video + header integration */
+/* Essential CSS for hero video + header layout */
 
-/* Ensure hero video section is full height minus header space at bottom */
-[id^="shopify-section"][id$="hero-video"] {
-  position: relative;
-  height: 100vh;
-  overflow: hidden;
+/* Site Grid Container */
+.site-grid-container {
+  display: grid;
+  grid-template-areas: 
+    "hero"
+    "content";
+  grid-template-rows: 100vh auto;
+  min-height: 100vh;
 }
 
-/* Position header group at bottom of hero initially */
-body:has([id^="shopify-section"][id$="hero-video"]) #header-group {
+/* Hero Section */
+.hero-section {
+  grid-area: hero;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero-video__wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-video__media {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* Scroll Down Arrow */
+.hero-video__scroll-down {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.hero-video__scroll-down:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hero-video__scroll-down svg {
+  color: #333;
+  width: 24px;
+  height: 24px;
+}
+
+/* Header Group Positioning */
+.header-group-wrapper {
+  grid-area: hero;
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 100;
+  
+  /* Smooth transition */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Semi-transparent background when over hero */
   background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
-/* When sticky, override the bottom positioning */
-body:has([id^="shopify-section"][id$="hero-video"]) #header-group.header--is-sticky {
+/* When header becomes sticky */
+.header-group-wrapper.header--is-sticky {
   position: fixed;
   top: 0;
   bottom: auto;
+  z-index: 1000;
   background: rgba(255, 255, 255, 0.98);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Adjust main content positioning */
-body:has([id^="shopify-section"][id$="hero-video"]) #MainContent {
+/* Main Content */
+.content-for-layout {
+  grid-area: content;
   position: relative;
   z-index: 50;
   background: var(--color-background);
-  margin-top: calc(-1 * var(--header-height));
-  padding-top: var(--header-height);
+  min-height: 100vh;
+  
+  /* Add padding to prevent content from hiding behind header */
+  padding-top: var(--header-height, 80px);
+  margin-top: calc(-1 * var(--header-height, 80px));
 }
 
-/* White arrow styling for hero video */
-.hero-video__scroll-indicator {
-  position: absolute;
-  bottom: 80px; /* Position above the header */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  z-index: 10;
-  transition: all 0.3s ease;
-  opacity: 0.8;
+/* Header Component Enhancements */
+header-component {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.hero-video__scroll-indicator:hover {
-  opacity: 1;
-  transform: translateX(-50%) translateY(-4px);
+header-component.scrolled-down {
+  /* Add any specific styles for when scrolled */
 }
 
-.hero-video__scroll-indicator svg {
-  width: 100%;
-  height: 100%;
-  fill: white;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+/* Override default header behaviors that conflict */
+body:has(.hero-section) .header[data-sticky-state] {
+  position: static !important;
+  opacity: 1 !important;
 }
 
-/* Smooth transitions for all hero elements */
-.hero-video__wrapper,
-.hero-video__content {
-  transition: transform 0.3s ease;
+body:has(.hero-section) #header-group:has(#header-component[sticky]) {
+  display: block !important;
+}
+
+body:has(.hero-section) .header[transparent] {
+  position: static !important;
+  background-color: transparent !important;
+}
+
+/* Disable default flex behavior on content when hero is present */
+body:has(.hero-section) .content-for-layout {
+  flex: none;
+}
+
+/* Responsive Adjustments */
+@media screen and (max-width: 749px) {
+  .hero-video__scroll-down {
+    width: 40px;
+    height: 40px;
+    bottom: 1.5rem;
+  }
+  
+  .hero-video__scroll-down svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Smooth scrolling improvements */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Ensure proper layering */
+.hero-section,
+.header-group-wrapper,
+.content-for-layout {
+  will-change: transform;
+}
+
+/* Loading state improvements */
+.hero-video__media {
+  background: #000;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .header-group-wrapper,
+  header-component,
+  .hero-video__scroll-down {
+    transition: none;
+  }
 }
