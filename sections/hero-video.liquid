@@ -1,5 +1,5 @@
 {% comment %}
-  Hero Video section – minimal chevron with subtle bounce
+  Hero Video section – minimal solid-white chevron with subtle bounce
 {% endcomment %}
 
 {% if section.settings.video != blank or section.settings.video_url != blank %}
@@ -34,7 +34,7 @@
              aria-label="Background video showcasing {{ shop.name }}"></video>
     {% endif %}
 
-    {%- comment -%} Minimal bouncing chevron {%- endcomment -%}
+    {%- comment -%} Single minimal white chevron {%- endcomment -%}
     <button class="hero-video__scroll-down"
             aria-label="Scroll to main content"
             title="Scroll to explore products"
@@ -49,7 +49,7 @@
 {% endif %}
 
 <style>
-/* ===== Overlay (optional) ===== */
+/* ===== Optional overlay ===== */
 {% if section.settings.overlay_opacity > 0 %}
 .hero-section[data-section-id="{{ section.id }}"] { position: relative; }
 .hero-section[data-section-id="{{ section.id }}"]::before {
@@ -62,48 +62,50 @@
 }
 {% endif %}
 
-/* ===== Minimal bouncing chevron ===== */
+/* ===== Subtle bounce keyframes ===== */
 @keyframes subtle-bounce {
   0%, 100% { transform: translate(-50%, 0); }
   50%      { transform: translate(-50%, -6px); }
 }
 
+/* ===== Minimal white chevron button ===== */
 .hero-video__scroll-down {
   position: absolute;
-  /* header-stack ≈ 91 px (announcement + nav) + 2rem gap */
+  /* header-stack (≈91px) + 2rem visual gap */
   bottom: calc(2rem + var(--announcement-bar-h, 31px) + 60px);
   left: 50%;
-  /* Initial placement handled in keyframes so animation starts correctly */
+  /* Remove circle/background entirely */
   width: 28px;
   height: 28px;
   padding: 0;
   border: none;
   background: none;
-  color: #ffffff;
   cursor: pointer;
-  z-index: 11;               /* above header overlay */
+  z-index: 11;
+
   animation: subtle-bounce 1.6s ease-in-out infinite;
   transition: opacity .25s ease;
-  opacity: .85;
+  opacity: .9;
 }
 
 .hero-video__scroll-down:hover,
 .hero-video__scroll-down:focus-visible {
-  animation-play-state: paused;        /* pause bounce on interaction */
+  animation-play-state: paused;     /* pause bounce on interaction */
   opacity: 1;
 }
 
+/* Chevron always pure white */
 .chevron {
   width: 100%;
   height: 100%;
   fill: none;
-  stroke: currentColor;
+  stroke: #ffffff;                  /* force solid white */
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-/* Mobile – slightly smaller & tighter vertical offset */
+/* Mobile adjustments */
 @media (max-width: 749px) {
   .hero-video__scroll-down {
     width: 24px;
