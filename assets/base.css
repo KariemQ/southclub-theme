@@ -4666,17 +4666,19 @@ header-component.scrolled-down {
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* ── Stop the “bounce” by limiting which properties animate ── */
-.header-group-wrapper {
-  /* Only fade the background & shadow; don't animate size or position */
-  transition-property: background-color, box-shadow, backdrop-filter;
-  transition-duration: 0.4s;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+/* ── Smooth sticky, no vertical slide ────────────────────── */
+
+/* Disable the translateY in the headerStick animation */
+@keyframes headerStickNoSlide {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-/* If you use the .no-transition helper, keep it truly instant */
-.header-group-wrapper.no-transition {
-  transition: none !important;
+/* Use the updated keyframes and limit what animates */
+.header-group-wrapper.header--is-sticky {
+  animation: headerStickNoSlide 0.25s ease-out;
+  /* FYI: border-bottom & shadow already fade smoothly via transition */
 }
+
 
 
