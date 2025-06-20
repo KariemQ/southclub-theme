@@ -4735,6 +4735,16 @@ header-component.scrolled-down {
   }
 }
 
+/* --- Force arrow to stay icon-only, no background / border on hover --- */
+.hero-video__scroll-down,
+.hero-video__scroll-down:hover,
+.hero-video__scroll-down:focus-visible {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important; /* catches any global button shadow */
+}
+
+
 
 
 
