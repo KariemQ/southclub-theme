@@ -1,49 +1,52 @@
 /**
- * Hero-Video Manager  —  v2.1
- * ───────────────────────────
- * • Fixes “late” sticky-header trigger by firing a few pixels
- *   before the hero fully leaves the viewport.
- * • Uses a single EARLY_OFFSET constant so you can tune the feel.
+ * Hero-Video Manager  v2.2
+ * ────────────────────────
+ * • Sticky fires when the ANNOUNCEMENT BAR touches the viewport top.
+ * • Single EARLY_OFFSET constant for micro-tuning.
+ * • Exposes bar height as CSS var  --announcement-bar-h   (for CSS nudge).
  */
 
 (function () {
   'use strict';
 
   /* ── CONFIG ─────────────────────────────────────────────── */
-  const EARLY_OFFSET = 8; // pixels before the hero’s bottom hits the top
+  const EARLY_OFFSET = 12;                    // px before bar reaches top
+  const ANNOUNCEMENT_BAR_SELECTOR = '.announcement-bar';
 
   /* ── BOOTSTRAP ───────────────────────────────────────────── */
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  (document.readyState === 'loading')
+    ? document.addEventListener('DOMContentLoaded', init)
+    : init();
 
   /* ── MAIN ───────────────────────────────────────────────── */
   function init() {
-    const heroSection   = document.querySelector('.hero-section');
-    const headerGroup   = document.querySelector('#header-group');
+    const heroSection     = document.querySelector('.hero-section');
+    const headerGroup     = document.querySelector('#header-group');
     const headerComponent = document.querySelector('header-component');
+    const annBar          = document.querySelector(ANNOUNCEMENT_BAR_SELECTOR);
 
-    if (!heroSection || !headerGroup) {
-      console.warn('Hero Video Manager: required elements not found.');
+    if (!heroSection || !headerGroup || !annBar) {
+      console.warn('Hero-Video Manager: required elements missing.');
       return;
     }
+
+    /* expose bar height to CSS for the small upward nudge */
+    const barH = annBar.offsetHeight;
+    document.documentElement.style.setProperty('--announcement-bar-h', `${barH}px`);
 
     let isSticky = false;
     let ticking  = false;
 
-    /* -- Helper: where should the header stick? -------------- */
+    /* ── Trigger point where bar hits viewport top ─────────── */
     function getTriggerPoint() {
-      const heroH   = heroSection.offsetHeight;
-      const headH   = headerComponent?.offsetHeight || 0;
-      return heroH - headH - EARLY_OFFSET;
+      const heroH  = heroSection.offsetHeight;
+      return heroH - barH - EARLY_OFFSET;
     }
 
-    /* -- Scroll handler -------------------------------------- */
+    /* ── Scroll logic ─────────────────────────────────────── */
     function handleScroll() {
       const shouldStick = window.pageYOffset >= getTriggerPoint();
-      if (shouldStick === isSticky) return;      // no change
+      if (shouldStick === isSticky) return;
 
       isSticky = shouldStick;
       headerGroup.classList.toggle('header--is-sticky', isSticky);
@@ -60,17 +63,16 @@
       }
     }
 
-    /* -- Smooth-scroll arrow / video click ------------------- */
+    /* ── Smooth scroll via arrow / video click ─────────────── */
     function scrollToContent(e) {
       e.preventDefault();
-      const heroH   = heroSection.offsetHeight;
-      const headH   = headerComponent?.offsetHeight || 0;
-      const targetY = Math.max(heroH - headH - EARLY_OFFSET, 0);
+      const heroH  = heroSection.offsetHeight;
+      const target = Math.max(heroH - barH - EARLY_OFFSET, 0);
 
-      window.scrollTo({ top: targetY, behavior: 'smooth' });
+      window.scrollTo({ top: target, behavior: 'smooth' });
     }
 
-    /* -- Wire up --------------------------------------------- */
+    /* ── Wiring ────────────────────────────────────────────── */
     window.addEventListener('scroll', onScroll, { passive: true });
 
     document
@@ -82,8 +84,8 @@
         });
       });
 
-    /* Initial state */
+    /* initial state */
     handleScroll();
-    console.log('Hero Video Manager: initialized with EARLY_OFFSET =', EARLY_OFFSET);
+    console.log('Hero-Video Manager: init (barH=', barH, 'px, EARLY_OFFSET=', EARLY_OFFSET, 'px)');
   }
 })();
