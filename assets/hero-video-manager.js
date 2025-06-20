@@ -1,86 +1,71 @@
 /**
- * Hero-Video Manager  •  v3.0
- * ──────────────────────────
- * • Sticky engages when the announcement-bar’s top hits the
- *   viewport top (early by EARLY_OFFSET px).
- * • Uses getBoundingClientRect() instead of scroll-Y maths,
- *   so it adapts to dynamic heights, zoom, etc.
+ * Hero-Video Manager  •  v3.5
+ * ───────────────────────────
+ * • Uses an invisible “sentinel” placed at the very bottom of the hero.
+ * • Sticky turns on when that sentinel scrolls past the viewport top
+ *   (earlier by EARLY_OFFSET px) and turns off as soon as it re-enters.
+ * • No scroll-math side-effects, so no header jump or lingering stick.
  */
 
 (function () {
   'use strict';
 
-  /*── CONFIG ────────────────────────────────────────────────*/
-  const EARLY_OFFSET = 6;                  // ← tweak to taste (px)
-  const BAR_SEL      = '.announcement-bar';
+  /*── CONFIG ───────────────────────────────────────────────*/
+  const EARLY_OFFSET = 6;                  // tweak feel here (px)
 
-  /*── BOOTSTRAP ─────────────────────────────────────────────*/
+  /*── BOOTSTRAP ────────────────────────────────────────────*/
   (document.readyState === 'loading')
     ? document.addEventListener('DOMContentLoaded', init)
     : init();
 
-  /*── MAIN ─────────────────────────────────────────────────*/
+  /*── MAIN ────────────────────────────────────────────────*/
   function init() {
-    const hero          = document.querySelector('.hero-section');
-    const headerGroup   = document.querySelector('#header-group');
-    const headerComp    = document.querySelector('header-component');
-    const bar           = document.querySelector(BAR_SEL);
+    const hero        = document.querySelector('.hero-section');
+    const headerGroup = document.querySelector('#header-group');
+    const headerComp  = document.querySelector('header-component');
 
-    if (!hero || !headerGroup || !bar) {
+    if (!hero || !headerGroup) {
       console.warn('Hero-Video Manager: required elements missing.');
       return;
     }
 
-    const barH = bar.offsetHeight; // may be needed elsewhere
+    /* 1 ▸ Create a 1×1-px sentinel pinned to the hero’s bottom edge */
+    const sentinel = document.createElement('div');
+    sentinel.style.cssText = `
+      position:absolute; bottom:0; left:0; width:1px; height:1px; pointer-events:none;
+    `;
+    hero.appendChild(sentinel);
 
-    let sticky = false;
-    let ticking = false;
-
-    /*-- Decide if we should stick --------------------------------------*/
-    function evaluate() {
-      // Distance between bar’s top and viewport top
-      const barTop = bar.getBoundingClientRect().top;
-      const shouldStick = barTop <= EARLY_OFFSET;
-
-      if (shouldStick === sticky) return;          // no change
-
-      sticky = shouldStick;
-      headerGroup.classList.toggle('header--is-sticky', sticky);
-      headerComp?.classList.toggle('scrolled-down', sticky);
-    }
-
-    function onScroll() {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          evaluate();
-          ticking = false;
-        });
-        ticking = true;
+    /* 2 ▸ IntersectionObserver decides sticky state */
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const stuck = !entry.isIntersecting;          // sentinel above viewport
+        headerGroup.classList.toggle('header--is-sticky', stuck);
+        headerComp?.classList.toggle('scrolled-down',   stuck);
+      },
+      {
+        rootMargin: `-${EARLY_OFFSET}px 0px 0px 0px`,  // fire EARLY_OFFSET sooner
+        threshold: 0
       }
-    }
+    );
+    observer.observe(sentinel);
 
-    /*-- Smooth-scroll on click / keydown -------------------------------*/
+    /* 3 ▸ Smooth-scroll when user clicks video/arrow */
     function scrollToContent(e) {
       e.preventDefault();
-
-      // Scroll to just past the bar so header is already fixed
-      const target = hero.offsetHeight - barH - EARLY_OFFSET;
-      window.scrollTo({ top: Math.max(target, 0), behavior: 'smooth' });
+      const target = hero.offsetHeight - EARLY_OFFSET;
+      window.scrollTo({ top: target, behavior: 'smooth' });
     }
 
-    /*-- Wiring ---------------------------------------------------------*/
-    window.addEventListener('scroll', onScroll, { passive: true });
     document
       .querySelectorAll('.hero-video__wrapper, .hero-video__scroll-down')
       .forEach(el => {
-        el.addEventListener('click',      scrollToContent);
+        el.addEventListener('click', scrollToContent);
         el.addEventListener('keydown', ev => {
           if (ev.key === 'Enter' || ev.key === ' ') scrollToContent(ev);
         });
       });
 
-    /* initial state */
-    evaluate();
     console.log(`Hero-Video Manager: init (EARLY_OFFSET = ${EARLY_OFFSET}px)`);
   }
 })();
