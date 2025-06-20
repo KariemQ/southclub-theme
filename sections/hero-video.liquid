@@ -4,14 +4,18 @@
 
 {% if section.settings.video != blank or section.settings.video_url != blank %}
 <section class="hero-section" data-section-id="{{ section.id }}" id="hero" role="banner" aria-label="Hero video">
-  <div class="hero-video__wrapper" role="button" tabindex="0" aria-label="Click to scroll to main content">
+  <div class="hero-video__wrapper"
+       role="button"
+       tabindex="0"
+       aria-label="Click to scroll to main content">
+
     {%- comment -%} Preferred: video uploaded in Settings > Files {%- endcomment -%}
     {% if section.settings.video != blank %}
       {{ section.settings.video | video_tag:
           class: 'hero-video__media',
-          autoplay: true, 
-          loop: true, 
-          muted: true, 
+          autoplay: true,
+          loop: true,
+          muted: true,
           playsinline: true,
           loading: 'eager'
       }}
@@ -28,7 +32,7 @@
       </video>
     {% endif %}
 
-    {%- comment -%} Minimal white arrow scroll indicator {%- endcomment -%}
+    {%- comment -%} Single white scroll arrow (re-used) {%- endcomment -%}
     <button class="hero-video__scroll-down"
             aria-label="Scroll down to main content"
             title="Scroll to explore our products"
@@ -40,51 +44,85 @@
         <polyline points="6 9 12 15 18 9" />
       </svg>
     </button>
-  </div>
+  </div><!-- /.hero-video__wrapper -->
 </section>
-
 {% endif %}
 
 <style>
-  /* Section-specific styles */
-  .hero-section[data-section-id="{{ section.id }}"] {
-    {% if section.settings.overlay_opacity > 0 %}
-      position: relative;
-    {% endif %}
-  }
-  
+/* ========= Section-specific styles ========= */
+
+.hero-section[data-section-id="{{ section.id }}"] {
   {% if section.settings.overlay_opacity > 0 %}
-  .hero-section[data-section-id="{{ section.id }}"]::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, {{ section.settings.overlay_opacity | divided_by: 100.0 }});
-    z-index: 2;
-    pointer-events: none;
-  }
-  
-  .hero-section[data-section-id="{{ section.id }}"] .hero-video__scroll-down {
-    z-index: 3;
-  }
+    position: relative;
   {% endif %}
+}
+
+/* Dark overlay option */
+{% if section.settings.overlay_opacity > 0 %}
+.hero-section[data-section-id="{{ section.id }}"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, {{ section.settings.overlay_opacity | divided_by: 100.0 }});
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Ensure arrow stays above overlay */
+.hero-section[data-section-id="{{ section.id }}"] .hero-video__scroll-down {
+  z-index: 3;
+}
+{% endif %}
+
+/* ---------- Arrow positioning (above announcement bar) ---------- */
+.hero-video__scroll-down {
+  position: absolute;
+  bottom: calc(1.25rem + var(--announcement-bar-h, 31px)); /* 1.25rem ≈ 20px gap */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 48px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+/* Hover / focus */
+.hero-video__scroll-down:hover,
+.hero-video__scroll-down:focus-visible {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translate(-50%, -3px);
+}
+
+/* Smaller size on mobile */
+@media (max-width: 749px) {
+  .hero-video__scroll-down {
+    width: 40px;
+    height: 40px;
+    bottom: calc(1rem + var(--announcement-bar-h, 31px));
+  }
+}
 </style>
 
 {% schema %}
 {
   "name": "Hero Video",
   "settings": [
-    { 
-      "type": "video", 
-      "id": "video", 
+    {
+      "type": "video",
+      "id": "video",
       "label": "Background Video",
       "info": "Upload your logo video here. Recommended format: MP4. For best performance, keep file size under 10MB."
     },
-    { 
-      "type": "url",  
-      "id": "video_url", 
+    {
+      "type": "url",
+      "id": "video_url",
       "label": "Or Video URL (MP4)",
       "info": "Alternative: paste a direct link to your video file. Video URL will be ignored if a video file is uploaded above."
     },
@@ -100,9 +138,11 @@
       "info": "Add a dark overlay to improve text readability"
     }
   ],
-  "presets": [{ 
-    "name": "Hero Video",
-    "category": "Video" 
-  }]
+  "presets": [
+    {
+      "name": "Hero Video",
+      "category": "Video"
+    }
+  ]
 }
 {% endschema %}
