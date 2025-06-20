@@ -3,7 +3,12 @@
 {% endcomment %}
 
 {% if section.settings.video != blank or section.settings.video_url != blank %}
-<section class="hero-section" data-section-id="{{ section.id }}" id="hero" role="banner" aria-label="Hero video">
+<section class="hero-section"
+         data-section-id="{{ section.id }}"
+         id="hero"
+         role="banner"
+         aria-label="Hero video">
+
   <div class="hero-video__wrapper"
        role="button"
        tabindex="0"
@@ -20,36 +25,33 @@
           loading: 'eager'
       }}
     {% else %}
-      <video
-        class="hero-video__media"
-        src="{{ section.settings.video_url }}"
-        autoplay
-        loop
-        muted
-        playsinline
-        loading="eager"
-        aria-label="Background video showcasing {{ shop.name }}">
+      <video class="hero-video__media"
+             src="{{ section.settings.video_url }}"
+             autoplay
+             loop
+             muted
+             playsinline
+             loading="eager"
+             aria-label="Background video showcasing {{ shop.name }}">
       </video>
     {% endif %}
 
-    {%- comment -%} Single white scroll arrow (re-used) {%- endcomment -%}
+    {%- comment -%} Single minimal scroll arrow {%- endcomment -%}
     <button class="hero-video__scroll-down"
             aria-label="Scroll down to main content"
             title="Scroll to explore our products"
             data-scroll-trigger>
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="1.5"
-           stroke-linecap="round" stroke-linejoin="round"
-           aria-hidden="true">
+      <svg class="arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
         <polyline points="6 9 12 15 18 9" />
       </svg>
     </button>
   </div><!-- /.hero-video__wrapper -->
+
 </section>
 {% endif %}
 
 <style>
-/* ========= Section-specific styles ========= */
+/* ========== Hero-specific styles ========== */
 
 .hero-section[data-section-id="{{ section.id }}"] {
   {% if section.settings.overlay_opacity > 0 %}
@@ -57,7 +59,7 @@
   {% endif %}
 }
 
-/* Dark overlay option */
+/* Optional dark overlay */
 {% if section.settings.overlay_opacity > 0 %}
 .hero-section[data-section-id="{{ section.id }}"]::before {
   content: '';
@@ -67,45 +69,51 @@
   z-index: 2;
   pointer-events: none;
 }
-
-/* Ensure arrow stays above overlay */
-.hero-section[data-section-id="{{ section.id }}"] .hero-video__scroll-down {
-  z-index: 3;
-}
 {% endif %}
 
-/* ---------- Arrow positioning (above announcement bar) ---------- */
+/* ---------- Minimal scroll arrow ---------- */
 .hero-video__scroll-down {
   position: absolute;
-  bottom: calc(1.25rem + var(--announcement-bar-h, 31px)); /* 1.25rem ≈ 20px gap */
+
+  /* header-stack ≈ announcement (31) + nav (60) = 91 px */
+  bottom: calc(3rem + var(--announcement-bar-h, 31px) + 60px); /* lift arrow higher */
   left: 50%;
   transform: translateX(-50%);
-  width: 48px;
-  height: 48px;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: none;
   color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
-  transition: background 0.25s ease, transform 0.25s ease;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  opacity: 0.85;
+  z-index: 11; /* above header overlay */
 }
 
-/* Hover / focus */
 .hero-video__scroll-down:hover,
 .hero-video__scroll-down:focus-visible {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translate(-50%, -3px);
+  transform: translate(-50%, -4px);
+  opacity: 1;
 }
 
-/* Smaller size on mobile */
+/* Chevron icon styling */
+.arrow-icon {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Mobile tweaks */
 @media (max-width: 749px) {
   .hero-video__scroll-down {
-    width: 40px;
-    height: 40px;
-    bottom: calc(1rem + var(--announcement-bar-h, 31px));
+    width: 28px;
+    height: 28px;
+    bottom: calc(2rem + var(--announcement-bar-h, 31px) + 60px);
   }
 }
 </style>
