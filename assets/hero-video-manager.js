@@ -10,7 +10,7 @@
   'use strict';
 
   /* ── CONFIG ─────────────────────────────────────────────── */
-  const EARLY_OFFSET = 12;                    // px before bar reaches top
+  const EARLY_OFFSET = 16;                    // px before bar reaches top
   const ANNOUNCEMENT_BAR_SELECTOR = '.announcement-bar';
 
   /* ── BOOTSTRAP ───────────────────────────────────────────── */
