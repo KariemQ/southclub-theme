@@ -4688,6 +4688,40 @@ header-component.scrolled-down {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* === Hero bottom arrow ============================================ */
+.hero-scroll-arrow {
+  position: absolute;
+  bottom: calc(1.25rem + var(--announcement-bar-h, 31px)); /* 1.25 rem ≈ 20 px spacing */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 48px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.25s ease;
+  z-index: 11;               /* above header overlay (which is z-index 10) */
+}
+
+.hero-scroll-arrow:hover,
+.hero-scroll-arrow:focus-visible {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translate(-50%, -3px);
+}
+
+@media (max-width: 749px) {
+  .hero-scroll-arrow {
+    width: 40px;
+    height: 40px;
+    bottom: calc(1rem + var(--announcement-bar-h, 31px));
+  }
+}
+
 
 
 
