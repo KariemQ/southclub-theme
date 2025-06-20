@@ -4666,19 +4666,20 @@ header-component.scrolled-down {
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* ── Smooth sticky, no vertical slide ────────────────────── */
+/* ── Remove the “flash” on sticky ─────────────────────────── */
 
-/* Disable the translateY in the headerStick animation */
-@keyframes headerStickNoSlide {
-  from { opacity: 0; }
+/* Stop animating opacity entirely */
+@keyframes headerStickStatic {
+  from { opacity: 1; }
   to   { opacity: 1; }
 }
 
-/* Use the updated keyframes and limit what animates */
+/* Replace the old animation with the static one */
 .header-group-wrapper.header--is-sticky {
-  animation: headerStickNoSlide 0.25s ease-out;
-  /* FYI: border-bottom & shadow already fade smoothly via transition */
+  animation: headerStickStatic 0.25s ease-out;   /* no opacity change */
+  /* background-color, box-shadow, backdrop-filter still transition */
 }
+
 
 
 
