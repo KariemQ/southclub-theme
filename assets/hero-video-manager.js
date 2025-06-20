@@ -23,13 +23,11 @@
     let isSticky = false;
     let ticking = false;
 
-    // Subtract the header height to make the sticky effect happen a bit earlier
+    // By subtracting slightly less than the full header height, you can trigger earlier without jump
     function getTriggerPoint() {
       const heroHeight = heroSection.offsetHeight;
       const headerHeight = headerGroup.offsetHeight;
-
-      // Adjust the offset value here to tweak early vs late triggering
-      const offset = 0; // or any small positive/negative number
+      const offset = 16; // Adjust as needed to prevent teleport/jump (e.g., 0, 8, 20, etc.)
       return heroHeight - headerHeight + offset;
     }
 
@@ -40,7 +38,7 @@
 
       if (shouldBeSticky !== isSticky) {
         isSticky = shouldBeSticky;
-        
+
         if (isSticky) {
           console.log('📌 Making header sticky');
           headerGroup.classList.add('header--is-sticky');
@@ -67,9 +65,11 @@
       }
     }
 
+    // Scroll past the hero, so the header is at bottom of screen initially
     function scrollToContent(event) {
       event.preventDefault();
       event.stopPropagation();
+
       console.log('🎯 Scrolling to main content');
 
       const heroHeight = heroSection.offsetHeight;
@@ -92,6 +92,6 @@
     });
 
     handleScroll();
-    console.log('🚀 Hero Video Manager: Updated sticky trigger');
+    console.log('🚀 Hero Video Manager: Improved offset handling');
   }
 })();
