@@ -4680,6 +4680,14 @@ header-component.scrolled-down {
   /* background-color, box-shadow, backdrop-filter still transition */
 }
 
+/* ── Kill the background-color fade that causes the white flash ── */
+.header-group-wrapper {
+  /* Only animate effects—not the actual colour */
+  transition-property: box-shadow, backdrop-filter;
+  transition-duration: 0.4s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 
 
 
