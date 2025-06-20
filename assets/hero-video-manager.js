@@ -1,15 +1,21 @@
 /**
- * Hero-Video Manager  •  v6.0
- * ───────────────────────────
- * Sticky ON  ➜ when announcement bar’s top ≤ EARLY_OFFSET px
- * Sticky OFF ➜ when bar’s top  > EARLY_OFFSET px (scrolling back up)
+ * Hero-Video Manager  • v7.0
+ * ──────────────────────────
+ * Sticky ON  ➜ heroBottom ≤ (totalHeaderH + EARLY_OFFSET)
+ * Sticky OFF ➜ heroBottom > (totalHeaderH + EARLY_OFFSET)
+ *
+ *   heroBottom     = .hero-section.getBoundingClientRect().bottom
+ *   totalHeaderH   = announcementBarH + navRowH
+ *
+ * Result: flips precisely when the TOP of the announcement bar
+ *         hits the viewport top (± EARLY_OFFSET px).
  */
 
 (function () {
   'use strict';
 
   /*── CONFIG ───────────────────────────────────────────────*/
-  const EARLY_OFFSET = 1;          // px – 0 = exact; raise to fire earlier
+  const EARLY_OFFSET = 0;        // 0 = exact; 2-5 = a hair early
 
   /*── BOOTSTRAP ────────────────────────────────────────────*/
   (document.readyState === 'loading')
@@ -18,21 +24,32 @@
 
   /*── MAIN ────────────────────────────────────────────────*/
   function init() {
-    const bar         = document.querySelector('.announcement-bar');
-    const headerGroup = document.querySelector('#header-group');
+    const hero         = document.querySelector('.hero-section');
+    const bar          = document.querySelector('.announcement-bar');
+    const nav          = document.querySelector('header-component');
+    const headerGroup  = document.querySelector('#header-group');
 
-    if (!bar || !headerGroup) {
-      console.warn('Hero-Video Manager: .announcement-bar or #header-group missing.');
+    if (!hero || !bar || !nav || !headerGroup) {
+      console.warn('Hero-Video Manager: required elements missing.');
       return;
     }
 
-    /*— Scroll evaluator —*/
+    /* heights (static) */
+    const barH = bar.offsetHeight;          // ≈ 31 px
+    const navH = nav.offsetHeight;          // ≈ 60 px
+    const totalH = barH + navH;             // ≈ 91 px
+
+    /* rAF-throttled scroll evaluator */
     let ticking = false;
     function evaluate() {
-      const barTop = bar.getBoundingClientRect().top;
-      const shouldStick = barTop <= EARLY_OFFSET;
+      const heroBottom = hero.getBoundingClientRect().bottom;
+      const shouldStick = heroBottom <= (totalH + EARLY_OFFSET);
 
-      headerGroup.classList.toggle('header--is-sticky', shouldStick);
+      if (headerGroup.classList.contains('header--is-sticky') !== shouldStick) {
+        headerGroup.classList.toggle('header--is-sticky', shouldStick);
+        nav.classList.toggle('scrolled-down',             shouldStick); // keeps your logo animation
+      }
+
       ticking = false;
     }
 
@@ -44,27 +61,25 @@
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    evaluate();                          // set initial state
+    evaluate();                               // set initial state
 
-    /*— Smooth-scroll when hero video / arrow is clicked —*/
-    const hero = document.querySelector('.hero-section');
-    if (hero) {
-      function scrollToContent(e) {
-        e.preventDefault();
-        const targetY = hero.offsetHeight - bar.offsetHeight - EARLY_OFFSET;
-        window.scrollTo({ top: Math.max(targetY, 0), behavior: 'smooth' });
-      }
+    /* smooth-scroll when user clicks hero video / arrow */
+    const clickTargets = document.querySelectorAll('.hero-video__wrapper, .hero-video__scroll-down');
+    clickTargets.forEach(el => {
+      el.addEventListener('click', scrollToContent);
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') scrollToContent(e);
+      });
+    });
 
-      document
-        .querySelectorAll('.hero-video__wrapper, .hero-video__scroll-down')
-        .forEach(el => {
-          el.addEventListener('click', scrollToContent);
-          el.addEventListener('keydown', ev => {
-            if (ev.key === 'Enter' || ev.key === ' ') scrollToContent(ev);
-          });
-        });
+    function scrollToContent(e) {
+      e.preventDefault();
+      const target = hero.offsetHeight - totalH - EARLY_OFFSET;
+      window.scrollTo({ top: Math.max(target, 0), behavior: 'smooth' });
     }
 
-    console.log('Hero-Video Manager: init  (EARLY_OFFSET =', EARLY_OFFSET, 'px)');
+    console.log(
+      `Hero-Video Manager: init  (bar=${barH}px, nav=${navH}px, offset=${EARLY_OFFSET}px)`
+    );
   }
 })();
