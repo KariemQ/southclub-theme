@@ -23,11 +23,14 @@
     let isSticky = false;
     let ticking = false;
 
-    // ADJUSTMENT: Trigger after the full heroSection has scrolled out
+    // Subtract the header height to make the sticky effect happen a bit earlier
     function getTriggerPoint() {
       const heroHeight = heroSection.offsetHeight;
-      // Instead of subtracting the header height, wait for the full hero section
-      return heroHeight;
+      const headerHeight = headerGroup.offsetHeight;
+
+      // Adjust the offset value here to tweak early vs late triggering
+      const offset = 0; // or any small positive/negative number
+      return heroHeight - headerHeight + offset;
     }
 
     function handleScroll() {
@@ -64,11 +67,9 @@
       }
     }
 
-    // ADJUSTMENT: Scroll to the full hero height, ensuring the header overlaps correctly
     function scrollToContent(event) {
       event.preventDefault();
       event.stopPropagation();
-
       console.log('🎯 Scrolling to main content');
 
       const heroHeight = heroSection.offsetHeight;
@@ -83,7 +84,6 @@
     const clickTargets = document.querySelectorAll('.hero-video__wrapper, .hero-video__scroll-down');
     clickTargets.forEach(target => {
       target.addEventListener('click', scrollToContent);
-
       target.addEventListener('keydown', function(event) {
         if (event.key === 'Enter' || event.key === ' ') {
           scrollToContent(event);
@@ -92,7 +92,6 @@
     });
 
     handleScroll();
-
-    console.log('🚀 Hero Video Manager: Initialized successfully (adjusted trigger logic)');
+    console.log('🚀 Hero Video Manager: Updated sticky trigger');
   }
 })();
