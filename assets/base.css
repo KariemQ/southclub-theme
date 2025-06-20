@@ -4666,8 +4666,12 @@ header-component.scrolled-down {
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
+/* === Early-sticky fine-tune (matches EARLY_OFFSET in JS) === */
+:root {
+  --early-offset: 8px;          /* keep in sync with EARLY_OFFSET */
+}
 
-
-
-
-
+.header-group-wrapper:not(.header--is-sticky) {
+  /* Nudge upward to mask the tiny gap before the JS kicks in */
+  transform: translateY(calc(-1 * var(--early-offset)));
+}
