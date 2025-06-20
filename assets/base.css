@@ -4666,17 +4666,17 @@ header-component.scrolled-down {
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* --- Prevent 1-px “bounce” when header turns sticky --- */
-
-/* Reserve the border space from the very start */
+/* ── Stop the “bounce” by limiting which properties animate ── */
 .header-group-wrapper {
-  border-bottom: 1px solid transparent;      /* same thickness, invisible */
-  box-sizing: border-box;                    /* make sure border is inside */
+  /* Only fade the background & shadow; don't animate size or position */
+  transition-property: background-color, box-shadow, backdrop-filter;
+  transition-duration: 0.4s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* When sticky, just switch the colour — height stays identical */
-.header-group-wrapper.header--is-sticky {
-  border-bottom-color: rgba(0, 0, 0, 0.1);
+/* If you use the .no-transition helper, keep it truly instant */
+.header-group-wrapper.no-transition {
+  transition: none !important;
 }
 
 
