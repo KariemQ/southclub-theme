@@ -1,5 +1,5 @@
 {% comment %}
-  Enhanced Hero Video section with improved scroll functionality and accessibility
+  Hero Video section – minimal chevron with subtle bounce
 {% endcomment %}
 
 {% if section.settings.video != blank or section.settings.video_url != blank %}
@@ -14,7 +14,7 @@
        tabindex="0"
        aria-label="Click to scroll to main content">
 
-    {%- comment -%} Preferred: video uploaded in Settings > Files {%- endcomment -%}
+    {%- comment -%} Prefer video file upload {%- endcomment -%}
     {% if section.settings.video != blank %}
       {{ section.settings.video | video_tag:
           class: 'hero-video__media',
@@ -22,8 +22,7 @@
           loop: true,
           muted: true,
           playsinline: true,
-          loading: 'eager'
-      }}
+          loading: 'eager' }}
     {% else %}
       <video class="hero-video__media"
              src="{{ section.settings.video_url }}"
@@ -32,16 +31,15 @@
              muted
              playsinline
              loading="eager"
-             aria-label="Background video showcasing {{ shop.name }}">
-      </video>
+             aria-label="Background video showcasing {{ shop.name }}"></video>
     {% endif %}
 
-    {%- comment -%} Single minimal scroll arrow {%- endcomment -%}
+    {%- comment -%} Minimal bouncing chevron {%- endcomment -%}
     <button class="hero-video__scroll-down"
-            aria-label="Scroll down to main content"
-            title="Scroll to explore our products"
+            aria-label="Scroll to main content"
+            title="Scroll to explore products"
             data-scroll-trigger>
-      <svg class="arrow-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <svg aria-hidden="true" viewBox="0 0 24 24" class="chevron">
         <polyline points="6 9 12 15 18 9" />
       </svg>
     </button>
@@ -51,54 +49,51 @@
 {% endif %}
 
 <style>
-/* ========== Hero-specific styles ========== */
-
-.hero-section[data-section-id="{{ section.id }}"] {
-  {% if section.settings.overlay_opacity > 0 %}
-    position: relative;
-  {% endif %}
-}
-
-/* Optional dark overlay */
+/* ===== Overlay (optional) ===== */
 {% if section.settings.overlay_opacity > 0 %}
+.hero-section[data-section-id="{{ section.id }}"] { position: relative; }
 .hero-section[data-section-id="{{ section.id }}"]::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, {{ section.settings.overlay_opacity | divided_by: 100.0 }});
+  background: rgba(0,0,0,{{ section.settings.overlay_opacity | divided_by: 100.0 }});
   z-index: 2;
   pointer-events: none;
 }
 {% endif %}
 
-/* ---------- Minimal scroll arrow ---------- */
+/* ===== Minimal bouncing chevron ===== */
+@keyframes subtle-bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50%      { transform: translate(-50%, -6px); }
+}
+
 .hero-video__scroll-down {
   position: absolute;
-
-  /* header-stack ≈ announcement (31) + nav (60) = 91 px */
-  bottom: calc(3rem + var(--announcement-bar-h, 31px) + 60px); /* lift arrow higher */
+  /* header-stack ≈ 91 px (announcement + nav) + 2rem gap */
+  bottom: calc(2rem + var(--announcement-bar-h, 31px) + 60px);
   left: 50%;
-  transform: translateX(-50%);
-  width: 32px;
-  height: 32px;
+  /* Initial placement handled in keyframes so animation starts correctly */
+  width: 28px;
+  height: 28px;
   padding: 0;
   border: none;
   background: none;
-  color: #fff;
+  color: #ffffff;
   cursor: pointer;
-  transition: transform 0.25s ease, opacity 0.25s ease;
-  opacity: 0.85;
-  z-index: 11; /* above header overlay */
+  z-index: 11;               /* above header overlay */
+  animation: subtle-bounce 1.6s ease-in-out infinite;
+  transition: opacity .25s ease;
+  opacity: .85;
 }
 
 .hero-video__scroll-down:hover,
 .hero-video__scroll-down:focus-visible {
-  transform: translate(-50%, -4px);
+  animation-play-state: paused;        /* pause bounce on interaction */
   opacity: 1;
 }
 
-/* Chevron icon styling */
-.arrow-icon {
+.chevron {
   width: 100%;
   height: 100%;
   fill: none;
@@ -108,12 +103,12 @@
   stroke-linejoin: round;
 }
 
-/* Mobile tweaks */
+/* Mobile – slightly smaller & tighter vertical offset */
 @media (max-width: 749px) {
   .hero-video__scroll-down {
-    width: 28px;
-    height: 28px;
-    bottom: calc(2rem + var(--announcement-bar-h, 31px) + 60px);
+    width: 24px;
+    height: 24px;
+    bottom: calc(1.5rem + var(--announcement-bar-h, 31px) + 60px);
   }
 }
 </style>
@@ -122,35 +117,16 @@
 {
   "name": "Hero Video",
   "settings": [
-    {
-      "type": "video",
-      "id": "video",
-      "label": "Background Video",
-      "info": "Upload your logo video here. Recommended format: MP4. For best performance, keep file size under 10MB."
-    },
-    {
-      "type": "url",
-      "id": "video_url",
-      "label": "Or Video URL (MP4)",
-      "info": "Alternative: paste a direct link to your video file. Video URL will be ignored if a video file is uploaded above."
-    },
-    {
-      "type": "range",
-      "id": "overlay_opacity",
-      "label": "Video Overlay Opacity",
-      "min": 0,
-      "max": 80,
-      "step": 5,
-      "unit": "%",
-      "default": 0,
-      "info": "Add a dark overlay to improve text readability"
-    }
+    { "type": "video", "id": "video", "label": "Background Video",
+      "info": "Upload your logo video here (MP4, <10 MB recommended)." },
+    { "type": "url",  "id": "video_url", "label": "Or Video URL (MP4)",
+      "info": "Direct link used if no file is uploaded above." },
+    { "type": "range", "id": "overlay_opacity", "label": "Video Overlay Opacity",
+      "min": 0, "max": 80, "step": 5, "unit": "%", "default": 0,
+      "info": "Add a dark overlay to improve text readability." }
   ],
   "presets": [
-    {
-      "name": "Hero Video",
-      "category": "Video"
-    }
+    { "name": "Hero Video", "category": "Video" }
   ]
 }
 {% endschema %}
