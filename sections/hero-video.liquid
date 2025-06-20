@@ -34,7 +34,7 @@
              aria-label="Background video showcasing {{ shop.name }}"></video>
     {% endif %}
 
-    {%- comment -%} Single minimal white chevron {%- endcomment -%}
+    {%- comment -%} Minimal bouncing chevron {%- endcomment -%}
     <button class="hero-video__scroll-down"
             aria-label="Scroll to main content"
             title="Scroll to explore products"
@@ -71,10 +71,8 @@
 /* ===== Minimal white chevron button ===== */
 .hero-video__scroll-down {
   position: absolute;
-  /* header-stack (≈91px) + 2rem visual gap */
-  bottom: calc(2rem + var(--announcement-bar-h, 31px) + 60px);
+  bottom: calc(2rem + var(--announcement-bar-h, 31px) + 60px); /* header stack + gap */
   left: 50%;
-  /* Remove circle/background entirely */
   width: 28px;
   height: 28px;
   padding: 0;
@@ -84,14 +82,12 @@
   z-index: 11;
 
   animation: subtle-bounce 1.6s ease-in-out infinite;
-  transition: opacity .25s ease;
-  opacity: .9;
+  opacity: 0.9;                      /* constant opacity */
 }
 
 .hero-video__scroll-down:hover,
 .hero-video__scroll-down:focus-visible {
-  animation-play-state: paused;     /* pause bounce on interaction */
-  opacity: 1;
+  animation-play-state: paused;      /* pause bounce only */
 }
 
 /* Chevron always pure white */
@@ -99,7 +95,7 @@
   width: 100%;
   height: 100%;
   fill: none;
-  stroke: #ffffff;                  /* force solid white */
+  stroke: #ffffff;                   /* solid white, no change on hover */
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
