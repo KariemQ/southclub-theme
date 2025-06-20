@@ -4698,7 +4698,7 @@ header-component.scrolled-down {
   height: 48px;
   border: 2px solid #fff;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0);
+  background: rgba(255, 255, 255, 0.00);
   color: #fff;
   display: flex;
   align-items: center;
