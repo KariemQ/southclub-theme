@@ -11,7 +11,7 @@
   'use strict';
 
   /*── CONFIG ───────────────────────────────────────────────*/
-  const EARLY_OFFSET = 6;          // px – lower = sooner, higher = later
+  const EARLY_OFFSET = 0;          // px – lower = sooner, higher = later
   const BAR_SEL      = '.announcement-bar';
 
   /*── BOOTSTRAP ────────────────────────────────────────────*/
