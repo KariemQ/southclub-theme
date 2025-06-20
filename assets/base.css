@@ -4666,4 +4666,17 @@ header-component.scrolled-down {
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
 }
 
+/* --- Prevent 1-px “bounce” when header turns sticky --- */
+
+/* Reserve the border space from the very start */
+.header-group-wrapper {
+  border-bottom: 1px solid transparent;      /* same thickness, invisible */
+  box-sizing: border-box;                    /* make sure border is inside */
+}
+
+/* When sticky, just switch the colour — height stays identical */
+.header-group-wrapper.header--is-sticky {
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
 
