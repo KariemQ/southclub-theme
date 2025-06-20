@@ -4672,9 +4672,5 @@ header-component.scrolled-down {
   --early-offset: 12px;
 }
 
-.header-group-wrapper:not(.header--is-sticky) {
-  /* Move header group up by (announcement bar height + offset)            */
-  transform: translateY(calc(-1 * (var(--announcement-bar-h, 0px) + var(--early-offset))));
-}
 
 
