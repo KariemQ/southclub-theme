@@ -4722,6 +4722,20 @@ header-component.scrolled-down {
   }
 }
 
+/* Raise the scroll arrow so it clears the announcement bar + nav row */
+.hero-video__scroll-down {
+  /* bar-height (≈31 px)  + nav-row (≈60 px)  + 1.25 rem gap */
+  bottom: calc(1.25rem + var(--announcement-bar-h, 31px) + 60px);
+}
+
+/* Mobile – same extra lift */
+@media (max-width: 749px) {
+  .hero-video__scroll-down {
+    bottom: calc(1rem + var(--announcement-bar-h, 31px) + 60px);
+  }
+}
+
+
 
 
 
