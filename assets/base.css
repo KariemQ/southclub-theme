@@ -4744,34 +4744,41 @@ header-component.scrolled-down {
   box-shadow: none !important; /* catches any global button shadow */
 }
 
-/* === Pin the video; let the rest of the site glide over it ================ */
+/* === Make the hero video stay fixed while the page scrolls over it ===== */
 
-/* 1 ▸ Make the wrapper sticky at the top of the viewport */
-body:has(.hero-section) .hero-video__wrapper {
-  position: sticky;
-  top: 0;
-  height: 100vh;          /* stay full-height while pinned */
-  overflow: hidden;       /* clip the video when content overlaps */
-  z-index: 1;             /* below header-group (z-index 10) */
+/* 1 ▸ Reserve space in the normal flow so layout doesn’t shift */
+.hero-section {
+  position: relative;   /* establishes a containing block for the arrow etc. */
+  height: 100vh;        /* still takes up one full viewport height */
+  z-index: 0;           /* keep it behind the header group */
 }
 
-/* 2 ▸ The video itself fills the wrapper */
+/* 2 ▸ Pin the video wrapper to the viewport */
+.hero-video__wrapper {
+  position: fixed;
+  inset: 0;             /* top:0; right:0; bottom:0; left:0 */
+  width: 100%;
+  height: 100vh;        /* always fill the viewport */
+  z-index: 1;           /* below header-group (10) but above page background */
+  overflow: hidden;     /* clip when content scrolls over */
+}
+
+/* 3 ▸ The video itself fills the wrapper but ignores clicks */
 .hero-video__media {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  pointer-events: none;   /* page feels normal – video isn’t clickable */
+  pointer-events: none;   /* video isn’t clickable; page scrolls naturally */
   user-select: none;
 }
 
-/* 3 ▸ Later sections need an opaque bg so they “cover” the video cleanly */
+/* 4 ▸ Later sections should be opaque so they “cover” the video cleanly */
 .content-for-layout {
-  background: var(--color-background, #fff);
+  background: var(--color-background, #fff);  /* already in your palette */
 }
 
-/* Safari/iOS quirk: ensure sticky + 100 vh behaves */
-@supports (-webkit-touch-callout: none) {
-  .hero-video__wrapper { min-height: 100vh; }
-}
+/* 5 ▸ Arrow & overlay z-index checks (just for clarity) */
+.hero-video__scroll-down { z-index: 11; }   /* above fixed video, below header */
+.header-group-wrapper    { z-index: 10; }   /* already set in your CSS */
