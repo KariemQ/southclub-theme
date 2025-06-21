@@ -4782,3 +4782,12 @@ header-component.scrolled-down {
 /* 5 ▸ Arrow & overlay z-index checks (just for clarity) */
 .hero-video__scroll-down { z-index: 11; }   /* above fixed video, below header */
 .header-group-wrapper    { z-index: 10; }   /* already set in your CSS */
+
+/* ── Lift the footer above the fixed hero video ───────────────────── */
+[data-section-type="footer"],
+footer,
+.site-footer {                /* adjust selectors to match your theme */
+  position: relative;         /* create a stacking context */
+  z-index: 2;                 /* higher than the video (1), lower than header (10) */
+  background: var(--color-background, #fff);   /* solid backdrop */
+}
