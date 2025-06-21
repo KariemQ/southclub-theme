@@ -4744,40 +4744,34 @@ header-component.scrolled-down {
   box-shadow: none !important; /* catches any global button shadow */
 }
 
-/* === Pin hero video until it is fully covered ===================== */
-/* 1. Make the whole hero section sticky at the top of the viewport. */
-/*    It stays fixed until its own bottom edge scrolls past,         */
-/*    letting all following content overlap it.                      */
-body:has(.hero-section) .hero-section {
+/* === Pin the video; let the rest of the site glide over it ================ */
+
+/* 1 ▸ Make the wrapper sticky at the top of the viewport */
+body:has(.hero-section) .hero-video__wrapper {
   position: sticky;
-  top: 0;                  /* pin to top of viewport */
-  z-index: 1;              /* below header-group (z-index 10) */
+  top: 0;
+  height: 100vh;          /* stay full-height while pinned */
+  overflow: hidden;       /* clip the video when content overlaps */
+  z-index: 1;             /* below header-group (z-index 10) */
 }
 
-/* 2. Ensure the video still fills the viewport and can’t be clicked */
-/*    through by mistake.                                            */
-body:has(.hero-section) .hero-video__wrapper,
-body:has(.hero-section) .hero-video__media {
-  pointer-events: none;    /* page feels normal – video isn't clickable */
+/* 2 ▸ The video itself fills the wrapper */
+.hero-video__media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;   /* page feels normal – video isn’t clickable */
   user-select: none;
 }
 
-/* 3. Keep later sections opaque so they “cover” the video cleanly.  */
-/*    (If your theme already sets a background colour, this is safe  */
-/*     to omit.)                                                     */
+/* 3 ▸ Later sections need an opaque bg so they “cover” the video cleanly */
 .content-for-layout {
   background: var(--color-background, #fff);
 }
 
-/* Optional: iOS/Safari sometimes needs this to respect sticky+100vh */
+/* Safari/iOS quirk: ensure sticky + 100 vh behaves */
 @supports (-webkit-touch-callout: none) {
-  .hero-section {
-    min-height: 100vh;
-  }
+  .hero-video__wrapper { min-height: 100vh; }
 }
-
-
-
-
-
-
