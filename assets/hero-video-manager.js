@@ -1,21 +1,19 @@
 /**
- * Hero-Video Manager  • v7.0
+ * Hero-Video Manager  • v7.1
  * ──────────────────────────
- * Sticky ON  ➜ heroBottom ≤ (totalHeaderH + EARLY_OFFSET)
- * Sticky OFF ➜ heroBottom > (totalHeaderH + EARLY_OFFSET)
+ * Home page:
+ *   Sticky ON  ➜ heroBottom ≤ (totalHeaderH + EARLY_OFFSET)
+ *   Sticky OFF ➜ heroBottom > (totalHeaderH + EARLY_OFFSET)
  *
- *   heroBottom     = .hero-section.getBoundingClientRect().bottom
- *   totalHeaderH   = announcementBarH + navRowH
- *
- * Result: flips precisely when the TOP of the announcement bar
- *         hits the viewport top (± EARLY_OFFSET px).
+ * Other pages (no .hero-section present):
+ *   Header is made sticky immediately.
  */
 
 (function () {
   'use strict';
 
   /*── CONFIG ───────────────────────────────────────────────*/
-  const EARLY_OFFSET = 0;        // 0 = exact; 2-5 = a hair early
+  const EARLY_OFFSET = 0;            // 0 = exact; 2-5 = a hair early
 
   /*── BOOTSTRAP ────────────────────────────────────────────*/
   (document.readyState === 'loading')
@@ -24,33 +22,39 @@
 
   /*── MAIN ────────────────────────────────────────────────*/
   function init() {
-    const hero         = document.querySelector('.hero-section');
-    const bar          = document.querySelector('.announcement-bar');
-    const nav          = document.querySelector('header-component');
-    const headerGroup  = document.querySelector('#header-group');
+    const hero        = document.querySelector('.hero-section');
+    const bar         = document.querySelector('.announcement-bar');
+    const nav         = document.querySelector('header-component');
+    const headerGroup = document.querySelector('#header-group');
 
-    if (!hero || !bar || !nav || !headerGroup) {
+    /* ── Pages WITHOUT a hero: pin header instantly and exit ── */
+    if (!hero) {
+      headerGroup?.classList.add('header--is-sticky');
+      nav?.classList.add('scrolled-down');
+      return;
+    }
+
+    /* ── Safety check for required elements on the home page ── */
+    if (!bar || !nav || !headerGroup) {
       console.warn('Hero-Video Manager: required elements missing.');
       return;
     }
 
-
     /* heights (static) */
-    const barH = bar.offsetHeight;          // ≈ 31 px
-    const navH = nav.offsetHeight;          // ≈ 60 px
+    const barH   = bar.offsetHeight;        // ≈ 31 px
+    const navH   = nav.offsetHeight;        // ≈ 60 px
     const totalH = barH + navH;             // ≈ 91 px
 
     /* rAF-throttled scroll evaluator */
     let ticking = false;
     function evaluate() {
-      const heroBottom = hero.getBoundingClientRect().bottom;
+      const heroBottom  = hero.getBoundingClientRect().bottom;
       const shouldStick = heroBottom <= (totalH + EARLY_OFFSET);
 
       if (headerGroup.classList.contains('header--is-sticky') !== shouldStick) {
         headerGroup.classList.toggle('header--is-sticky', shouldStick);
-        nav.classList.toggle('scrolled-down',             shouldStick); // keeps your logo animation
+        nav.classList.toggle('scrolled-down',             shouldStick); // keeps logo animation
       }
-
       ticking = false;
     }
 
@@ -62,12 +66,14 @@
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    evaluate();                               // set initial state
+    evaluate();                                           // initial state
 
     /* smooth-scroll when user clicks hero video / arrow */
-    const clickTargets = document.querySelectorAll('.hero-video__wrapper, .hero-video__scroll-down');
+    const clickTargets = document.querySelectorAll(
+      '.hero-video__wrapper, .hero-video__scroll-down'
+    );
     clickTargets.forEach(el => {
-      el.addEventListener('click', scrollToContent);
+      el.addEventListener('click',      scrollToContent);
       el.addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') scrollToContent(e);
       });
