@@ -4798,3 +4798,10 @@ header-component.scrolled-down,
   box-shadow: none !important;          /* kill the shadow */
 }
 
+/* ── Remove sticky header outline (border) ── */
+.header-group-wrapper,
+.header-group-wrapper.header--is-sticky,
+header-component.scrolled-down {
+  border-bottom: 1px solid transparent !important;   /* keep height, hide line */
+}
+
