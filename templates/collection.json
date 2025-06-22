@@ -6,8 +6,20 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
+    "custom_liquid_3p9Cfh": {
+      "type": "custom-liquid",
+      "name": "t:names.custom_liquid",
+      "settings": {
+        "custom_liquid": "<script type=\"module\" src=\"https://unpkg.com/@splinetool/viewer@1.10.13/build/spline-viewer.js\"></script>\n<spline-viewer url=\"https://prod.spline.design/5n2Y94VcASXQtrhv/scene.splinecode\"></spline-viewer>",
+        "color_scheme": "",
+        "section_width": "full-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
     "section": {
       "type": "section",
       "blocks": {
@@ -160,6 +172,7 @@
             "group": {
               "type": "group",
               "settings": {
+                "link": "",
                 "open_in_new_tab": false,
                 "content_direction": "column",
                 "vertical_on_mobile": true,
@@ -230,6 +243,12 @@
                     "type_preset": "h6",
                     "width": "fit-content",
                     "alignment": "left",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "color": "var(--color-foreground)",
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
@@ -283,6 +302,7 @@
     }
   },
   "order": [
+    "custom_liquid_3p9Cfh",
     "section",
     "main"
   ]
