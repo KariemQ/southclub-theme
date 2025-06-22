@@ -53,11 +53,11 @@
           "type": "text",
           "name": "t:names.text",
           "settings": {
-            "text": "<p>asdkasdfkm</p>{{ closest.collection.description }}",
+            "text": "<p>2X winners of TIME Best Inventions, our clothes include jackets built from 11km of copper, gear designed to survive the apocalypse, and the first hoodies for Mars.</p>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
-            "type_preset": "rte",
+            "type_preset": "custom",
             "font": "var(--font-primary--family)",
             "font_size": "",
             "line_height": "normal",
