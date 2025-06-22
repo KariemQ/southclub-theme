@@ -4824,9 +4824,3 @@ body:not(:has(.hero-section)) .header-group-wrapper.header--is-sticky {
   right: 0;
   z-index: 10;         /* same layer as on the home page */
 }
-
-body:not(:has(.hero-section)) .header-group-wrapper.header--is-sticky {
-  position: fixed !important;
-  top: 0;
-}
-
