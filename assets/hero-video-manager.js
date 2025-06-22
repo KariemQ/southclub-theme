@@ -34,10 +34,6 @@
       return;
     }
 
-    if (!hero) {
-      headerGroup?.classList.add('header--is-sticky');
-      return;
-    }
 
     /* heights (static) */
     const barH = bar.offsetHeight;          // ≈ 31 px
