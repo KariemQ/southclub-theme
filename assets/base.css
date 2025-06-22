@@ -4806,3 +4806,13 @@ header-component.scrolled-down {
   border-bottom: none !important;   /* no outline, ever */
 }
 
+/* ── Normal header positioning on pages WITHOUT a hero section ── */
+body:not(:has(.hero-section)) .header-group-wrapper {
+  position: static !important;          /* sits in normal document flow */
+  height: auto !important;
+  justify-content: flex-start !important;
+  background: var(--color-background, #fff) !important;  /* solid bg */
+  border-bottom: none !important;        /* already removed outline */
+  box-shadow: none !important;           /* already removed shadow */
+}
+
