@@ -4791,3 +4791,10 @@ footer,
   z-index: 2;                 /* higher than the video (1), lower than header (10) */
   background: var(--color-background, #fff);   /* solid backdrop */
 }
+
+/* ── Remove drop-shadow when header/announcement bar is sticky ── */
+header-component.scrolled-down,
+.header-group-wrapper.header--is-sticky {
+  box-shadow: none !important;          /* kill the shadow */
+}
+
