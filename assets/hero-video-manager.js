@@ -36,7 +36,6 @@
 
     if (!hero) {
       headerGroup?.classList.add('header--is-sticky');
-      headerComp?.classList.add('scrolled-down');
       return;
     }
 
