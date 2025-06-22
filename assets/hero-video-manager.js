@@ -34,6 +34,12 @@
       return;
     }
 
+    if (!hero) {
+      headerGroup?.classList.add('header--is-sticky');
+      headerComp?.classList.add('scrolled-down');
+      return;
+    }
+
     /* heights (static) */
     const barH = bar.offsetHeight;          // ≈ 31 px
     const navH = nav.offsetHeight;          // ≈ 60 px
