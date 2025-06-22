@@ -35,7 +35,7 @@
             "font": "var(--font-accent--family)",
             "font_size": "3rem",
             "line_height": "normal",
-            "letter_spacing": "normal",
+            "letter_spacing": "tight",
             "case": "none",
             "wrap": "pretty",
             "color": "",
