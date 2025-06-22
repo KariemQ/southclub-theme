@@ -4367,6 +4367,8 @@ header-component.scrolled-down .header-logo__image-container--icon {
 
 /* Set the font size for the announcement bar text */
 .announcement-bar .announcement-bar__text {
+  font-family: "Suisse Intl" !important;
+  font-weight: 300 !important;
   font-size: 11px !important;
 }
 
