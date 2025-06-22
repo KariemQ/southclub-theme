@@ -4326,44 +4326,26 @@ header-component.scrolled-down .header-logo__image-container--icon {
   text-shadow: 0 0 0.04em currentColor;
 }
 
-/*
-// --- Force Custom Font Application (Comprehensive) ---
-*/
-body {
-  /* ==================================
-     1. SET FONT FAMILY
-     This sets "Suisse Intl" as the font for all roles.
-  ================================== */
-  --font-paragraph--family: "Suisse Intl" !important;
-  --font-subheading--family: "Suisse Intl" !important;
-  --font-heading--family: "Suisse Intl" !important;
-  --font-accent--family: "Suisse Intl" !important;
-
-  /* This specifically targets each heading level to ensure they are updated. */
-  --font-h1--family: "Suisse Intl" !important;
-  --font-h2--family: "Suisse Intl" !important;
-  --font-h3--family: "Suisse Intl" !important;
-  --font-h4--family: "Suisse Intl" !important;
-  --font-h5--family: "Suisse Intl" !important;
-  --font-h6--family: "Suisse Intl" !important;
-
-  /* ==================================
-     2. SET FONT WEIGHTS
-     This assigns the specific weights you wanted.
-  ================================== */
-  --font-paragraph--weight: 300 !important; /* Body -> Light */
-  --font-subheading--weight: 500 !important; /* Subheading -> Medium */
-  --font-accent--weight: 400 !important;    /* Accent -> Regular */
-
-  /* Set all heading levels to use the Bold weight by default */
-  --font-heading--weight: 700 !important;
-  --font-h1--weight: 700 !important;
-  --font-h2--weight: 700 !important;
-  --font-h3--weight: 700 !important;
-  --font-h4--weight: 700 !important;
-  --font-h5--weight: 700 !important;
-  --font-h6--weight: 700 !important;
+/* ========== Suisse Intl (self-hosted) ========== */
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("{{ 'SuisseIntl-Regular.woff2' | asset_url }}") format("woff2");
+  font-weight: 400;
+  font-display: swap;
 }
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("{{ 'SuisseIntl-Medium.woff2' | asset_url }}") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("{{ 'SuisseIntl-Bold.woff2' | asset_url }}") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
 
 /*
 // --- Direct Override for Header Menu Font ---
