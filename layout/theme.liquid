@@ -40,7 +40,10 @@
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
 
     {%- comment -%} Hero video section {%- endcomment -%}
-    {% section 'hero-video' %}
+    {% if request.page_type == 'index' %}
+      {% section 'hero-video' %}
+    {% endif %}
+
 
     {%- comment -%} Header + Announcement Bar Overlay {%- endcomment -%}
     <div id="header-group" class="header-group-wrapper">
