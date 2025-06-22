@@ -27,7 +27,7 @@
           "type": "text",
           "name": "Collection title",
           "settings": {
-            "text": "<h1>All Gear</h1>",
+            "text": "<h1><strong>ALL GEAR</strong></h1>",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
