@@ -4816,3 +4816,12 @@ body:not(:has(.hero-section)) .header-group-wrapper {
   box-shadow: none !important;           /* already removed shadow */
 }
 
+/* When .header--is-sticky is present, lift the header back to fixed */
+body:not(:has(.hero-section)) .header-group-wrapper.header--is-sticky {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;         /* same layer as on the home page */
+}
+
