@@ -53,7 +53,7 @@
           "type": "text",
           "name": "t:names.text",
           "settings": {
-            "text": "{{ closest.collection.description }}",
+            "text": "<p>asdkasdfkm</p>{{ closest.collection.description }}",
             "width": "fit-content",
             "max_width": "normal",
             "alignment": "left",
