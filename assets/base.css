@@ -4744,33 +4744,35 @@ header-component.scrolled-down {
   box-shadow: none !important; /* catches any global button shadow */
 }
 
-/* === Fixed hero video – HOME PAGE ONLY =============================== */
-body.template-index .hero-section {
-  position: relative;
-  height: 100vh;
-  z-index: 0;
+/* === Make the hero video stay fixed while the page scrolls over it ===== */
+
+/* 1 ▸ Reserve space in the normal flow so layout doesn’t shift */
+.hero-section {
+  position: relative;   /* establishes a containing block for the arrow etc. */
+  height: 100vh;        /* still takes up one full viewport height */
+  z-index: 0;           /* keep it behind the header group */
 }
 
-/* pin the video only on the homepage */
-body.template-index .hero-video__wrapper {
+/* 2 ▸ Pin the video wrapper to the viewport */
+.hero-video__wrapper {
   position: fixed;
-  inset: 0;
+  inset: 0;             /* top:0; right:0; bottom:0; left:0 */
   width: 100%;
-  height: 100vh;
-  z-index: 1;             /* below header-group */
-  overflow: hidden;
+  height: 100vh;        /* always fill the viewport */
+  z-index: 1;           /* below header-group (10) but above page background */
+  overflow: hidden;     /* clip when content scrolls over */
 }
 
-body.template-index .hero-video__media {
+/* 3 ▸ The video itself fills the wrapper but ignores clicks */
+.hero-video__media {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  pointer-events: none;
+  pointer-events: none;   /* video isn’t clickable; page scrolls naturally */
   user-select: none;
 }
-
 
 /* 4 ▸ Later sections should be opaque so they “cover” the video cleanly */
 .content-for-layout {
