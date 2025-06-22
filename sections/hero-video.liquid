@@ -1,123 +1,115 @@
 {% comment %}
-  Hero Video section (renders ONLY on the home page)
+  Hero Video section – minimal solid-white chevron with subtle bounce
 {% endcomment %}
 
-{% if request.page_type == 'index' %}
+{% if section.settings.video != blank or section.settings.video_url != blank %}
+<section class="hero-section"
+         data-section-id="{{ section.id }}"
+         id="hero"
+         role="banner"
+         aria-label="Hero video">
 
-  {% comment %}
-    Enhanced Hero Video section with improved scroll functionality and accessibility
-  {% endcomment %}
+  <div class="hero-video__wrapper"
+       role="button"
+       tabindex="0"
+       aria-label="Click to scroll to main content">
 
-  {% if section.settings.video != blank or section.settings.video_url != blank %}
-  <section class="hero-section"
-           data-section-id="{{ section.id }}"
-           id="hero"
-           role="banner"
-           aria-label="Hero video">
+    {%- comment -%} Prefer video file upload {%- endcomment -%}
+    {% if section.settings.video != blank %}
+      {{ section.settings.video | video_tag:
+          class: 'hero-video__media',
+          autoplay: true,
+          loop: true,
+          muted: true,
+          playsinline: true,
+          loading: 'eager' }}
+    {% else %}
+      <video class="hero-video__media"
+             src="{{ section.settings.video_url }}"
+             autoplay
+             loop
+             muted
+             playsinline
+             loading="eager"
+             aria-label="Background video showcasing {{ shop.name }}"></video>
+    {% endif %}
 
-    <div class="hero-video__wrapper"
-         role="button"
-         tabindex="0"
-         aria-label="Click to scroll to main content">
+    {%- comment -%} Minimal bouncing chevron {%- endcomment -%}
+    <button class="hero-video__scroll-down"
+            aria-label="Scroll to main content"
+            title="Scroll to explore products"
+            data-scroll-trigger>
+      <svg aria-hidden="true" viewBox="0 0 24 24" class="chevron">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </button>
+  </div><!-- /.hero-video__wrapper -->
 
-      {%- comment -%} Prefer video file upload {%- endcomment -%}
-      {% if section.settings.video != blank %}
-        {{ section.settings.video | video_tag:
-            class: 'hero-video__media',
-            autoplay: true,
-            loop: true,
-            muted: true,
-            playsinline: true,
-            loading: 'eager' }}
-      {% else %}
-        <video class="hero-video__media"
-               src="{{ section.settings.video_url }}"
-               autoplay
-               loop
-               muted
-               playsinline
-               loading="eager"
-               aria-label="Background video showcasing {{ shop.name }}"></video>
-      {% endif %}
+</section>
+{% endif %}
 
-      {%- comment -%} Minimal bouncing chevron {%- endcomment -%}
-      <button class="hero-video__scroll-down"
-              aria-label="Scroll to main content"
-              title="Scroll to explore products"
-              data-scroll-trigger>
-        <svg aria-hidden="true" viewBox="0 0 24 24" class="chevron">
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
-      </button>
-    </div><!-- /.hero-video__wrapper -->
+<style>
+/* ===== Optional overlay ===== */
+{% if section.settings.overlay_opacity > 0 %}
+.hero-section[data-section-id="{{ section.id }}"] { position: relative; }
+.hero-section[data-section-id="{{ section.id }}"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,{{ section.settings.overlay_opacity | divided_by: 100.0 }});
+  z-index: 2;
+  pointer-events: none;
+}
+{% endif %}
 
-  </section>
-  {% endif %}
+/* ===== Subtle bounce keyframes ===== */
+@keyframes subtle-bounce {
+  0%, 100% { transform: translate(-50%, 0); }
+  50%      { transform: translate(-50%, -6px); }
+}
 
-  <style>
-  /* ===== Optional overlay ===== */
-  {% if section.settings.overlay_opacity > 0 %}
-  .hero-section[data-section-id="{{ section.id }}"] { position: relative; }
-  .hero-section[data-section-id="{{ section.id }}"]::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,{{ section.settings.overlay_opacity | divided_by: 100.0 }});
-    z-index: 2;
-    pointer-events: none;
-  }
-  {% endif %}
+/* ===== Minimal white chevron button ===== */
+.hero-video__scroll-down {
+  position: absolute;
+  bottom: calc(2rem + var(--announcement-bar-h, 31px) + 60px); /* header stack + gap */
+  left: 50%;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  z-index: 11;
 
-  /* ===== Subtle bounce keyframes ===== */
-  @keyframes subtle-bounce {
-    0%, 100% { transform: translate(-50%, 0); }
-    50%      { transform: translate(-50%, -6px); }
-  }
+  animation: subtle-bounce 1.6s ease-in-out infinite;
+  opacity: 0.9;                      /* constant opacity */
+}
 
-  /* ===== Minimal white chevron button ===== */
+.hero-video__scroll-down:hover,
+.hero-video__scroll-down:focus-visible {
+  animation-play-state: paused;      /* pause bounce only */
+}
+
+/* Chevron always pure white */
+.chevron {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #ffffff;                   /* solid white, no change on hover */
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Mobile adjustments */
+@media (max-width: 749px) {
   .hero-video__scroll-down {
-    position: absolute;
-    bottom: calc(2rem + var(--announcement-bar-h, 31px) + 60px); /* header stack + gap */
-    left: 50%;
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    border: none;
-    background: none;
-    cursor: pointer;
-    z-index: 11;
-
-    animation: subtle-bounce 1.6s ease-in-out infinite;
-    opacity: 0.9;                      /* constant opacity */
+    width: 24px;
+    height: 24px;
+    bottom: calc(1.5rem + var(--announcement-bar-h, 31px) + 60px);
   }
-
-  .hero-video__scroll-down:hover,
-  .hero-video__scroll-down:focus-visible {
-    animation-play-state: paused;      /* pause bounce only */
-  }
-
-  /* Chevron always pure white */
-  .chevron {
-    width: 100%;
-    height: 100%;
-    fill: none;
-    stroke: #ffffff;                   /* solid white, no change on hover */
-    stroke-width: 1.8;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  /* Mobile adjustments */
-  @media (max-width: 749px) {
-    .hero-video__scroll-down {
-      width: 24px;
-      height: 24px;
-      bottom: calc(1.5rem + var(--announcement-bar-h, 31px) + 60px);
-    }
-  }
-  </style>
-
-{% endif %}  {# —–– END home-page conditional —–#}
+}
+</style>
 
 {% schema %}
 {
