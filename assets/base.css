@@ -4809,3 +4809,60 @@ body:not(:has(.hero-section)) .header-group-wrapper {
   z-index: 10;                  /* same layer as on the home page */
 }
 
+/* ================================================================
+   ❶  HERO-ONLY header behaviour
+   ----------------------------------------------------------------
+   Apply the full-height/absolute wrapper ONLY when the page
+   actually has a .hero-section. (These are the rules you already
+   have—they’re just wrapped in the :has selector.)
+   ================================================================ */
+
+body:has(.hero-section) .header-group-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  pointer-events: none;
+  z-index: 10;                 /* stays above the fixed video */
+  transition: background-color .4s ease, box-shadow .4s ease,
+              backdrop-filter .4s ease;
+}
+
+/* Sticky state (hero pages only) */
+body:has(.hero-section) .header-group-wrapper.header--is-sticky {
+  position: fixed;
+  top: 0;
+  height: auto;
+  justify-content: flex-start;
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(0,0,0,.1);
+  box-shadow: 0 2px 20px rgba(0,0,0,.1);
+  pointer-events: auto;
+}
+
+/* ================================================================
+   ❷  DEFAULT header behaviour for pages WITHOUT a hero section
+   ----------------------------------------------------------------
+   Just use a simple sticky header; no full-height wrapper.
+   ================================================================ */
+
+body:not(:has(.hero-section)) .header-group-wrapper {
+  position: sticky;            /* scrolls normally */
+  top: 0;
+  left: 0;
+  right: 0;
+  height: auto;
+  display: block;
+  z-index: 10;
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(0,0,0,.1);
+  box-shadow: 0 2px 20px rgba(0,0,0,.1);
+  transition: none;            /* no slide or fade animations needed */
+}
+
