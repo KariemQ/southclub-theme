@@ -4868,53 +4868,67 @@ body:not(:has(.hero-section)) .header-group-wrapper {
 
 
 /* =====================================================================
-   COLLECTION HEADING
-   ─ Place ONLY the second text-block alongside the first
+   COLLECTION HEADING  –  Two ends layout (desktop ≥ 750 px)
+   ---------------------------------------------------------------------
+   Wrapper  : <div data-testid="section-content" class="layout-panel-flex--column …">
+   Block 1  : first .text-block  (H1)
+   Block 2  : second .text-block (paragraph)
    ===================================================================== */
 
-/* DESKTOP / LARGE-TABLET  (≥ 750 px)  ------------------------------- */
+/* 1 ▸ DESKTOP & LARGE TABLET  ---------------------------------------- */
 @media (min-width: 750px) {
 
-  /* 1 ▸ Turn the wrapper into a 2-column grid.   The first box stays
-        in column 1 row 1 by default; the second box is manually moved. */
+  /* Turn wrapper into a 2-column grid that spans the width */
   [data-testid="section-content"].layout-panel-flex--column {
     display: grid !important;
-    grid-template-columns: auto 1fr;           /* first: auto, second: fill */
-    column-gap: var(--heading-gap, 22rem);    /* adjustable horizontal gap */
-    align-items: center;                       /* baseline alignment        */
+    grid-template-columns: 1fr 1fr;         /* each side 50 %  */
+    align-items: center;                    /* vertical align  */
   }
 
-  /* 2 ▸ Re-position ONLY the second text-block */
+  /* Block 1 – left side, adjustable left padding */
+  [data-testid="section-content"].layout-panel-flex--column
+  .text-block:nth-child(1) {
+    grid-column: 1;
+    justify-self: start;
+    padding-left: var(--left-pad-block1, 0);     /* tweak ← here */
+  }
+
+  /* Block 2 – right side, adjustable right padding */
   [data-testid="section-content"].layout-panel-flex--column
   .text-block:nth-child(2) {
-    grid-column: 2;           /* sit in column 2 */
-    grid-row: 1;              /* same row as the H1 */
-    padding-left: var(--extra-left-pad, 0);   /* extra space if desired */
+    grid-column: 2;
+    justify-self: end;
+    padding-right: var(--right-pad-block2, 0);   /* tweak ← here */
+    text-align: right;                           /* optional */
   }
 }
 
-/* MOBILE  (< 750 px)  -------------------------------------------------- */
+/* 2 ▸ MOBILE  (< 750 px)  -------------------------------------------- */
 @media (max-width: 749px) {
-
-  /* Revert to original stacked layout */
+  /* Revert to original vertical flow */
   [data-testid="section-content"].layout-panel-flex--column {
-    display: flex !important;                 /* restore flex column */
+    display: flex !important;
     flex-direction: column;
-    row-gap: 1rem;                            /* tidy vertical gap   */
+    row-gap: 1rem;
   }
 
-  /* Remove the desktop-only left padding */
+  /* Remove the desktop paddings on small screens */
+  [data-testid="section-content"].layout-panel-flex--column
+  .text-block:nth-child(1),
   [data-testid="section-content"].layout-panel-flex--column
   .text-block:nth-child(2) {
     padding-left: 0;
+    padding-right: 0;
+    text-align: start;
   }
 }
 
 /* ---------------------------------------------------------------------
-   TUNE IT
-   • Change  --heading-gap       to control the space between the boxes
-   • Change  --extra-left-pad    for additional inset on the paragraph
-   • Adjust  750px breakpoint    if your theme’s breakpoints differ
+   HOW TO USE
+   • Change  --left-pad-block1   (e.g. 2rem, 40px, 5%) to indent the H1.
+   • Change  --right-pad-block2  to inset the paragraph from the right.
+   • Modify break-point if your theme uses a different width.
    -------------------------------------------------------------------- */
+
 
 
