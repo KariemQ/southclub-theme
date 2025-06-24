@@ -4930,5 +4930,28 @@ body:not(:has(.hero-section)) .header-group-wrapper {
    • Modify break-point if your theme uses a different width.
    -------------------------------------------------------------------- */
 
+/* ================================================================
+   TOP BORDER for “All” results list section
+   (id = shopify-section-template--17284893868131__main)
+   ----------------------------------------------------------------
+   • --section-border-color  → change colour once, everywhere
+   • --section-border-size   → change thickness (e.g. 2px, .5px)
+   ================================================================ */
+
+:root {
+  --section-border-color: var(--color-border, #dcdcdc); /* fallback light grey */
+  --section-border-size : 1px;
+}
+
+#shopify-section-template--17284893868131__main {
+  border-top: var(--section-border-size) solid var(--section-border-color);
+}
+
+/* Optional: full-width look on very wide screens
+   (remove if you want the border only under the centred column) */
+#shopify-section-template--17284893868131__main .section-background {
+  border-top: inherit;   /* copies size + colour */
+}
+
 
 
