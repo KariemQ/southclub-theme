@@ -4866,3 +4866,51 @@ body:not(:has(.hero-section)) .header-group-wrapper {
   transition: none;            /* no slide or fade animations needed */
 }
 
+
+/* =======================================================================
+   COLLECTION HEADING — TWO TEXT BLOCKS SIDE-BY-SIDE (DESKTOP ≥ 750 px)
+   wrapper  : <div data-testid="section-content" class="layout-panel-flex--column …">
+   child(1) : H1  (.text-block…)
+   child(2) : P   (.text-block…)
+   ----------------------------------------------------------------------- */
+
+/* 1 ▸ DESKTOP / LARGE TABLET  ------------------------------------------ */
+@media (min-width: 750px) {
+
+  /* turn wrapper from column → row */
+  [data-testid="section-content"].layout-panel-flex--column {
+    --flex-direction: row !important;        /* force horizontal */
+    --gap: var(--heading-gap, 2.5rem);       /* adjustable gap   */
+    align-items: center;                     /* vertical align   */
+  }
+
+  /* optional extra left-padding on second block */
+  [data-testid="section-content"].layout-panel-flex--column
+  .text-block:nth-child(2) {
+    padding-left: var(--extra-left-pad, 0);  /* tweak as needed  */
+  }
+}
+
+/* 2 ▸ MOBILE / SMALL TABLET  ------------------------------------------- */
+@media (max-width: 749px) {
+
+  /* revert to original stacked layout */
+  [data-testid="section-content"].layout-panel-flex--column {
+    --flex-direction: column !important;
+    --gap: 1rem;                             /* vertical spacing */
+  }
+
+  /* reset mobile padding */
+  [data-testid="section-content"].layout-panel-flex--column
+  .text-block:nth-child(2) {
+    padding-left: 0;
+  }
+}
+
+/* -----------------------------------------------------------------------
+   HOW TO TUNE
+   • Gap between boxes      → change --heading-gap (e.g. 3rem, 40px, 5%)
+   • Extra left padding box2→ change --extra-left-pad (e.g. 1.5rem, 32px)
+   • Breakpoint             → swap 750px if your theme uses a different one
+   ----------------------------------------------------------------------- */
+
