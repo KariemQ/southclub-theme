@@ -4880,7 +4880,7 @@ body:not(:has(.hero-section)) .header-group-wrapper {
   [data-testid="section-content"].layout-panel-flex--column {
     display: grid !important;
     grid-template-columns: auto 1fr;           /* first: auto, second: fill */
-    column-gap: var(--heading-gap, 10rem);    /* adjustable horizontal gap */
+    column-gap: var(--heading-gap, 20rem);    /* adjustable horizontal gap */
     align-items: center;                       /* baseline alignment        */
   }
 
