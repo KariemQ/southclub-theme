@@ -4890,7 +4890,7 @@ body:not(:has(.hero-section)) .header-group-wrapper {
   .text-block:nth-child(1) {
     grid-column: 1;
     justify-self: start;
-    padding-left: var(--left-pad-block1, -10rem);     /* tweak ← here */
+    padding-left: var(--left-pad-block1, 0);     /* tweak ← here */
   }
 
   /* Block 2 – right side, adjustable right padding */
